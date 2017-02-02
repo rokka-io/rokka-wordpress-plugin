@@ -27,7 +27,7 @@ require_once( 'includes/class-rokka-image-cdn-settings.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
-require_once( 'includes/lib/filters/class-filter-rokka-upload-image.php' );
+require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
 
 //add vendor library
@@ -51,9 +51,13 @@ function rokka_image_cdn () {
 	}
     $date = new DateTime();
     //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': hallo'.PHP_EOL, FILE_APPEND);
+    if (get_option('rokka_rokka_enabled')) {
 
-    $rokka = new class_rokka_filter();
-   rokka_intercept_ajax_image_edit();
+        $rokka = new Filter_Rokka_Upload();
+        rokka_intercept_ajax_image_edit();
+        //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . 'rokka enabled'.PHP_EOL, FILE_APPEND);
+
+    }
 
 
     return $instance;
@@ -89,4 +93,5 @@ function is_ajax() {
     return false;
 }
 
-rokka_image_cdn();
+    rokka_image_cdn();
+

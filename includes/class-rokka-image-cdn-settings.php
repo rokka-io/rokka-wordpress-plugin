@@ -39,7 +39,7 @@ class Rokka_Image_Cdn_Settings {
 	public function __construct ( $parent ) {
 		$this->parent = $parent;
 
-		$this->base = 'wpt_';
+		$this->base = 'rokka_';
 
 		// Initialise settings
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
@@ -108,72 +108,40 @@ class Rokka_Image_Cdn_Settings {
 	private function settings_fields () {
 
 		$settings['standard'] = array(
-			'title'					=> __( 'Standard', 'rokka-image-cdn' ),
-			'description'			=> __( 'These are fairly standard form input fields.', 'rokka-image-cdn' ),
+			'title'					=> __( 'Rokka ', 'rokka-image-cdn' ),
+			'description'			=> __( 'Please enter your credentials below', 'rokka-image-cdn' ),
 			'fields'				=> array(
 				array(
-					'id' 			=> 'text_field',
-					'label'			=> __( 'Some Text' , 'rokka-image-cdn' ),
-					'description'	=> __( 'This is a standard text field.', 'rokka-image-cdn' ),
+					'id' 			=> 'company_name',
+					'label'			=> __( 'Company name' , 'rokka-image-cdn' ),
+					'description'	=> __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'rokka-image-cdn' )
+					'placeholder'	=> __( 'Company' )
 				),
 				array(
-					'id' 			=> 'password_field',
-					'label'			=> __( 'A Password' , 'rokka-image-cdn' ),
-					'description'	=> __( 'This is a standard password field.', 'rokka-image-cdn' ),
-					'type'			=> 'password',
+					'id' 			=> 'api_key',
+					'label'			=> __( 'API Key' , 'rokka-image-cdn' ),
+					'description'	=> __( 'Rokka API key', 'rokka-image-cdn' ),
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'rokka-image-cdn' )
+					'placeholder'	=> __('Key' )
 				),
 				array(
-					'id' 			=> 'secret_text_field',
-					'label'			=> __( 'Some Secret Text' , 'rokka-image-cdn' ),
+					'id' 			=> 'api_secret',
+					'label'			=> __( 'API Secret' , 'rokka-image-cdn' ),
 					'description'	=> __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'rokka-image-cdn' ),
-					'type'			=> 'text_secret',
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'rokka-image-cdn' )
+					'placeholder'	=> __('Secret' )
 				),
 				array(
-					'id' 			=> 'text_block',
-					'label'			=> __( 'A Text Block' , 'rokka-image-cdn' ),
-					'description'	=> __( 'This is a standard text area.', 'rokka-image-cdn' ),
-					'type'			=> 'textarea',
-					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text for this textarea', 'rokka-image-cdn' )
-				),
-				array(
-					'id' 			=> 'single_checkbox',
-					'label'			=> __( 'An Option', 'rokka-image-cdn' ),
-					'description'	=> __( 'A standard checkbox - if you save this option as checked then it will store the option as \'on\', otherwise it will be an empty string.', 'rokka-image-cdn' ),
+					'id' 			=> 'rokka_enabled',
+					'label'			=> __( 'Enable Rokka', 'rokka-image-cdn' ),
+					'description'	=> __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
 					'type'			=> 'checkbox',
 					'default'		=> ''
 				),
-				array(
-					'id' 			=> 'select_box',
-					'label'			=> __( 'A Select Box', 'rokka-image-cdn' ),
-					'description'	=> __( 'A standard select box.', 'rokka-image-cdn' ),
-					'type'			=> 'select',
-					'options'		=> array( 'drupal' => 'Drupal', 'joomla' => 'Joomla', 'wordpress' => 'WordPress' ),
-					'default'		=> 'wordpress'
-				),
-				array(
-					'id' 			=> 'radio_buttons',
-					'label'			=> __( 'Some Options', 'rokka-image-cdn' ),
-					'description'	=> __( 'A standard set of radio buttons.', 'rokka-image-cdn' ),
-					'type'			=> 'radio',
-					'options'		=> array( 'superman' => 'Superman', 'batman' => 'Batman', 'ironman' => 'Iron Man' ),
-					'default'		=> 'batman'
-				),
-				array(
-					'id' 			=> 'multiple_checkboxes',
-					'label'			=> __( 'Some Items', 'rokka-image-cdn' ),
-					'description'	=> __( 'You can select multiple items and they will be stored as an array.', 'rokka-image-cdn' ),
-					'type'			=> 'checkbox_multi',
-					'options'		=> array( 'square' => 'Square', 'circle' => 'Circle', 'rectangle' => 'Rectangle', 'triangle' => 'Triangle' ),
-					'default'		=> array( 'circle', 'triangle' )
-				)
 			)
 		);
 

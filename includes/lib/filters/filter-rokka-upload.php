@@ -2,7 +2,7 @@
 
 require_once(ABSPATH . 'wp-includes/media.php');
 
-class class_rokka_filter
+class Filter_Rokka_Upload
 {
     function __construct()
     {
@@ -29,7 +29,7 @@ class class_rokka_filter
         */
         add_filter('get_attached_file', array($this, 'rokka_get_attached_file'));
 
-        add_filter('wp_prepare_attachment_for_js', array($this, 'rokka_prepare_image_for_js'));
+        //add_filter('wp_prepare_attachment_for_js', array($this, 'rokka_prepare_image_for_js'));
 
         add_filter('wp_get_attachment_image_src', array($this, 'rokka_get_attachment_image_src'), 1, 4);
 
@@ -138,13 +138,13 @@ class class_rokka_filter
     function rokka_get_attachment_url($url)
     {
         //todo remove
-        //file_put_contents("/tmp/wordpress.log", 'rokka_get_attachment_url: ' . print_r($url,true) . PHP_EOL, FILE_APPEND);
+        file_put_contents("/tmp/wordpress.log", 'rokka_get_attachment_url: ' . print_r($url,true) . PHP_EOL, FILE_APPEND);
 
         return $url;
     }
 
     /**
-     * Return the S3 URL when the local file is missing
+     * Return the Rokka URL
      * unless we know the calling process is and we are happy
      * to copy the file back to the server to be used
      *
@@ -263,6 +263,10 @@ class class_rokka_filter
     }
 
 
+    function rokka_get_client()
+    {
+        return \Rokka\Client\Factory::getImageClient(get_option('rokka_company_name'), get_option('rokka_api_key'), get_option('rokka_api_secret'));
+    }
     /**
      * @param $post_id
      * @param $data
@@ -276,8 +280,8 @@ class class_rokka_filter
         //$remove_local_files_setting = get_setting( 'remove-local-file' );
         $remove_local_files_setting = false;
 
-        //todo do the company name and the hash in the config
-        $client = \Rokka\Client\Factory::getImageClient('liip-development', 'uE4k49yVZsJQtcKxq8ABSLnmcz3Ny6Hs', 'S3OKwwPJwkqONwPdnadi1wmyior0siKs');
+        //$client = \Rokka\Client\Factory::getImageClient(get_option('rokka_company_name'), get_option('rokka_api_key'), get_option('rokka_api_secret'));
+        $client = $this->rokka_get_client();
 
         $fileParts = explode('/', $file_paths['full']);
 
@@ -861,13 +865,15 @@ class class_rokka_filter
     {
         // require_once wp-includes/media.php
         $sizes = $this->list_thumbnail_sizes();
-        $client = \Rokka\Client\Factory::getImageClient('liip-development', 'uE4k49yVZsJQtcKxq8ABSLnmcz3Ny6Hs', 'S3OKwwPJwkqONwPdnadi1wmyior0siKs');
+        //$client = \Rokka\Client\Factory::getImageClient('liip-development', 'uE4k49yVZsJQtcKxq8ABSLnmcz3Ny6Hs', 'S3OKwwPJwkqONwPdnadi1wmyior0siKs');
+        $client = $this->rokka_get_client();
+
         $stacks = $client->listStacks();
 
         if (!empty($sizes)) {
             foreach ($sizes as $name => $size) {
                 $continue = true;
-                //todo getStacks after listStacks????
+
                 foreach ($stacks->getStacks() as $stack) {
 
                     if ($stack->name == $name) {
@@ -878,7 +884,10 @@ class class_rokka_filter
                 if ($continue && $size[0] > 0) {
                     $resize = new \Rokka\Client\Core\StackOperation('resize', [
                         'width' => $size[0],
-                        'height' => $size[1]
+                        //'height' => $size[1]
+                        'height' => 10000,
+                        //aspect ratio will be kept
+                        'mode' => 'box'
                     ]);
 
                     $return = $client->createStack($name, [$resize]);
