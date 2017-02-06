@@ -2,10 +2,14 @@
 
 require_once(ABSPATH . 'wp-includes/media.php');
 
+
 class Filter_Rokka_Upload
 {
-    function __construct()
+    private $rokka_helper;
+
+    function __construct(Class_Rokka_Helper $rokka_helper)
     {
+        $this->rokka_helper = $rokka_helper;
         $this->init_filters();
     }
 
@@ -41,6 +45,29 @@ class Filter_Rokka_Upload
         add_filter('wp_get_attachment_metadata', array($this, 'rokka_get_attachment_metadata'), 1, 3);
 
         add_filter('wp_save_image_editor_file', array($this, 'rokka_save_image_editor_file'), 1, 3);
+
+        add_action( 'wp_ajax_mass_upload_images', array($this, 'rokka_mass_upload_existing_images') ); //todo maybe in separate classs
+
+    }
+
+
+    function rokka_mass_upload_existing_images() {
+        global $wpdb; // this is how you get access to the database
+        //var_dump('akakak');
+        //long_process.php
+        for($i=1;$i<=60;$i++){
+            //do something
+            echo send_message($i);
+            sleep(1);
+        }
+
+
+        wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
+    function send_message($progress) {
+
+        return $progress;
 
     }
 
@@ -99,38 +126,6 @@ class Filter_Rokka_Upload
 
     }
 
-
-    /**
-     * @return array
-     */
-    function list_thumbnail_sizes()
-    {
-        global $_wp_additional_image_sizes;
-        $sizes = array();
-        $rSizes = array();
-        foreach (get_intermediate_image_sizes() as $s) {
-            $sizes[$s] = array(0, 0);
-            if (in_array($s, array('thumbnail', 'medium', 'large'))) {
-                $sizes[$s][0] = get_option($s . '_size_w');
-                $sizes[$s][1] = get_option($s . '_size_h');
-            } else {
-                if (isset($_wp_additional_image_sizes) && isset($_wp_additional_image_sizes[$s])) {
-                    $sizes[$s] = array(
-                        $_wp_additional_image_sizes[$s]['width'],
-                        $_wp_additional_image_sizes[$s]['height'],
-                    );
-                }
-            }
-        }
-
-        foreach ($sizes as $size => $atts) {
-            $rSizes[$size] = $atts;
-        }
-
-        return $rSizes;
-    }
-
-
     /**
      * @param $url
      * @return mixed
@@ -179,77 +174,13 @@ class Filter_Rokka_Upload
      */
     function rokka_upload_attachment_metadata($data, $post_id)
     {
-        // die(var_dump($data));
+        //todo remove
+        file_put_contents("/tmp/wordpress.log", 'rokka_upload_attachment_metadata: ' . print_r($post_id,true) . PHP_EOL, FILE_APPEND);
 
-        //  die(var_dump(get_attachment_file_paths( $post_id, true, $data )));
-        //todo do all the stuff here instead of rokka_wp_handle_upload
-
-        //the meta stuff should be possible here too
-        $file_path = get_attached_file($post_id, true);
-        $file_name = basename($file_path);
-        $type = get_post_mime_type($post_id);
-        $allowed_types = $this->rokka_get_allowed_mime_types();
-
-        // check mime type of file is in allowed S3 mime types
-        if (!in_array($type, $allowed_types)) {
-            $error_msg = sprintf(__('Mime type %s is not allowed in rokka', 'rokka-image-cdn'), $type);
-            //todo implement
-            return return_upload_error($error_msg, $return_metadata);
-        }
-
-
-        // Check file exists locally before attempting upload
-        if (!file_exists($file_path)) {
-            $error_msg = sprintf(__('File %s does not exist', 'rokka-image-cdn'), $file_path);
-
-            return return_upload_error($error_msg, $return_metadata);
-        }
-
-        $data = $this->rokka_upload($post_id, $data);
+        $upload_helper = $this->rokka_helper;
+        $upload_helper->upload_image_to_rokka($post_id, $data);
 
         return $data;
-
-        // add_post_meta( $post_id, 'rokka', $s3object );
-        /*
-         *array (size=5)
-      'width' => int 512
-      'height' => int 288
-      'file' => string '2016/12/6533_025-1.png' (length=22)
-      'sizes' =>
-        array (size=2)
-          'thumbnail' =>
-            array (size=4)
-              'file' => string '6533_025-1-150x150.png' (length=22)
-              'width' => int 150
-              'height' => int 150
-              'mime-type' => string 'image/png' (length=9)
-          'medium' =>
-            array (size=4)
-              'file' => string '6533_025-1-350x197.png' (length=22)
-              'width' => int 350
-              'height' => int 197
-              'mime-type' => string 'image/png' (length=9)
-      'image_meta' =>
-        array (size=12)
-          'aperture' => string '0' (length=1)
-          'credit' => string '' (length=0)
-          'camera' => string '' (length=0)
-          'caption' => string '' (length=0)
-          'created_timestamp' => string '0' (length=1)
-          'copyright' => string '' (length=0)
-          'focal_length' => string '0' (length=1)
-          'iso' => string '0' (length=1)
-          'shutter_speed' => string '0' (length=1)
-          'title' => string '' (length=0)
-          'orientation' => string '0' (length=1)
-          'keywords' =>
-            array (size=0)
-              empty
-         *
-         *
-         */
-
-
     }
 
     /**
@@ -263,10 +194,6 @@ class Filter_Rokka_Upload
     }
 
 
-    function rokka_get_client()
-    {
-        return \Rokka\Client\Factory::getImageClient(get_option('rokka_company_name'), get_option('rokka_api_key'), get_option('rokka_api_secret'));
-    }
     /**
      * @param $post_id
      * @param $data
@@ -274,101 +201,12 @@ class Filter_Rokka_Upload
      */
     function rokka_upload($post_id, $data)
     {
-        $file_paths = $this->get_attachment_file_paths($post_id, true, $data);
+        $rokka_upload_helper = $this->rokka_helper;
+        $data = $rokka_upload_helper->upload_image_to_rokka($post_id, $data);
 
-        //todo allow wp to remove file from local filesystem
-        //$remove_local_files_setting = get_setting( 'remove-local-file' );
-        $remove_local_files_setting = false;
-
-        //$client = \Rokka\Client\Factory::getImageClient(get_option('rokka_company_name'), get_option('rokka_api_key'), get_option('rokka_api_secret'));
-        $client = $this->rokka_get_client();
-
-        $fileParts = explode('/', $file_paths['full']);
-
-        $fileName = array_pop($fileParts);
-
-        $sourceImage = $client->uploadSourceImage(file_get_contents($file_paths['full']), $fileName);
-
-        $sourceImages = $sourceImage->getSourceImages();
-        $sourceImage = array_pop($sourceImages);
-        var_dump($sourceImages); //todo remove
-
-        $url = 'https://api.rokka.io' . $sourceImage->link . '.' . $sourceImage->format;
-
-        //todo check if stack exists for given dimension
-
-
-        $rokka_info = array(
-            'url' => $url,
-            'hash' => $sourceImage->hash,
-            'format' => $sourceImage->format,
-            'organization' => $sourceImage->organization,
-            'link' => $sourceImage->link,
-            'local_files_removed' => $file_paths,
-            'created' => $sourceImage->created,
-        );
-
-        //var_dump( $rokka_info );
-
-        //todo allenfalls stacks in array integrieren.
-        update_post_meta($post_id, 'rokka_info', $rokka_info);
-
-
-        if ($remove_local_files_setting) {
-            // Remove duplicates
-            $files_to_remove = array_unique($files_to_remove);
-            // Delete the files
-            //todo implement this if you know how to do it
-            remove_local_files($files_to_remove);
-        }
-        /* //todo source image
-         * object(Rokka\Client\Core\SourceImageCollection)[379]
-      private 'sourceImages' =>
-        array (size=1)
-          0 =>
-            object(Rokka\Client\Core\SourceImage)[381]
-              public 'organization' => string 'liip-development' (length=16)
-              public 'binaryHash' => string '9140ff87e46da48b0a13e6538c1e9e4d31a28144' (length=40)
-              public 'hash' => string 'b8bd589861c7fd6656515b60376bddc11b9caa5d' (length=40)
-              public 'name' => string '2014-03-05-18.41.28-1.jpg' (length=25)
-              public 'format' => string 'jpg' (length=3)
-              public 'size' => int 875998
-              public 'width' => int 1520
-              public 'height' => int 2688
-              public 'staticMetadata' =>
-                array (size=0)
-                  empty
-              public 'dynamicMetadata' =>
-                array (size=0)
-                  empty
-              public 'created' =>
-                object(DateTime)[385]
-                  public 'date' => string '2016-12-08 10:08:01.000000' (length=26)
-                  public 'timezone_type' => int 1
-                  public 'timezone' => string '+00:00' (length=6)
-              public 'link' => string '/sourceimages/liip-development/b8bd589861c7fd6656515b60376bddc11b9caa5d' (length=71)
-    63
-         *
-         */
         return $data;
-
     }
 
-
-    /**
-     * Remove files from the local site
-     *
-     * @param array $file_paths array of files to remove
-     */
-    function remove_local_files($file_paths)
-    {
-        foreach ($file_paths as $path) {
-
-            if (!@unlink($path)) {
-                return new WP_Error('Error removing local file ' . $path);
-            }
-        }
-    }
 
     /**
      * Helper to return meta data on upload error
@@ -388,78 +226,7 @@ class Filter_Rokka_Upload
     }
 
 
-    /**
-     * Get file paths for all attachment versions.
-     *
-     * @param int $attachment_id
-     * @param bool $exists_locally
-     * @param array|bool $meta
-     * @param bool $include_backups
-     *
-     * @return array
-     */
-    function get_attachment_file_paths($attachment_id, $exists_locally = true, $meta = false, $include_backups = true)
-    {
-        $paths = array();
-        $file_path = get_attached_file($attachment_id, true);
-        $file_name = basename($file_path);
-        $backups = get_post_meta($attachment_id, '_wp_attachment_backup_sizes', true);
 
-        if (!$meta) {
-            $meta = get_post_meta($attachment_id, '_wp_attachment_metadata', true);
-        }
-
-        if (is_wp_error($meta)) {
-            return $paths;
-        }
-
-        $original_file = $file_path; // Not all attachments will have meta
-
-        if (isset($meta['file'])) {
-            $original_file = str_replace($file_name, basename($meta['file']), $file_path);
-        }
-
-        // Original file
-        $paths['full'] = $original_file;
-
-        // Sizes
-        if (isset($meta['sizes'])) {
-            foreach ($meta['sizes'] as $size => $file) {
-                if (isset($file['file'])) {
-                    $paths[$size] = str_replace($file_name, $file['file'], $file_path);
-                }
-            }
-        }
-
-        // Thumb
-        if (isset($meta['thumb'])) {
-            $paths[] = str_replace($file_name, $meta['thumb'], $file_path);
-        }
-
-        // Backups
-        if ($include_backups && is_array($backups)) {
-            foreach ($backups as $backup) {
-                $paths[] = str_replace($file_name, $backup['file'], $file_path);
-            }
-        }
-
-        // Allow other processes to add files to be uploaded
-        $paths = apply_filters('rokka_attachment_file_paths', $paths, $attachment_id, $meta);
-
-        // Remove duplicates
-        $paths = array_unique($paths);
-
-        // Remove paths that don't exist
-        if ($exists_locally) {
-            foreach ($paths as $key => $path) {
-                if (!file_exists($path)) {
-                    unset($paths[$key]);
-                }
-            }
-        }
-
-        return $paths;
-    }
 
     /**
      * Retrieve an image to represent an attachment.
@@ -518,11 +285,11 @@ class Filter_Rokka_Upload
         */
 
         if ($rokka_data) {
-
-            $sizes = $this->list_thumbnail_sizes();
+            $sizes = $this->rokka_helper->list_thumbnail_sizes();
+            //todo this does not do what it should do below
             $sizeString = null;
-            if (is_array($size)) {
-                $imageSizes = $size;
+            if (is_array($sizes)) {
+                $imageSizes = $sizes;
                 foreach ($sizes as $size_name => $sizes_values) {
 
                     if ($sizes_values[0] == $size[0]) {
@@ -531,7 +298,7 @@ class Filter_Rokka_Upload
                     }
                 }
                 if (is_null($sizeString)) {
-                    $sizeString = 'thumbnail';
+                    $sizeString = 'large';
                 }
 
             } else {
@@ -857,46 +624,7 @@ class Filter_Rokka_Upload
     }
 
 
-    /**
-     *
-     * @return array
-     */
-    function rokka_create_stacks()
-    {
-        // require_once wp-includes/media.php
-        $sizes = $this->list_thumbnail_sizes();
-        //$client = \Rokka\Client\Factory::getImageClient('liip-development', 'uE4k49yVZsJQtcKxq8ABSLnmcz3Ny6Hs', 'S3OKwwPJwkqONwPdnadi1wmyior0siKs');
-        $client = $this->rokka_get_client();
 
-        $stacks = $client->listStacks();
-
-        if (!empty($sizes)) {
-            foreach ($sizes as $name => $size) {
-                $continue = true;
-
-                foreach ($stacks->getStacks() as $stack) {
-
-                    if ($stack->name == $name) {
-                        $continue = false;
-                        continue;
-                    }
-                }
-                if ($continue && $size[0] > 0) {
-                    $resize = new \Rokka\Client\Core\StackOperation('resize', [
-                        'width' => $size[0],
-                        //'height' => $size[1]
-                        'height' => 10000,
-                        //aspect ratio will be kept
-                        'mode' => 'box'
-                    ]);
-
-                    $return = $client->createStack($name, [$resize]);
-                }
-            }
-        }
-
-        return $sizes;
-    }
 
 
     /**

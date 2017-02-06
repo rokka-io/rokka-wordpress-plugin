@@ -145,7 +145,7 @@ class Rokka_Image_Cdn_Settings {
 			)
 		);
 
-		$settings['extra'] = array(
+		$settings['upload'] = array(
 			'title'					=> __( 'Extra', 'rokka-image-cdn' ),
 			'description'			=> __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'rokka-image-cdn' ),
 			'fields'				=> array(
@@ -210,7 +210,16 @@ class Rokka_Image_Cdn_Settings {
 				if ( $current_section && $current_section != $section ) continue;
 
 				// Add section to page
-				add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
+
+                //todo refactor this to make it more OOP
+                if ($section === 'upload'){
+                    add_settings_section( $section, $data['title'], array( $this, 'mass_upload_page' ), $this->parent->_token . '_settings' );
+
+                }
+                else {
+                    add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
+
+                }
 
 				foreach ( $data['fields'] as $field ) {
 
@@ -305,6 +314,66 @@ class Rokka_Image_Cdn_Settings {
 
 		echo $html;
 	}
+
+
+	public function mass_upload_page () {
+
+       $html =  "	<script type=\"text/javascript\" >
+
+       jQuery(document).ready(function($) {
+
+            var data = {
+                'action': 'mass_upload_images',
+			'whatever': 1234
+		};
+
+		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+		jQuery.post(ajaxurl, data, function(response) {
+            alert('Got this from the server: ' + response);
+        });
+	});
+        </script>";
+
+       $html2 =  '<script type="text/javascript" >
+              jQuery(document).ready(function($) {
+
+            var data = {
+                \'action\': \'mass_upload_images\',
+			\'whatever\': 1234
+		};
+       var myTrigger;
+var progressElem = $(\'#progressCounter\');
+$.ajax ({
+    type            : \'GET\',
+    url             : ajaxurl ,
+    data            : data,
+    beforeSend      : function (thisXHR)
+    {
+        myTrigger = setInterval (function ()
+        {
+            if (thisXHR.readyState > 2)
+            {
+                console.log(thisXHR.responseText);
+                var progress     = thisXHR.responseText;
+                progressElem.html (progress + "%");
+            }
+        }, 200);
+    },
+    complete        : function ()
+    {
+        clearInterval (myTrigger);
+    },
+    success         : function (response)
+    {
+            alert(\'Got this from the server: \' + response);
+    }
+});
+});
+ </script>';
+
+        echo $html2;
+
+    }
 
 	/**
 	 * Main rokka-image-cdn_Settings Instance

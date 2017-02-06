@@ -29,13 +29,15 @@ require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
+require_once ('includes/lib/class-rokka-mass-upload-images.php');
+require_once ('includes/lib/class-rokka-helper.php');
+
 
 //add vendor library
 require_once( 'vendor/autoload.php' );
 //require_once( 'vendor/' );
 
 use \Rokka\Client\Factory;
-
 
 /**
  * Returns the main instance of Rokka_Image_Cdn to prevent the need to use globals.
@@ -52,31 +54,29 @@ function rokka_image_cdn () {
     $date = new DateTime();
     //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': hallo'.PHP_EOL, FILE_APPEND);
     if (get_option('rokka_rokka_enabled')) {
-
-        $rokka = new Filter_Rokka_Upload();
+        $rokka_helper = new Class_Rokka_Helper();
+        new Filter_Rokka_Upload($rokka_helper);
         rokka_intercept_ajax_image_edit();
         //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . 'rokka enabled'.PHP_EOL, FILE_APPEND);
 
     }
-
-
     return $instance;
 }
 
+
+/**
+ * intecept ajax calls to wordpress in order to make changes to the image editor
+ */
 function rokka_intercept_ajax_image_edit()
 {
     $date = new DateTime();
-
-
    // file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': POST:'. var_dump($_POST, false).PHP_EOL, FILE_APPEND);
     $attachment_id = intval($_POST['postid']);
-
     //todo verify nonce
     if ($_POST['action'] == 'image-editor' && is_ajax())//&& wp_verify_nonce($_POST['_ajax_nonce'] ,"image_editor-$attachment_id"))
     {
-        $lala = new class_rokka_image_editor($_POST);
+        new class_rokka_image_editor($_POST);
         file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': WE DO IMAGE EDIT PROCESSING:'. print_r($_POST,true).PHP_EOL, FILE_APPEND);
-
     }
 }
 
