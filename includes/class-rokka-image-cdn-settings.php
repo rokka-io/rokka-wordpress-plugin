@@ -314,41 +314,54 @@ class Rokka_Image_Cdn_Settings {
 
 
                     var image_ids_to_upload = <?php echo json_encode($this->rokka_mass_upload->get_images_for_upload()); ?>;
+                    console.log(image_ids_to_upload);
+                    console.log(image_ids_to_upload.length);
+                    image_ids_to_upload = Object.keys(image_ids_to_upload).map(function(k) { return image_ids_to_upload[k] });
+                    console.log(image_ids_to_upload);
+                    console.log(image_ids_to_upload.length);
+
+
                     var progress_fraction = 100 / image_ids_to_upload.length;
-                    var progress_step = 0
+                    var progress_step = 0;
                     if (image_ids_to_upload.length > 0) {
                         $("#progressbar").progressbar({
                             value: 0
                         });
+                        $('#progress_info').append("<br />");
                         rokka_upload_image(image_ids_to_upload);
-
                         function rokka_upload_image(image_ids_to_upload) {
-                            console.log(image_ids_to_upload.lenght);
-                            var image_id = image_ids_to_upload.shift()
-                            $.ajax({
-                                type: 'POST',
-                                url: ajaxurl,
-                                data: {action: 'rokka_upload_image', id: image_id},
-                                success: function (response) {
-                                    console.log(progress_step * progress_fraction); //todo remove
-                                    progress_step += 1;
-                                    $("#progressbar").progressbar({
-                                        value: progress_step * progress_fraction
-                                    });
-                                    $('#progress_info').append("uploaded of image id " + image_id + " successful <br />")
-                                    rokka_upload_image(image_ids_to_upload)
-                                },
-                                error: function (response) {
-                                    console.log(progress_step * progress_fraction); //todo remove
-                                    progress_step += 1;
-                                    $("#progressbar").progressbar({
-                                        value: progress_step * progress_fraction
-                                    });
-                                    $('#progress_info').append("uploaded of image id " + image_id + " failed! <br />")
+                            if (image_ids_to_upload.length > 0) {
+                                var image_id = image_ids_to_upload.shift();
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajaxurl,
+                                    data: {action: 'rokka_upload_image', id: image_id},
+                                    success: function (response) {
+                                        console.log(progress_step * progress_fraction); //todo remove
+                                        progress_step += 1;
+                                        $("#progressbar").progressbar({
+                                            value: progress_step * progress_fraction
+                                        });
+                                        $('#progress_info').append("uploaded of image id " + image_id + " successful <br />");
+                                        rokka_upload_image(image_ids_to_upload);
+                                    },
+                                    error: function (response) {
+                                        console.log(progress_step * progress_fraction); //todo remove
+                                        console.log(response); //todo remove
 
-                                    rokka_upload_image(image_ids_to_upload)
-                                }
-                            });
+                                        progress_step += 1;
+                                        $("#progressbar").progressbar({
+                                            value: progress_step * progress_fraction
+                                        });
+                                        $('#progress_info').append("uploaded of image id " + image_id + " failed! <br />");
+
+                                        rokka_upload_image(image_ids_to_upload);
+                                    }
+                                });
+                            }
+                            else {
+                                $('#progress_info').append("image upload done! <br />");
+                            }
                         }
                     }
                     else {

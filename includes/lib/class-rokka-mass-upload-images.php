@@ -35,10 +35,13 @@ class Class_Rokka_Mass_Upload_Images
         if (empty(get_post_meta($image_id, 'rokka_info', true))) {
             $image_data = wp_get_attachment_metadata($image_id);
 
-            $this->rokka_helper->upload_image_to_rokka($image_id, $image_data);
-            wp_send_json_success($image_id);
-
-
+            $data = $this->rokka_helper->upload_image_to_rokka($image_id, $image_data);
+            if($data){
+                wp_send_json_success($image_id);
+            }
+            else {
+                wp_send_json_error(['error'=> 'The image with id ' . $image_id . ' couldn\'t be uploaded']);
+            }
         }
         else {
             wp_send_json_error(['error'=> 'The image with id ' . $image_id . ' has already been uploaded']);
@@ -69,9 +72,13 @@ class Class_Rokka_Mass_Upload_Images
     public function get_images_for_upload() {
 
         $image_ids = $this->get_all_images();
-        return array_filter($image_ids, function($image_id) {
+
+        $image_ids = array_filter($image_ids, function($image_id) {
             return ! $this->is_on_rokka($image_id);
         });
+        file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($image_ids,true) . PHP_EOL, FILE_APPEND);
+
+        return $image_ids;
     }
 
     public function is_on_rokka($image_id) {

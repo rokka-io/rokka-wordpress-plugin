@@ -47,27 +47,28 @@ class Class_Rokka_Helper
         $fileParts = explode('/', $file_paths['full']);
         $fileName = array_pop($fileParts);
         $sourceImage = $client->uploadSourceImage(file_get_contents($file_paths['full']), $fileName);
-        $sourceImages = $sourceImage->getSourceImages();
-        $sourceImage = array_pop($sourceImages);
+        //file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($sourceImage,true) . PHP_EOL, FILE_APPEND);
 
-        $url = self::rokka_url . $sourceImage->link . '.' . $sourceImage->format;
+        if (is_object($sourceImage)) {
+            $sourceImages = $sourceImage->getSourceImages();
+            $sourceImage = array_pop($sourceImages);
+            $url = self::rokka_url . $sourceImage->link . '.' . $sourceImage->format;
+            //todo allenfalls stacks in array integrieren.
+            $rokka_info = array(
+                'url' => $url,
+                'hash' => $sourceImage->hash,
+                'format' => $sourceImage->format,
+                'organization' => $sourceImage->organization,
+                'link' => $sourceImage->link,
+                'local_files_removed' => $file_paths,
+                'created' => $sourceImage->created,
+            );
+            update_post_meta($post_id, 'rokka_info', $rokka_info);
 
-        //todo check if stack exists for given dimension
+            return $data;
+        }
 
-        //todo allenfalls stacks in array integrieren.
-        $rokka_info = array(
-            'url' => $url,
-            'hash' => $sourceImage->hash,
-            'format' => $sourceImage->format,
-            'organization' => $sourceImage->organization,
-            'link' => $sourceImage->link,
-            'local_files_removed' => $file_paths,
-            'created' => $sourceImage->created,
-        );
-
-        update_post_meta($post_id, 'rokka_info', $rokka_info);
-
-        return $data;
+        return false;
     }
 
 
