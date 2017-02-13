@@ -353,8 +353,7 @@ class Rokka_Image_Cdn_Settings {
                     }
                     else {
                         $('#progress_info').append("Nothing to process here, all images are already uploaded to Rokka.<br />");
-
-                }
+                    }
                 })
             });
         </script>

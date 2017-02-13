@@ -72,6 +72,26 @@ class Class_Rokka_Helper
 
 
     /**
+     * Deletes an image from rokka.io
+     * @param $post_id
+     * @return bool
+     */
+    public function delete_image_from_rokka($post_id){
+        $meta_data = get_post_meta($post_id, 'rokka_info', true);
+
+        if($meta_data) {
+            $client = $this->rokka_get_client();
+            $hash = $meta_data['hash'];
+            file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($hash,true) . PHP_EOL, FILE_APPEND);
+
+            return $client->deleteSourceImage($hash);
+        }
+
+        return false;
+    }
+
+
+    /**
      * @ignore this function is not implemented properly nor used at this point
      */
     private function remove_local_files(){

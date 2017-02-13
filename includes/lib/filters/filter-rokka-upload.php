@@ -46,11 +46,16 @@ class Filter_Rokka_Upload
 
         add_filter('wp_save_image_editor_file', array($this, 'rokka_save_image_editor_file'), 1, 3);
 
+        add_action('delete_attachment', array($this, 'rokka_delete_image'), 1, 3);
+
 
     }
 
 
-
+    function rokka_delete_image($post_id, $force = false) {
+        $rokka = $this->rokka_helper;
+        $return = $rokka->delete_image_from_rokka($post_id);
+    }
 
     /**
      * Filter whether to skip saving the image file.
@@ -113,7 +118,7 @@ class Filter_Rokka_Upload
     function rokka_get_attachment_url($url)
     {
         //todo remove
-        file_put_contents("/tmp/wordpress.log", 'rokka_get_attachment_url: ' . print_r($url,true) . PHP_EOL, FILE_APPEND);
+        //file_put_contents("/tmp/wordpress.log", 'rokka_get_attachment_url: ' . print_r($url,true) . PHP_EOL, FILE_APPEND);
 
         return $url;
     }
