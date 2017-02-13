@@ -19,10 +19,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+define('ROKKA_PLUGIN_PATH', plugins_url( '', __FILE__ ));
+
 // Load plugin class files
 require_once( 'includes/class-rokka-image-cdn.php' );
 require_once( 'includes/class-rokka-image-cdn-settings.php' );
-
 // Load plugin libraries
 require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
@@ -46,19 +47,19 @@ use \Rokka\Client\Factory;
  * @return object Rokka_Image_Cdn
  */
 function rokka_image_cdn () {
-	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
 
-	if ( is_null( $instance->settings ) ) {
-		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance );
+	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
+    $rokka_helper = new Class_Rokka_Helper();
+    $mass_upload = new Class_Rokka_Mass_Upload_Images($rokka_helper);
+
+    if ( is_null( $instance->settings ) ) {
+		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $mass_upload );
 	}
     $date = new DateTime();
-    //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': hallo'.PHP_EOL, FILE_APPEND);
     if (get_option('rokka_rokka_enabled')) {
-        $rokka_helper = new Class_Rokka_Helper();
         new Filter_Rokka_Upload($rokka_helper);
         rokka_intercept_ajax_image_edit();
         //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . 'rokka enabled'.PHP_EOL, FILE_APPEND);
-
     }
     return $instance;
 }
@@ -93,5 +94,5 @@ function is_ajax() {
     return false;
 }
 
-    rokka_image_cdn();
+rokka_image_cdn();
 

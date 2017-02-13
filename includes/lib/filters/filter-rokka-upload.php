@@ -46,30 +46,10 @@ class Filter_Rokka_Upload
 
         add_filter('wp_save_image_editor_file', array($this, 'rokka_save_image_editor_file'), 1, 3);
 
-        add_action( 'wp_ajax_mass_upload_images', array($this, 'rokka_mass_upload_existing_images') ); //todo maybe in separate classs
 
     }
 
 
-    function rokka_mass_upload_existing_images() {
-        global $wpdb; // this is how you get access to the database
-        //var_dump('akakak');
-        //long_process.php
-        for($i=1;$i<=60;$i++){
-            //do something
-            echo send_message($i);
-            sleep(1);
-        }
-
-
-        wp_die(); // this is required to terminate immediately and return a proper response
-    }
-
-    function send_message($progress) {
-
-        return $progress;
-
-    }
 
 
     /**

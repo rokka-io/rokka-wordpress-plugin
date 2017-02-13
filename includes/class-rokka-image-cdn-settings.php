@@ -36,8 +36,17 @@ class Rokka_Image_Cdn_Settings {
 	 */
 	public $settings = array();
 
-	public function __construct ( $parent ) {
-		$this->parent = $parent;
+
+    /**
+     * @var Class_Rokka_Mass_Upload_Images
+     */
+    private $rokka_mass_upload;
+
+
+        public function __construct ( $parent,  $rokka_mass_upload ) {
+
+        $this->rokka_mass_upload = $rokka_mass_upload;
+        $this->parent = $parent;
 
 		$this->base = 'rokka_';
 
@@ -88,7 +97,11 @@ class Rokka_Image_Cdn_Settings {
 
     	wp_register_script( $this->parent->_token . '-settings-js', $this->parent->assets_url . 'js/settings' . $this->parent->script_suffix . '.js', array( 'farbtastic', 'jquery' ), '1.0.0' );
     	wp_enqueue_script( $this->parent->_token . '-settings-js' );
-	}
+        //add progessbar for mass upload
+        wp_enqueue_script( 'jquery-ui-progressbar' );
+        wp_enqueue_style( 'rokka-jquery-ui', ROKKA_PLUGIN_PATH. '/assets/css/jquery-ui.min.css');
+        wp_enqueue_style('rokka-jquery-ui');
+    }
 
 	/**
 	 * Add settings link to plugin list table
@@ -145,43 +158,7 @@ class Rokka_Image_Cdn_Settings {
 			)
 		);
 
-		$settings['upload'] = array(
-			'title'					=> __( 'Extra', 'rokka-image-cdn' ),
-			'description'			=> __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'rokka-image-cdn' ),
-			'fields'				=> array(
-				array(
-					'id' 			=> 'number_field',
-					'label'			=> __( 'A Number' , 'rokka-image-cdn' ),
-					'description'	=> __( 'This is a standard number field - if this field contains anything other than numbers then the form will not be submitted.', 'rokka-image-cdn' ),
-					'type'			=> 'number',
-					'default'		=> '',
-					'placeholder'	=> __( '42', 'rokka-image-cdn' )
-				),
-				array(
-					'id' 			=> 'colour_picker',
-					'label'			=> __( 'Pick a colour', 'rokka-image-cdn' ),
-					'description'	=> __( 'This uses WordPress\' built-in colour picker - the option is stored as the colour\'s hex code.', 'rokka-image-cdn' ),
-					'type'			=> 'color',
-					'default'		=> '#21759B'
-				),
-				array(
-					'id' 			=> 'an_image',
-					'label'			=> __( 'An Image' , 'rokka-image-cdn' ),
-					'description'	=> __( 'This will upload an image to your media library and store the attachment ID in the option field. Once you have uploaded an imge the thumbnail will display above these buttons.', 'rokka-image-cdn' ),
-					'type'			=> 'image',
-					'default'		=> '',
-					'placeholder'	=> ''
-				),
-				array(
-					'id' 			=> 'multi_select_box',
-					'label'			=> __( 'A Multi-Select Box', 'rokka-image-cdn' ),
-					'description'	=> __( 'A standard multi-select box - the saved data is stored as an array.', 'rokka-image-cdn' ),
-					'type'			=> 'select_multi',
-					'options'		=> array( 'linux' => 'Linux', 'mac' => 'Mac', 'windows' => 'Windows' ),
-					'default'		=> array( 'linux' )
-				)
-			)
-		);
+
 
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
 
@@ -212,7 +189,7 @@ class Rokka_Image_Cdn_Settings {
 				// Add section to page
 
                 //todo refactor this to make it more OOP
-                if ($section === 'upload'){
+                if ($section === 'standard'){
                     add_settings_section( $section, $data['title'], array( $this, 'mass_upload_page' ), $this->parent->_token . '_settings' );
 
                 }
@@ -253,7 +230,7 @@ class Rokka_Image_Cdn_Settings {
 	 */
 	public function settings_page () {
 
-		// Build page HTML
+        // Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 			$html .= '<h2>' . __( 'Rokka Settings' , 'rokka-image-cdn' ) . '</h2>' . "\n";
 
@@ -313,66 +290,75 @@ class Rokka_Image_Cdn_Settings {
 		$html .= '</div>' . "\n";
 
 		echo $html;
+        ?>
+
+        <a href="#bla" class="button button-primary" id="mass-upload-everything" ><?php echo esc_attr( __( 'Upload images to Rokka' , 'rokka-image-cdn'));  ?></a>
+        <div id="progressbar"></div>
+        <div id="progress_info"></div>
+
+        <?php
 	}
 
 
 	public function mass_upload_page () {
 
-       $html =  "	<script type=\"text/javascript\" >
 
-       jQuery(document).ready(function($) {
+       ?>
+        <script type="text/javascript" >
+            jQuery(document).ready(function($) {
 
-            var data = {
-                'action': 'mass_upload_images',
-			'whatever': 1234
-		};
 
-		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-		jQuery.post(ajaxurl, data, function(response) {
-            alert('Got this from the server: ' + response);
-        });
-	});
-        </script>";
 
-       $html2 =  '<script type="text/javascript" >
-              jQuery(document).ready(function($) {
+				$('#mass-upload-everything').click(function(e) {
+                    console.log('start mass upload'); //todo remove
 
-            var data = {
-                \'action\': \'mass_upload_images\',
-			\'whatever\': 1234
-		};
-       var myTrigger;
-var progressElem = $(\'#progressCounter\');
-$.ajax ({
-    type            : \'GET\',
-    url             : ajaxurl ,
-    data            : data,
-    beforeSend      : function (thisXHR)
-    {
-        myTrigger = setInterval (function ()
-        {
-            if (thisXHR.readyState > 2)
-            {
-                console.log(thisXHR.responseText);
-                var progress     = thisXHR.responseText;
-                progressElem.html (progress + "%");
-            }
-        }, 200);
-    },
-    complete        : function ()
-    {
-        clearInterval (myTrigger);
-    },
-    success         : function (response)
-    {
-            alert(\'Got this from the server: \' + response);
-    }
-});
-});
- </script>';
 
-        echo $html2;
+                    var image_ids_to_upload = <?php echo json_encode($this->rokka_mass_upload->get_images_for_upload()); ?>;
+                    var progress_fraction = 100 / image_ids_to_upload.length;
+                    var progress_step = 0
+                    if (image_ids_to_upload.length > 0) {
+                        $("#progressbar").progressbar({
+                            value: 0
+                        });
+                        rokka_upload_image(image_ids_to_upload);
 
+                        function rokka_upload_image(image_ids_to_upload) {
+                            console.log(image_ids_to_upload.lenght);
+                            var image_id = image_ids_to_upload.shift()
+                            $.ajax({
+                                type: 'POST',
+                                url: ajaxurl,
+                                data: {action: 'rokka_upload_image', id: image_id},
+                                success: function (response) {
+                                    console.log(progress_step * progress_fraction); //todo remove
+                                    progress_step += 1;
+                                    $("#progressbar").progressbar({
+                                        value: progress_step * progress_fraction
+                                    });
+                                    $('#progress_info').append("uploaded of image id " + image_id + " successful <br />")
+                                    rokka_upload_image(image_ids_to_upload)
+                                },
+                                error: function (response) {
+                                    console.log(progress_step * progress_fraction); //todo remove
+                                    progress_step += 1;
+                                    $("#progressbar").progressbar({
+                                        value: progress_step * progress_fraction
+                                    });
+                                    $('#progress_info').append("uploaded of image id " + image_id + " failed! <br />")
+
+                                    rokka_upload_image(image_ids_to_upload)
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        $('#progress_info').append("Nothing to process here, all images are already uploaded to Rokka.<br />");
+
+                }
+                })
+            });
+        </script>
+        <?php
     }
 
 	/**
@@ -385,9 +371,9 @@ $.ajax ({
 	 * @see rokka-image-cdn()
 	 * @return Main rokka-image-cdn_Settings instance
 	 */
-	public static function instance ( $parent ) {
+	public static function instance ( $parent, $mass_upload ) {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent );
+			self::$_instance = new self( $parent , $mass_upload);
 		}
 		return self::$_instance;
 	} // End instance()

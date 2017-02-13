@@ -24,7 +24,28 @@ class Class_Rokka_Mass_Upload_Images
     public function __construct(Class_Rokka_Helper $rokka_helper)
     {
         $this->rokka_helper = $rokka_helper;
+        add_action( 'wp_ajax_rokka_upload_image', array($this, 'rokka_upload_image') ); //todo maybe in separate classs
+
     }
+
+
+    function rokka_upload_image() {
+        $image_id = $_POST['id'];
+        //echo $image_id; die('guguseli');
+        if (empty(get_post_meta($image_id, 'rokka_info', true))) {
+            $image_data = wp_get_attachment_metadata($image_id);
+
+            $this->rokka_helper->upload_image_to_rokka($image_id, $image_data);
+            wp_send_json_success($image_id);
+
+
+        }
+        else {
+            wp_send_json_error(['error'=> 'The image with id ' . $image_id . ' has already been uploaded']);
+        }
+        wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
 
 
     /**
@@ -34,17 +55,27 @@ class Class_Rokka_Mass_Upload_Images
     {
 
         $image_posts = $this->get_all_images();
-        //die(var_dump($image_posts));
 
         foreach ($image_posts as $image) {
             if (empty(get_post_meta($image->ID, 'rokka_info', true))) {
-                $image_data = get_post_meta($image->ID, '_wp_attachment_metadata', true);
+                $image_data = wp_get_attachment_metadata($image->ID);
 
                 $this->rokka_helper->upload_image_to_rokka($image->ID, $image_data);
-                //var_dump($image);
 
             }
         }
+    }
+
+    public function get_images_for_upload() {
+
+        $image_ids = $this->get_all_images();
+        return array_filter($image_ids, function($image_id) {
+            return ! $this->is_on_rokka($image_id);
+        });
+    }
+
+    public function is_on_rokka($image_id) {
+        return ! empty(get_post_meta($image_id, 'rokka_info', true));
     }
 
 
@@ -59,6 +90,7 @@ class Class_Rokka_Mass_Upload_Images
             'post_mime_type' => 'image',
             'post_status' => 'inherit',
             'posts_per_page' => -1,
+            'fields' => 'ids',
         );
 
         $query_images = new WP_Query($query_images_args);
