@@ -55,12 +55,11 @@ function rokka_image_cdn () {
     if ( is_null( $instance->settings ) ) {
 		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $mass_upload );
 	}
-    $date = new DateTime();
     if (get_option('rokka_rokka_enabled')) {
         new Filter_Rokka_Upload($rokka_helper);
         rokka_intercept_ajax_image_edit();
-        //file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . 'rokka enabled'.PHP_EOL, FILE_APPEND);
     }
+
     return $instance;
 }
 
@@ -71,7 +70,6 @@ function rokka_image_cdn () {
 function rokka_intercept_ajax_image_edit()
 {
     $date = new DateTime();
-   // file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': POST:'. var_dump($_POST, false).PHP_EOL, FILE_APPEND);
     $attachment_id = intval($_POST['postid']);
     //todo verify nonce
     if ($_POST['action'] == 'image-editor' && is_ajax())//&& wp_verify_nonce($_POST['_ajax_nonce'] ,"image_editor-$attachment_id"))

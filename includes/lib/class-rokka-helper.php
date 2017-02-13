@@ -208,29 +208,47 @@ class Class_Rokka_Helper
     }
 
     /**
-     *
+     * creates and checks stacks on rokka if they don't already exist
      * @return array
      */
     function rokka_create_stacks()
     {
-        // require_once wp-includes/media.php
         $sizes = $this->list_thumbnail_sizes();
         $client = $this->rokka_get_client();
-
         $stacks = $client->listStacks();
 
         if (!empty($sizes)) {
             foreach ($sizes as $name => $size) {
                 $continue = true;
-
+                $delete = false;
                 foreach ($stacks->getStacks() as $stack) {
 
                     if ($stack->name == $name) {
                         $continue = false;
+
+                        //check if the max width was changed in the meantime (in wordpress config)
+                        $stack_operations = $stack->stackOperations;
+                        foreach($stack_operations as $operation) {
+                            $operation = $operation->toArray();
+
+                            if ($operation['name'] == 'resize'){
+                                $stack_width = $operation['options']['width'];
+                                if($stack_width != $size[0]){
+
+                                    $continue = true;
+                                    $delete = true;
+                                }
+                            }
+                        }
+
                         continue;
                     }
                 }
+
                 if ($continue && $size[0] > 0) {
+                    if($delete) {
+                        $client->deleteStack($name);
+                    }
                     $resize = new \Rokka\Client\Core\StackOperation('resize', [
                         'width' => $size[0],
                         //'height' => $size[1]
@@ -269,7 +287,6 @@ class Class_Rokka_Helper
                 }
             }
         }
-
         foreach ($sizes as $size => $atts) {
             $rSizes[$size] = $atts;
         }
