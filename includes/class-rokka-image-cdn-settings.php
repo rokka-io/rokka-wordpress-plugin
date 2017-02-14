@@ -124,7 +124,15 @@ class Rokka_Image_Cdn_Settings {
 			'title'					=> __( 'Rokka ', 'rokka-image-cdn' ),
 			'description'			=> __( 'Please enter your credentials below', 'rokka-image-cdn' ),
 			'fields'				=> array(
-				array(
+                    array(
+                        'id' 			=> 'domain',
+                        'label'			=> __( 'Rokka url' , 'rokka-image-cdn' ),
+                        'description'	=> __( 'The domain where rokka images are stored. Don\'t change this value unless you know what you are doing', 'rokka-image-cdn' ),
+                        'type'			=> 'url',
+                        'default'		=> 'rokka.io',
+                        'disabled'      => 'disabled',
+                    ),
+			        array(
 					'id' 			=> 'company_name',
 					'label'			=> __( 'Company name' , 'rokka-image-cdn' ),
 					'description'	=> __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
