@@ -83,7 +83,7 @@ class Class_Rokka_Helper
         if($meta_data) {
             $client = $this->rokka_get_client();
             $hash = $meta_data['hash'];
-            file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($hash,true) . PHP_EOL, FILE_APPEND);
+            //file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($hash,true) . PHP_EOL, FILE_APPEND);
 
             return $client->deleteSourceImage($hash);
         }
@@ -233,7 +233,8 @@ class Class_Rokka_Helper
 
                             if ($operation['name'] == 'resize'){
                                 $stack_width = $operation['options']['width'];
-                                if($stack_width != $size[0]){
+                                $stack_height = $operation['options']['height'];
+                                if($stack_width != $size[0] || $stack_height != $size[1]){
 
                                     $continue = true;
                                     $delete = true;
@@ -251,10 +252,11 @@ class Class_Rokka_Helper
                     }
                     $resize = new \Rokka\Client\Core\StackOperation('resize', [
                         'width' => $size[0],
-                        //'height' => $size[1]
-                        'height' => 10000,
+                        'height' => $size[1],
+                        //'height' => 10000,
                         //aspect ratio will be kept
-                        'mode' => 'box'
+                        'mode' => 'box',
+                        'upscale' => false
                     ]);
 
                     $return = $client->createStack($name, [$resize]);
