@@ -168,16 +168,6 @@ class Filter_Rokka_Upload
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    function rokka_get_allowed_mime_types()
-    {
-        //todo complete list with allowed mime types
-
-        return ['image/jpeg', 'image/tiff', 'image/png'];
-    }
-
 
     /**
      * @param $post_id
@@ -191,26 +181,6 @@ class Filter_Rokka_Upload
 
         return $data;
     }
-
-
-    /**
-     * Helper to return meta data on upload error
-     *
-     * @param string $error_msg
-     * @param array|null $return
-     *
-     * @return array|WP_Error
-     */
-    function return_upload_error($error_msg, $return = null)
-    {
-        if (is_null($return)) {
-            return new WP_Error('exception', $error_msg);
-        }
-
-        return $return;
-    }
-
-
 
 
     /**
@@ -271,13 +241,12 @@ class Filter_Rokka_Upload
 
         if ($rokka_data) {
             $sizes = $this->rokka_helper->list_thumbnail_sizes();
-            //todo this does not do what it should do below
             $sizeString = null;
             if (is_array($sizes)) {
                 $imageSizes = $sizes;
                 foreach ($sizes as $size_name => $sizes_values) {
 
-                    if ($sizes_values[0] == $size[0]) {
+                    if ($sizes_values[0] >= $size[0]) {
                         $sizeString = $size_name;
                         continue;
                     }
