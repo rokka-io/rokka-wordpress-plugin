@@ -24,7 +24,7 @@ class Class_Rokka_Mass_Upload_Images
     public function __construct(Class_Rokka_Helper $rokka_helper)
     {
         $this->rokka_helper = $rokka_helper;
-        add_action( 'wp_ajax_rokka_upload_image', array($this, 'rokka_upload_image') ); //todo maybe in separate classs
+        add_action( 'wp_ajax_rokka_upload_image', array($this, 'rokka_upload_image') );
 
     }
 

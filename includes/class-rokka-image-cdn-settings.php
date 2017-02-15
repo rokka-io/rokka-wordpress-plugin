@@ -299,7 +299,9 @@ class Rokka_Image_Cdn_Settings {
 
 		echo $html;
         ?>
-
+        <a href="#bla" class="button button-primary" id="create-rokka-stacks" ><?php echo esc_attr( __( 'Create stacks on Rokka' , 'rokka-image-cdn'));  ?></a>
+        <div id="progress_info_stacks"></div>
+        <br />
         <a href="#bla" class="button button-primary" id="mass-upload-everything" ><?php echo esc_attr( __( 'Upload images to Rokka' , 'rokka-image-cdn'));  ?></a>
         <div id="progressbar"></div>
         <div id="progress_info"></div>
@@ -375,7 +377,22 @@ class Rokka_Image_Cdn_Settings {
                     else {
                         $('#progress_info').append("Nothing to process here, all images are already uploaded to Rokka.<br />");
                     }
-                })
+                });
+
+                $('#create-rokka-stacks').click(function(e) {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajaxurl,
+                        data: {action: 'rokka_create_stacks'},
+                        success: function (response) {
+                            $('#progress_info_stacks').append("stack creation successful! <br />");
+
+                        },
+                        error: function (response) {
+                            $('#progress_info_stacks').append("stack creation failed! <br />");
+                        }
+                    });
+                });
             });
         </script>
         <?php

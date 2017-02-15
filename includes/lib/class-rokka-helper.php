@@ -22,7 +22,9 @@ class Class_Rokka_Helper
      */
     public function __construct() {
 
+        add_action( 'wp_ajax_rokka_create_stacks', array($this, 'rokka_ajax_create_stacks') );
     }
+
 
 
     /**
@@ -205,6 +207,16 @@ class Class_Rokka_Helper
         }
 
         return $paths;
+    }
+
+    private function rokka_ajax_create_stacks(){
+        $sizes = $this->rokka_create_stacks();
+
+        if($sizes){
+            return wp_send_json_success($sizes);
+        }
+
+        return wp_send_json_error(['error'=> 'could not process stacks']);
     }
 
     /**
