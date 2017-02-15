@@ -264,7 +264,6 @@ class Class_Rokka_Helper
                     $resize = new \Rokka\Client\Core\StackOperation('resize', [
                         'width' => $size[0],
                         'height' => $size[1],
-                        //'height' => 10000,
                         //aspect ratio will be kept
                         'mode' => 'box',
                         'upscale' => false
@@ -288,9 +287,9 @@ class Class_Rokka_Helper
         $rSizes = array();
         foreach (get_intermediate_image_sizes() as $s) {
             $sizes[$s] = array(0, 0);
-            if (in_array($s, array('thumbnail', 'medium', 'large'))) {
+            if (in_array($s, array('thumbnail', 'medium', 'medium_large', 'large'))) {
                 $sizes[$s][0] = get_option($s . '_size_w');
-                $sizes[$s][1] = get_option($s . '_size_h');
+                $sizes[$s][1] = get_option($s . '_size_h')?: '10000';
             } else {
                 if (isset($_wp_additional_image_sizes) && isset($_wp_additional_image_sizes[$s])) {
                     $sizes[$s] = array(
