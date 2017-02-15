@@ -72,7 +72,7 @@ function rokka_intercept_ajax_image_edit()
     $date = new DateTime();
     $attachment_id = intval($_POST['postid']);
     //todo verify nonce
-    if ($_POST['action'] == 'image-editor' && is_ajax())//&& wp_verify_nonce($_POST['_ajax_nonce'] ,"image_editor-$attachment_id"))
+    if ($_POST['action'] == 'image-editor' && rokka_is_ajax())//&& wp_verify_nonce($_POST['_ajax_nonce'] ,"image_editor-$attachment_id"))
     {
         new class_rokka_image_editor($_POST);
         file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': WE DO IMAGE EDIT PROCESSING:'. print_r($_POST,true).PHP_EOL, FILE_APPEND);
@@ -84,7 +84,7 @@ function rokka_intercept_ajax_image_edit()
  *
  * @return bool
  */
-function is_ajax() {
+function rokka_is_ajax_is_ajax() {
     if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
         return true;
     }
