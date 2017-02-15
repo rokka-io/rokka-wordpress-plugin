@@ -15,7 +15,7 @@ class Class_Rokka_Helper
      */
     const rokka_url = 'https://api.rokka.io';
 
-    const allowed_mime_types = ['image/jpeg', 'image/tiff', 'image/png'];
+    const allowed_mime_types = ['image/gif','image/jpg','image/jpeg', 'image/png'];
 
     /**
      * Class_Rokka_Helper constructor.
@@ -42,7 +42,6 @@ class Class_Rokka_Helper
      * @return array $data
      */
     public function upload_image_to_rokka($post_id, $data){
-        var_dump($data);
         $this->validate_files_before_upload($post_id);
         $file_paths = $this->get_attachment_file_paths($post_id, true, $data);
         $client = $this->rokka_get_client();
