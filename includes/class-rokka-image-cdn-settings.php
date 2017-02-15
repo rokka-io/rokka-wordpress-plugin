@@ -381,7 +381,7 @@ class Rokka_Image_Cdn_Settings {
 
                 $('#create-rokka-stacks').click(function(e) {
                     $.ajax({
-                        type: 'POST',
+                        type: 'GET',
                         url: ajaxurl,
                         data: {action: 'rokka_create_stacks'},
                         success: function (response) {

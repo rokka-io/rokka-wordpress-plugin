@@ -209,7 +209,7 @@ class Class_Rokka_Helper
         return $paths;
     }
 
-    private function rokka_ajax_create_stacks(){
+    function rokka_ajax_create_stacks(){
         $sizes = $this->rokka_create_stacks();
 
         if($sizes){
