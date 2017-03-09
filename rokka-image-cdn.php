@@ -29,9 +29,11 @@ require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
 require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
+require_once('includes/lib/filters/filter-rokka-content.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
 require_once ('includes/lib/class-rokka-mass-upload-images.php');
 require_once ('includes/lib/class-rokka-helper.php');
+
 
 
 //add vendor library
@@ -55,9 +57,11 @@ function rokka_image_cdn () {
     if ( is_null( $instance->settings ) ) {
 		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $mass_upload );
 	}
+
     if (get_option('rokka_rokka_enabled')) {
         new Filter_Rokka_Upload($rokka_helper);
-        rokka_intercept_ajax_image_edit();
+        new Filter_Rokka_Content($rokka_helper);
+        //rokka_intercept_ajax_image_edit(); //todo implement this properly
     }
 
     return $instance;
