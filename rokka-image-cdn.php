@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Rokka_Image_Cdn
+ * Plugin Name: Rokka Wordpress Plugin
  * Version: 1.0
  * Plugin URI: http://rokka.io/
  * Description: Rokka image processing and cdn plugin for WordPress.
@@ -26,8 +26,8 @@ require_once( 'includes/class-rokka-image-cdn.php' );
 require_once( 'includes/class-rokka-image-cdn-settings.php' );
 // Load plugin libraries
 require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
-require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
-require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
+//require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
+//require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once('includes/lib/filters/filter-rokka-content.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
@@ -38,7 +38,6 @@ require_once ('includes/lib/class-rokka-helper.php');
 
 //add vendor library
 require_once( 'vendor/autoload.php' );
-//require_once( 'vendor/' );
 
 use \Rokka\Client\Factory;
 
