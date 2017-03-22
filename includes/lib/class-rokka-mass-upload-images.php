@@ -30,23 +30,32 @@ class Class_Rokka_Mass_Upload_Images
 
 
     function rokka_upload_image() {
-        $image_id = $_POST['id'];
-        //echo $image_id; die('guguseli');
-        if (empty(get_post_meta($image_id, 'rokka_info', true))) {
-            $image_data = wp_get_attachment_metadata($image_id);
 
-            $data = $this->rokka_helper->upload_image_to_rokka($image_id, $image_data);
-            if($data){
-                wp_send_json_success($image_id);
+        try {
+            $image_id = $_POST['id'];
+
+            if (empty(get_post_meta($image_id, 'rokka_info', true))) {
+                $image_data = wp_get_attachment_metadata($image_id);
+
+                    $data = $this->rokka_helper->upload_image_to_rokka($image_id, $image_data);
+
+                if($data){
+                    wp_send_json_success($image_id);
+                }
+                else {
+                    wp_send_json_error($data);
+                }
             }
             else {
-                wp_send_json_error(['error'=> 'The image with id ' . $image_id . ' couldn\'t be uploaded']);
+                wp_send_json_error("This image is already on rokka. No need to upload it another time");
             }
+            wp_die(); // this is required to terminate immediately and return a proper response
+
         }
-        else {
-            wp_send_json_error(['error'=> 'The image with id ' . $image_id . ' has already been uploaded']);
+        catch (Exception $e){
+            wp_send_json_error($e->getMessage());
+            wp_die();
         }
-        wp_die(); // this is required to terminate immediately and return a proper response
     }
 
 
@@ -76,7 +85,6 @@ class Class_Rokka_Mass_Upload_Images
         $image_ids = array_filter($image_ids, function($image_id) {
             return ! $this->is_on_rokka($image_id);
         });
-        file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($image_ids,true) . PHP_EOL, FILE_APPEND);
 
         return $image_ids;
     }

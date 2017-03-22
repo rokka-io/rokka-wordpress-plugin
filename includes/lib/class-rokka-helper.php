@@ -122,14 +122,14 @@ class Class_Rokka_Helper
         if (!in_array($type, $allowed_types)) {
             $error_msg = sprintf(__('Mime type %s is not allowed in rokka', 'rokka-image-cdn'), $type);
             //todo implement
-            return return_upload_error($error_msg, $return_metadata);
+            throw new Exception($error_msg);
         }
 
         // Check file exists locally before attempting upload
         if (!file_exists($file_path)) {
             $error_msg = sprintf(__('File %s does not exist', 'rokka-image-cdn'), $file_path);
 
-            return return_upload_error($error_msg, $return_metadata);
+            throw new Exception($error_msg);
         }
 
         return true;

@@ -345,25 +345,29 @@ class Rokka_Image_Cdn_Settings {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajaxurl,
+                                    dataType: "json",
                                     data: {action: 'rokka_upload_image', id: image_id},
                                     success: function (response) {
-                                        console.log(progress_step * progress_fraction); //todo remove
+                                        console.log(response); //todo remove
+                                        if(response.success){
+                                            $('#progress_info').append("upload of image id " + image_id + " successful <br />");
+
+                                        }else {
+                                            $('#progress_info').append("upload of image id " + image_id + " failed! Message: " + response.data +"<br />");
+                                        }
                                         progress_step += 1;
                                         $("#progressbar").progressbar({
                                             value: progress_step * progress_fraction
                                         });
-                                        $('#progress_info').append("uploaded of image id " + image_id + " successful <br />");
                                         rokka_upload_image(image_ids_to_upload);
                                     },
                                     error: function (response) {
-                                        console.log(progress_step * progress_fraction); //todo remove
                                         console.log(response); //todo remove
-
                                         progress_step += 1;
                                         $("#progressbar").progressbar({
                                             value: progress_step * progress_fraction
                                         });
-                                        $('#progress_info').append("uploaded of image id " + image_id + " failed! <br />");
+                                        $('#progress_info').append("upload of image id " + image_id + " failed! The Server Returned an Error  <br />" );
 
                                         rokka_upload_image(image_ids_to_upload);
                                     }
