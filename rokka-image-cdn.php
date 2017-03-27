@@ -30,6 +30,7 @@ require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
 //require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once('includes/lib/filters/filter-rokka-content.php');
+require_once('includes/lib/filters/filter-rokka-image-editor.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
 require_once ('includes/lib/class-rokka-mass-upload-images.php');
 require_once ('includes/lib/class-rokka-helper.php');
@@ -47,7 +48,7 @@ use \Rokka\Client\Factory;
  * @since  1.0.0
  * @return object Rokka_Image_Cdn
  */
-function rokka_image_cdn () {
+function rokka_image_cdn() {
 
 	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
     $rokka_helper = new Class_Rokka_Helper();
@@ -60,6 +61,7 @@ function rokka_image_cdn () {
     if (get_option('rokka_rokka_enabled')) {
         new Filter_Rokka_Upload($rokka_helper);
         new Filter_Rokka_Content($rokka_helper);
+        new Filter_Rokka_Image_Editor( $rokka_helper );
         //rokka_intercept_ajax_image_edit(); //todo implement this properly
     }
 
