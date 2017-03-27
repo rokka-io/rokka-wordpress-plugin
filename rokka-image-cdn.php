@@ -34,6 +34,7 @@ require_once('includes/lib/filters/filter-rokka-image-editor.php');
 require_once( 'includes/lib/class_rokka_image_editor.php' );
 require_once ('includes/lib/class-rokka-mass-upload-images.php');
 require_once ('includes/lib/class-rokka-helper.php');
+require_once ('includes/lib/class-rokka-media-management.php');
 
 
 
@@ -59,6 +60,7 @@ function rokka_image_cdn() {
 	}
 
     if (get_option('rokka_rokka_enabled')) {
+		new Rokka_Media_Management();
         new Filter_Rokka_Upload($rokka_helper);
         new Filter_Rokka_Content($rokka_helper);
         new Filter_Rokka_Image_Editor( $rokka_helper );
