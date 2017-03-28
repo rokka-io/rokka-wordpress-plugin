@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Rokka_Media_Management
  */
