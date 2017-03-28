@@ -31,7 +31,6 @@ require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once('includes/lib/filters/filter-rokka-content.php');
 require_once('includes/lib/filters/filter-rokka-image-editor.php');
-require_once( 'includes/lib/class_rokka_image_editor.php' );
 require_once ('includes/lib/class-rokka-mass-upload-images.php');
 require_once ('includes/lib/class-rokka-helper.php');
 require_once ('includes/lib/class-rokka-media-management.php');
@@ -64,39 +63,9 @@ function rokka_image_cdn() {
         new Filter_Rokka_Upload($rokka_helper);
         new Filter_Rokka_Content($rokka_helper);
         new Filter_Rokka_Image_Editor( $rokka_helper );
-        //rokka_intercept_ajax_image_edit(); //todo implement this properly
     }
 
     return $instance;
-}
-
-
-/**
- * intecept ajax calls to wordpress in order to make changes to the image editor
- */
-function rokka_intercept_ajax_image_edit()
-{
-    $date = new DateTime();
-    $attachment_id = intval($_POST['postid']);
-    //todo verify nonce
-    if ($_POST['action'] == 'image-editor' && rokka_is_ajax())//&& wp_verify_nonce($_POST['_ajax_nonce'] ,"image_editor-$attachment_id"))
-    {
-        new class_rokka_image_editor($_POST);
-        file_put_contents("/tmp/wordpress.log", $date->format('Y-m-d H:i:s') . ': WE DO IMAGE EDIT PROCESSING:'. print_r($_POST,true).PHP_EOL, FILE_APPEND);
-    }
-}
-
-/**
- * Is this an AJAX process?
- *
- * @return bool
- */
-function rokka_is_ajax_is_ajax() {
-    if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-        return true;
-    }
-
-    return false;
 }
 
 rokka_image_cdn();
