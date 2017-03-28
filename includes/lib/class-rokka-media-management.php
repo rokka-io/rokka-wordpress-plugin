@@ -43,6 +43,76 @@ class Rokka_Media_Management {
 		} else {
 			$form_fields['rokka_hash'] = $hash_field_info;
 		}
+
+		// add subject area field
+		$subject_area = get_post_meta( $post->ID, 'rokka_subject_area', true );
+		$attachment_src = wp_get_attachment_image_src( $post->ID, 'full' );
+		print_r($attachment_src);
+
+		$post_id = $post->ID;
+		$nonce = wp_create_nonce("rokka-subjectarea-edit-$post_id");
+
+		$attachment_width = $attachment_src[1];
+		$attachment_height = $attachment_src[2];
+		if ( isset( $attachment_width, $attachment_height ) )
+			$big = max( $attachment_width, $attachment_height );
+		else
+			die( __('Image data does not exist. Please re-upload the image.') );
+
+		$sizer = $big > 400 ? 400 / $big : 1;
+
+		$html = '';
+		$html .= '<input type="text" id="subjectarea-selection-' . $post_id . '" value="" />';
+		$html .= '<input type="hidden" id="subjectarea-sizer-' . $post_id . '" value="'. $sizer . '" />';
+		$html .= '<input type="hidden" id="subjectarea-original-width-' . $post_id . '" value="' . ( isset( $attachment_width ) ? $attachment_width : 0 ) . '" />';
+		$html .= '<input type="hidden" id="subjectarea-original-height-' . $post_id . '" value="' . ( isset( $attachment_height ) ? $attachment_height : 0 ) . '" />';
+
+		$html .= "
+<div id='subjectarea-{$post_id}' class='subjectarea-wrap'>
+	<img id='image-subjectarea-preview-{$post_id}' src='{$attachment_src[0]}' />
+</div>
+<input type='text' name='attachments[{$post_id}][subjectarea]' id='attachments[{$post_id}][subjectarea]' />
+";
+
+		$html .= '
+<fieldset id="subjectarea-sel-' . $post_id . '" class="subjectarea-sel">
+	<legend>Selection</legend>
+	<label><span class="screen-reader-text">selection x</span>
+		<input type="text" id="subjectarea-sel-x-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	</label>
+	<label><span class="screen-reader-text">selection x</span>
+		<input type="text" id="subjectarea-sel-y-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	</label>
+	<div class="nowrap">
+	<label><span class="screen-reader-text">selection width</span>
+		<input type="text" id="subjectarea-sel-width-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	</label>
+	<span class="subjectarea-separator">&times;</span>
+	<label><span class="screen-reader-text">selection height</span>
+	<input type="text" id="subjectarea-sel-height-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	</label>
+	</div>
+</fieldset>';
+
+		$html .= "
+<script>
+jQuery( document ).ready( function () {
+	rokkaSubjectAreaEdit.imgLoaded('{$post_id}');
+});
+</script>
+";
+
+		$subject_area_field_info = array(
+			'label' => __( 'Rokka Subject Area', 'rokka' ),
+			'input' => 'html',
+			'html' => $html
+		);
+		if( array_key_exists( 'rokka_subject_area', $form_fields ) ) {
+			array_merge( $form_fields['rokka_subject_area'], $subject_area_field_info );
+		} else {
+			$form_fields['rokka_subject_area'] = $subject_area_field_info;
+		}
+
 		return $form_fields;
 	}
 
