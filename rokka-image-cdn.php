@@ -26,8 +26,6 @@ require_once( 'includes/class-rokka-image-cdn.php' );
 require_once( 'includes/class-rokka-image-cdn-settings.php' );
 // Load plugin libraries
 require_once( 'includes/lib/class-rokka-image-cdn-admin-api.php' );
-//require_once( 'includes/lib/class-rokka-image-cdn-post-type.php' );
-//require_once( 'includes/lib/class-rokka-image-cdn-taxonomy.php' );
 require_once('includes/lib/filters/filter-rokka-upload.php');
 require_once('includes/lib/filters/filter-rokka-content.php');
 require_once('includes/lib/filters/filter-rokka-image-editor.php');
