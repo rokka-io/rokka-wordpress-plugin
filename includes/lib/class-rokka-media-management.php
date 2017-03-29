@@ -45,12 +45,20 @@ class Rokka_Media_Management {
 		}
 
 		// add subject area field
-		$subject_area = get_post_meta( $post->ID, 'rokka_subject_area', true );
+		$rokka_subject_area = get_post_meta( $post->ID, 'rokka_subject_area', true );
+		$rokka_subject_area_x = '';
+		$rokka_subject_area_y = '';
+		$rokka_subject_area_width = '';
+		$rokka_subject_area_height = '';
+		if( is_array( $rokka_subject_area ) ) {
+			$rokka_subject_area_x = $rokka_subject_area['x'];
+			$rokka_subject_area_y = $rokka_subject_area['y'];
+			$rokka_subject_area_width = $rokka_subject_area['width'];
+			$rokka_subject_area_height = $rokka_subject_area['height'];
+		}
 		$attachment_src = wp_get_attachment_image_src( $post->ID, 'full' );
-		print_r($attachment_src);
 
 		$post_id = $post->ID;
-		$nonce = wp_create_nonce("rokka-subjectarea-edit-$post_id");
 
 		$attachment_width = $attachment_src[1];
 		$attachment_height = $attachment_src[2];
@@ -62,7 +70,6 @@ class Rokka_Media_Management {
 		$sizer = $big > 400 ? 400 / $big : 1;
 
 		$html = '';
-		$html .= '<input type="text" id="subjectarea-selection-' . $post_id . '" value="" />';
 		$html .= '<input type="hidden" id="subjectarea-sizer-' . $post_id . '" value="'. $sizer . '" />';
 		$html .= '<input type="hidden" id="subjectarea-original-width-' . $post_id . '" value="' . ( isset( $attachment_width ) ? $attachment_width : 0 ) . '" />';
 		$html .= '<input type="hidden" id="subjectarea-original-height-' . $post_id . '" value="' . ( isset( $attachment_height ) ? $attachment_height : 0 ) . '" />';
@@ -71,25 +78,25 @@ class Rokka_Media_Management {
 <div id='subjectarea-{$post_id}' class='subjectarea-wrap'>
 	<img id='image-subjectarea-preview-{$post_id}' src='{$attachment_src[0]}' />
 </div>
-<input type='text' name='attachments[{$post_id}][subjectarea]' id='attachments[{$post_id}][subjectarea]' />
 ";
 
 		$html .= '
 <fieldset id="subjectarea-sel-' . $post_id . '" class="subjectarea-sel">
 	<legend>Selection</legend>
-	<label><span class="screen-reader-text">selection x</span>
-		<input type="text" id="subjectarea-sel-x-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	<label><span>X</span>
+		<input type="text" id="subjectarea-sel-x-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][x]" value="' . $rokka_subject_area_x . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
 	</label>
-	<label><span class="screen-reader-text">selection x</span>
-		<input type="text" id="subjectarea-sel-y-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	<br />
+	<label><span>Y</span>
+		<input type="text" id="subjectarea-sel-y-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][y]" value="' . $rokka_subject_area_y . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
 	</label>
 	<div class="nowrap">
 	<label><span class="screen-reader-text">selection width</span>
-		<input type="text" id="subjectarea-sel-width-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+		<input type="text" id="subjectarea-sel-width-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][width]" value="' . $rokka_subject_area_width . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
 	</label>
 	<span class="subjectarea-separator">&times;</span>
 	<label><span class="screen-reader-text">selection height</span>
-	<input type="text" id="subjectarea-sel-height-' . $post_id . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+	<input type="text" id="subjectarea-sel-height-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][height]" value="' . $rokka_subject_area_height . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
 	</label>
 	</div>
 </fieldset>';
@@ -97,7 +104,7 @@ class Rokka_Media_Management {
 		$html .= "
 <script>
 jQuery( document ).ready( function () {
-	rokkaSubjectAreaEdit.imgLoaded('{$post_id}');
+	rokkaSubjectAreaEdit.init('{$post_id}');
 });
 </script>
 ";
@@ -133,6 +140,10 @@ jQuery( document ).ready( function () {
 			} else {
 				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash']);
 			}
+		}
+		if( isset( $attachment['rokka_subject_area'] ) ){
+			print_r($attachment['rokka_subject_area']);
+			update_post_meta( $post['ID'], 'rokka_subject_area', $attachment['rokka_subject_area']);
 		}
 		return $post;
 	}

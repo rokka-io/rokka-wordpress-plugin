@@ -66,33 +66,31 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			return false;
 		}
 
-		if ( width && height && x && y && ( sel = ias.getSelection() ) ) {
-			x1 = Math.round( x * sizer );
-			y1 = Math.round( y * sizer );
-			x2 = x1 + Math.round( width * sizer );
-			y2 = y1 + Math.round( height * sizer );
+		x1 = Math.round( x * sizer );
+		y1 = Math.round( y * sizer );
+		x2 = x1 + Math.round( width * sizer );
+		y2 = y1 + Math.round( height * sizer );
 
-			if ( x2 > imgw ) {
-				x1 = 0;
-				x2 = imgw;
-				elWidth.val( Math.round( x2 / sizer ) );
-				elX.val( 0 );
-			}
-
-			if ( y2 > imgh ) {
-				y1 = 0;
-				y2 = imgh;
-				elHeight.val( Math.round( y2 / sizer ) );
-				elY.val( 0 );
-			}
-
-			ias.setSelection( x1, y1, x2, y2 );
-			ias.update();
-			this.setSubjectAreaSelection(postid, ias.getSelection());
+		if ( x2 > imgw ) {
+			x1 = 0;
+			x2 = imgw;
+			elWidth.val( Math.round( x2 / sizer ) );
+			elX.val( 0 );
 		}
+
+		if ( y2 > imgh ) {
+			y1 = 0;
+			y2 = imgh;
+			elHeight.val( Math.round( y2 / sizer ) );
+			elY.val( 0 );
+		}
+
+		ias.setSelection( x1, y1, x2, y2 );
+		ias.setOptions({ show: true });
+		ias.update();
 	},
 
-	imgLoaded : function(postid) {
+	init : function(postid) {
 		var t = this,
 			x = t.intval( $('#subjectarea-original-width-' + postid).val() ),
 			y = t.intval( $('#subjectarea-original-height-' + postid).val() );
@@ -106,7 +104,8 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 		var img = $('#image-subjectarea-preview-' + postid), parent = $('#subjectarea-' + postid);
 
 		this.initSubjectArea(postid, img, parent);
-		this.setSubjectAreaSelection(postid, 0);
+		// set initial selection (from database)
+		this.setNumSelection(postid, $('#subjectarea-sel-x-' + postid));
 		// Editor is ready, move focus to the first focusable element.
 		$( '.subjectarea-wrap .imgedit-help-toggle' ).eq( 0 ).focus();
 	},
@@ -150,10 +149,6 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 				});
 			},
 
-			onSelectEnd: function(img, c) {
-				rokkaSubjectAreaEdit.setSubjectAreaSelection(postid, c);
-			},
-
 			onSelectChange: function(img, c) {
 				var sizer = rokkaSubjectAreaEdit.hold.sizer;
 
@@ -163,24 +158,6 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 				selY.val( rokkaSubjectAreaEdit.round(c.y1 / sizer) );
 			}
 		});
-	},
-
-	setSubjectAreaSelection : function(postid, c) {
-		var sel;
-
-		c = c || 0;
-
-		if ( !c || ( c.width < 3 && c.height < 3 ) ) {
-			$('#subjectarea-sel-width-' + postid).val('');
-			$('#subjectarea-sel-height-' + postid).val('');
-			$('#subjectarea-sel-x-' + postid).val(0);
-			$('#subjectarea-sel-y-' + postid).val(0);
-			$('#subjectarea-selection-' + postid).val('');
-			return false;
-		}
-
-		sel = { 'x': c.x1, 'y': c.y1, 'w': c.width, 'h': c.height };
-		$('#subjectarea-selection-' + postid).val( JSON.stringify(sel) );
 	},
 
 	validateNumeric: function( el ) {
