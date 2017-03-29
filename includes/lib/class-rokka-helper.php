@@ -97,6 +97,7 @@ class Class_Rokka_Helper
      * @ignore this function is not implemented properly nor used at this point
      */
     private function remove_local_files(){
+        $files_to_remove = null;
         //todo allow wp to remove file from local filesystem
         //$remove_local_files_setting = get_setting( 'remove-local-file' );
         $remove_local_files_setting = false;
@@ -106,7 +107,6 @@ class Class_Rokka_Helper
             $files_to_remove = array_unique($files_to_remove);
             // Delete the files
             //todo implement this if you know how to do it
-            remove_local_files($files_to_remove);
         }
     }
 
@@ -224,10 +224,18 @@ class Class_Rokka_Helper
      */
     function rokka_create_stacks()
     {
+        $noop_stack_name = 'original';
         $sizes = $this->list_thumbnail_sizes();
         $client = $this->rokka_get_client();
         $stacks = $client->listStacks();
-
+        //create a noop stack if it not exists already
+        try{
+            $client->getStack($noop_stack_name);
+        }
+        catch (Exception $e) {
+            $resize_noop = new \Rokka\Client\Core\StackOperation('noop');
+            $client->createStack($noop_stack_name, [$resize_noop]);
+        }
         if (!empty($sizes)) {
             foreach ($sizes as $name => $size) {
                 $continue = true;
