@@ -64,7 +64,8 @@ class Class_Rokka_Helper
                 'local_files_removed' => $file_paths,
                 'created' => $sourceImage->created,
             );
-            update_post_meta($post_id, 'rokka_info', $rokka_info);
+            update_post_meta( $post_id, 'rokka_info', $rokka_info );
+			update_post_meta( $post_id, 'rokka_hash', $sourceImage->hash );
 
             return $data;
         }

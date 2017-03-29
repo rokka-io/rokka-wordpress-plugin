@@ -16,9 +16,9 @@ class Filter_Rokka_Upload
     protected function init_filters()
     {
         //add_filter('get_attached_file', 'rokka_get_attached_file');
-        add_filter('attachment_fields_to_save', array($this, 'rokka_attachment_fields_to_save'));
-//add_filter('wp_handle_upload', 'rokka_wp_handle_upload', 10, 2); //todo uncomment
-        add_filter('wp_update_attachment_metadata', array($this, 'rokka_upload_attachment_metadata'), 1, 2);
+		add_action('add_attachment', array( $this, 'handle_rokka_upload' ), 10, 1);
+
+        //add_filter('wp_update_attachment_metadata', array($this, 'rokka_upload_attachment_metadata'), 1, 2);
 
 
 // Rewriting URLs, doesn't depend on plugin being setup
@@ -46,15 +46,14 @@ class Filter_Rokka_Upload
 
         add_filter('wp_save_image_editor_file', array($this, 'rokka_save_image_editor_file'), 1, 3);
 
-        add_action('delete_attachment', array($this, 'rokka_delete_image'), 1, 3);
-
+        add_action('delete_attachment', array($this, 'rokka_delete_image'), 10, 1);
 
     }
 
 
-    function rokka_delete_image($post_id, $force = false) {
+    function rokka_delete_image($post_id) {
         $rokka = $this->rokka_helper;
-        $return = $rokka->delete_image_from_rokka($post_id);
+        $rokka->delete_image_from_rokka($post_id);
     }
 
     /**
@@ -203,8 +202,8 @@ class Filter_Rokka_Upload
      */
     function rokka_get_attachment_image_src($image, $attachment_id, $size = 'thumbnail', $icon = false)
     {
-
         $rokka_data = get_post_meta($attachment_id, 'rokka_info', true);
+		$rokka_hash = get_post_meta($attachment_id, 'rokka_hash', true);
         $image_data = get_post_meta($attachment_id, '_wp_attachment_metadata', true);
         //todo use sizes for stackname, also figure out how to deal with rotation and stuff.
         $sizes = $image_data['sizes'];
@@ -260,7 +259,7 @@ class Filter_Rokka_Upload
                 $sizeString = $size;
             }
 
-            $url = 'https://' . $rokka_data['organization'] . '.rokka.io/' . $sizeString . '/' . $rokka_data['hash'] . '.' . $rokka_data['format'];
+            $url = 'https://' . $rokka_data['organization'] . '.rokka.io/' . $sizeString . '/' . $rokka_hash . '.' . $rokka_data['format'];
             //file_put_contents( "/tmp/wordpress.log", __METHOD__ . print_r( $url, true ) . PHP_EOL, FILE_APPEND );
 
             //todo get thu
@@ -559,79 +558,12 @@ class Filter_Rokka_Upload
             }
         }
     }
-
-
     /**
-     * @param $post
-     * @param $attachment
-     * @return mixed
+     * @param integer $attachment_id
      */
-    function rokka_attachment_fields_to_save($post, $attachment)
-    {
-        //file_put_contents( "/tmp/wordpress.log", 'rokka_attachment_fields_to_save' . PHP_EOL, FILE_APPEND );
-
-        //file_put_contents( "/tmp/wordpress.log", 'post' . $post . PHP_EOL, FILE_APPEND );
-        //file_put_contents( "/tmp/wordpress.log", 'post' . $attachment . PHP_EOL, FILE_APPEND );
-
-        /// die(dump($id));
-        return $post;
-    }
-
-
-
-
-
-    /**
-     * @param $fileArray
-     * @return mixed
-     */
-    function rokka_wp_handle_upload($fileArray)
-    {
-
-
-        $defaultNoopStackName = 'rokka_source'; //todo put to config if nescessary
-
-        //die(var_dump($fileArray));
-
-        /* fileArray structure
-        array (size=3)
-          'file' => string '/Users/philou/Documents/development/woocommerce-demo/wp/wp-content/uploads/2016/12/gehirn-4.png' (length=95)
-          'url' => string 'http://localhost:8080/wp-content/uploads/2016/12/gehirn-4.png' (length=61)
-          'type' => string 'image/png' (length=9)
-        */
-
-        //file_put_contents( "/tmp/wordpress.log", 'rokka_wp_handle_upload' . PHP_EOL, FILE_APPEND );
-
-
-        //todo update meta files using the function below from wp-includes/post.php not sure how to include though
-        //  update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' );
-
-
-        //wp_die($client);
-        //$resize = new \Rokka\Client\Core\StackOperation('resize', ['width' => 200, 'height' => 200]);
-
-        //$stackOperationCollection = new \Rokka\Client\Core\StackOperationCollection([$resize]);
-
-        //$stack = $client->createStack('thumbnail', $stackOperationCollection);
-
-        //var_dump($stack);
-        //file_put_contents("/tmp/wordpress.log", 'array' . var_dump($fileArray) . PHP_EOL, FILE_APPEND);
-
-        /// die(dump($id));
-
-        /* //todo this stack stuff needs to happen somewhere else
-        $resize = new \Rokka\Client\Core\OperationCollection();
-
-        //$stackOperationCollection = new \Rokka\Client\Core\StackOperationCollection([$resize]);
-        $stackOperationCollection = new \Rokka\Client\Core\StackOperation();
-
-        $stack = $client->createStack('mystack', $stackOperationCollection);
-
-        var_dump($stack);
-
-        file_put_contents("/tmp/wordpress.log", print_r($fileArray,null) . PHP_EOL, FILE_APPEND);
-        */
-
-        return $fileArray;
+    function handle_rokka_upload( $attachment_id ) {
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+		$upload_helper = $this->rokka_helper;
+		$upload_helper->upload_image_to_rokka($attachment_id, $attachment_meta);
     }
 }
