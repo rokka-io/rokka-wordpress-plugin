@@ -10,7 +10,7 @@ class Filter_Rokka_Content
 	/**
 	 * @var
 	 */
-	private $rokka_client;
+	private $rokka_helper;
 
 	/**
 	 * @var string
@@ -21,9 +21,9 @@ class Filter_Rokka_Content
 	/**
 	 * filter_rokka_content constructor.
 	 */
-	function __construct($rokka_client)
+	function __construct($rokka_helper)
 	{
-		$this->rokka_client = $rokka_client;
+		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}
 
@@ -156,10 +156,10 @@ class Filter_Rokka_Content
 						$cropped_image_files = wp_list_pluck($meta['sizes'], 'file');
 
 						if (!$size = array_search($file, $cropped_image_files)) {
-							$size = 'original';
+							$size = $this->rokka_helper->get_rokka_full_size_stack_name();
 						}
 					} else {
-						$size = 'original';
+						$size = $this->rokka_helper->get_rokka_full_size_stack_name();
 					}
 
 					if ($original_file === $file || in_array($file, $cropped_image_files)) {

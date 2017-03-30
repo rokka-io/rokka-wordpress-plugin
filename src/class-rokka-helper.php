@@ -7,12 +7,12 @@
  * Time: 14:37
  */
 class Class_Rokka_Helper {
-	/**
-	 *
-	 */
+
 	const rokka_url = 'https://api.rokka.io';
 
 	const allowed_mime_types = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
+
+	const full_size_stack_name = 'full';
 
 	/**
 	 * Class_Rokka_Helper constructor.
@@ -85,6 +85,12 @@ class Class_Rokka_Helper {
 		return false;
 	}
 
+	/**
+	 * @param $post_id
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
 	private function validate_files_before_upload( $post_id ) {
 		//the meta stuff should be possible here too
 		$file_path     = get_attached_file( $post_id, true );
@@ -178,6 +184,9 @@ class Class_Rokka_Helper {
 		return $paths;
 	}
 
+	/**
+	 *
+	 */
 	function rokka_ajax_create_stacks() {
 		$sizes = $this->rokka_create_stacks();
 
@@ -195,16 +204,15 @@ class Class_Rokka_Helper {
 	 * @return array
 	 */
 	function rokka_create_stacks() {
-		$noop_stack_name = 'original';
 		$sizes           = $this->list_thumbnail_sizes();
 		$client          = $this->rokka_get_client();
 		$stacks          = $client->listStacks();
 		//create a noop stack if it not exists already
 		try {
-			$client->getStack( $noop_stack_name );
+			$client->getStack( $this->get_rokka_full_size_stack_name() );
 		} catch ( Exception $e ) {
 			$resize_noop = new \Rokka\Client\Core\StackOperation( 'noop' );
-			$client->createStack( $noop_stack_name, [ $resize_noop ] );
+			$client->createStack( $this->get_rokka_full_size_stack_name(), [ $resize_noop ] );
 		}
 		if ( ! empty( $sizes ) ) {
 			foreach ( $sizes as $name => $size ) {
@@ -283,26 +291,56 @@ class Class_Rokka_Helper {
 		return $rSizes;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function get_rokka_full_size_stack_name () {
+		return self::full_size_stack_name;
+	}
+
+	/**
+	 * @param $hash
+	 * @param $format
+	 * @param string $stack
+	 *
+	 * @return string
+	 */
 	public function get_rokka_url( $hash, $format, $stack = 'full' ) {
 		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_rokka_scheme() {
 		return 'https';
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_rokka_domain() {
 		return get_option( 'rokka_domain' );
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_rokka_company_name() {
 		return get_option( 'rokka_company_name' );
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_rokka_api_key() {
 		return get_option( 'rokka_api_key' );
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_rokka_api_secret() {
 		return get_option( 'rokka_api_secret' );
 	}
