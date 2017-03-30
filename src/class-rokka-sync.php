@@ -3,9 +3,9 @@
 require_once( ABSPATH . 'wp-includes/media.php' );
 
 /**
- * Class Filter_Rokka_Upload
+ * Class Rokka_Sync
  */
-class Filter_Rokka_Upload {
+class Rokka_Sync {
 
 	/**
 	 * @var Class_Rokka_Helper
@@ -13,7 +13,7 @@ class Filter_Rokka_Upload {
 	private $rokka_helper;
 
 	/**
-	 * Filter_Rokka_Upload constructor.
+	 * Rokka_Sync constructor.
 	 *
 	 * @param Class_Rokka_Helper $rokka_helper
 	 */
@@ -23,7 +23,7 @@ class Filter_Rokka_Upload {
 	}
 
 	/**
-	 * Initializes Filter_Rokka_Upload class.
+	 * Initializes Rokka_Sync class.
 	 */
 	protected function init() {
 		add_action( 'add_attachment', array( $this, 'rokka_upload' ), 10, 1 );
