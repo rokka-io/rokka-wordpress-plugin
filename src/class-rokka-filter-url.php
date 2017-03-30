@@ -30,6 +30,7 @@ class Rokka_Filter_Url {
 		add_filter( 'wp_get_attachment_thumb_url', array( $this, 'rewrite_attachment_thumb_url' ), 10, 2 );
 		add_filter( 'wp_prepare_attachment_for_js', array( $this, 'rewrite_attachment_url_for_js' ), 10, 3 );
 		add_filter( 'image_downsize', array( $this, 'downsize_image' ), 10, 3 );
+		add_filter( 'image_get_intermediate_size', array( $this, 'rewrite_intermediate_size_url' ), 10, 3 );
 	}
 
 	/**
@@ -172,7 +173,7 @@ class Rokka_Filter_Url {
 
 		// try for a new style intermediate size
 		if ( $intermediate = image_get_intermediate_size($id, $size) ) {
-			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+			$img_url = $intermediate['url'];
 			$width = $intermediate['width'];
 			$height = $intermediate['height'];
 			$is_intermediate = true;
@@ -199,6 +200,27 @@ class Rokka_Filter_Url {
 			return array( $img_url, $width, $height, $is_intermediate );
 		}
 		return false;
+	}
+
+	/**
+	 * @param array        $data    Array of file relative path, width, and height on success. May also include
+	 *                              file absolute path and URL.
+	 * @param int          $post_id The post_id of the image attachment
+	 * @param string|array $size    Registered image size or flat array of initially-requested height and width
+	 *                              dimensions (in that order).
+	 *
+	 * @return array
+	 */
+	public function rewrite_intermediate_size_url( $data, $post_id, $size ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+			return $data;
+		}
+
+		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
+		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+
+		return $data;
 	}
 
 }
