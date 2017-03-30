@@ -51,12 +51,10 @@ class Class_Rokka_Helper {
 			$url          = self::rokka_url . $sourceImage->link . '.' . $sourceImage->format;
 			//todo allenfalls stacks in array integrieren.
 			$rokka_info = array(
-				'url'                 => $url,
 				'hash'                => $sourceImage->hash,
 				'format'              => $sourceImage->format,
 				'organization'        => $sourceImage->organization,
 				'link'                => $sourceImage->link,
-				'local_files_removed' => $file_paths,
 				'created'             => $sourceImage->created,
 			);
 			update_post_meta( $post_id, 'rokka_info', $rokka_info );
@@ -283,6 +281,26 @@ class Class_Rokka_Helper {
 		}
 
 		return $rSizes;
+	}
+
+	public function get_rokka_url( $stack, $hash, $format ) {
+		return 'https://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+	}
+
+	public function get_rokka_domain() {
+		return get_option( 'rokka_domain' );
+	}
+
+	public function get_rokka_company_name() {
+		return get_option( 'rokka_company_name' );
+	}
+
+	public function get_rokka_api_key() {
+		return get_option( 'rokka_api_key' );
+	}
+
+	public function get_rokka_api_secret() {
+		return get_option( 'rokka_api_secret' );
 	}
 
 }
