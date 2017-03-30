@@ -1,0 +1,32 @@
+{
+  "name": "rokka-wordpress-plugin",
+  "version": "1.0.0",
+  "description": "Rokka.io plugin for WordPress",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rokka-io/rokka-wordpress-plugin.git"
+  },
+  "keywords": [
+    "rokka.io",
+    "wordpress",
+    "plugin"
+  ],
+  "author": "Liip AG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rokka-io/rokka-wordpress-plugin/issues"
+  },
+  "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.5.0",
+    "gulp-uglify": "^2.1.2"
+  }
+}
