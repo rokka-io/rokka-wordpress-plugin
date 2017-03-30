@@ -129,7 +129,7 @@ class Rokka_Filter_Url {
 			$rokka_data = get_post_meta( $attachment->ID, 'rokka_info', true );
 			$rokka_hash = get_post_meta( $attachment->ID, 'rokka_hash', true );
 			if ( $rokka_hash ) {
-				// The response object which is sent to JS holds all urls for the available sizes in the following format:
+				// The $response array which is sent to JS holds all urls for the available sizes in the following format:
 				// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
 				// Regenerate the Rokka urls and replace them.
 				foreach( $response['sizes'] as $size => $size_details ) {
