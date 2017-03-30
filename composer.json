@@ -1,0 +1,15 @@
+{
+    "name": "rokka/rokka-client-php",
+    "description": "Rokka.io plugin for WordPress",
+    "type": "wordpress-plugin",
+    "require": {
+        "rokka/client": "^0.5.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Liip AG",
+            "email": "info@liip.ch"
+        }
+    ]
+}
