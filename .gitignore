@@ -1,1 +1,6 @@
 vendor/
+node_modules/
+assets/css/admin.css
+assets/css/admin.css.map
+assets/js/admin.min.js
+assets/js/settings.min.js
