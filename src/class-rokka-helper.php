@@ -284,7 +284,11 @@ class Class_Rokka_Helper {
 	}
 
 	public function get_rokka_url( $stack, $hash, $format ) {
-		return 'https://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+	}
+
+	public function get_rokka_scheme() {
+		return 'https';
 	}
 
 	public function get_rokka_domain() {
