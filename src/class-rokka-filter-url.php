@@ -27,7 +27,9 @@ class Rokka_Filter_Url {
 		add_filter( 'wp_get_attachment_image_src', array( $this, 'rewrite_attachment_image_src' ), 10, 4 );
 		add_filter( 'set_url_scheme', array( $this, 'keep_url_scheme' ), 10, 3 );
 		add_filter( 'wp_get_attachment_url', array( $this, 'rewrite_attachment_url' ), 10, 2 );
+		add_filter( 'wp_get_attachment_thumb_url', array( $this, 'rewrite_attachment_thumb_url' ), 10, 2 );
 		add_filter( 'wp_prepare_attachment_for_js', array( $this, 'rewrite_attachment_url_for_js' ), 10, 3 );
+		add_filter( 'image_downsize', array( $this, 'downsize_image' ), 10, 3 );
 	}
 
 	/**
@@ -49,32 +51,15 @@ class Rokka_Filter_Url {
 	 * @return false|array Returns an array (url, width, height, is_intermediate), or false, if no image is available.
 	 */
 	public function rewrite_attachment_image_src( $image, $attachment_id, $size = 'thumbnail', $icon = false ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
+			return $image;
+		}
+
 		$rokka_data = get_post_meta( $attachment_id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
 
-		if ( $rokka_hash ) {
-			$stack = null;
-
-			// if size is requests as width / height array -> guess rokka size
-			if ( is_array( $size ) ) {
-				$rokka_sizes = $this->rokka_helper->list_thumbnail_sizes();
-				foreach ( $rokka_sizes as $size_name => $size_values ) {
-					if ( $size[0] <= $size_values[0] ) {
-						$stack = $size_name;
-						break;
-					}
-				}
-				if ( is_null( $stack ) ) {
-					$stack = 'large';
-				}
-			} else {
-				$stack = $size;
-			}
-
-			$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $stack );
-
-			$image[0] = $url;
-		}
+		$image[0] = $url;
 
 		return $image;
 	}
@@ -105,13 +90,34 @@ class Rokka_Filter_Url {
 	 * @return string
 	 */
 	public function rewrite_attachment_url( $url, $post_id ) {
-		if ( wp_attachment_is_image( $post_id ) ) {
-			$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
-			$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-			if ( $rokka_hash ) {
-				$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'] );
-			}
+		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+			return $url;
 		}
+
+		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
+		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'] );
+
+		return $url;
+	}
+
+	/**
+	 * Rewrite thumb url to Rokka.
+	 *
+	 * @param string $url     URL for the given attachment.
+	 * @param int    $post_id Attachment ID.
+	 *
+	 * @return string
+	 */
+	public function rewrite_attachment_thumb_url( $url, $post_id ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+			return $url;
+		}
+
+		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
+		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail' );
+
 		return $url;
 	}
 
@@ -125,20 +131,74 @@ class Rokka_Filter_Url {
 	 * @return array
 	 */
 	public function rewrite_attachment_url_for_js( $response, $attachment, $meta ) {
-		if ( wp_attachment_is_image( $attachment ) ) {
-			$rokka_data = get_post_meta( $attachment->ID, 'rokka_info', true );
-			$rokka_hash = get_post_meta( $attachment->ID, 'rokka_hash', true );
-			if ( $rokka_hash ) {
-				// The $response array which is sent to JS holds all urls for the available sizes in the following format:
-				// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
-				// Regenerate the Rokka urls and replace them.
-				foreach( $response['sizes'] as $size => $size_details ) {
-					$response['sizes'][$size]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
-				}
-			}
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment->ID ) ) {
+			return $response;
+		}
+
+		$rokka_data = get_post_meta( $attachment->ID, 'rokka_info', true );
+		$rokka_hash = get_post_meta( $attachment->ID, 'rokka_hash', true );
+		// The $response array which is sent to JS holds all urls for the available sizes in the following format:
+		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
+		// Regenerate the Rokka urls and replace them.
+		foreach( $response['sizes'] as $size => $size_details ) {
+			$response['sizes'][$size]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Own implementation to downsize images with Rokka urls.
+	 *
+	 * @param bool         $downsize Whether to short-circuit the image downsize. Default false.
+	 * @param int          $id       Attachment ID for image.
+	 * @param array|string $size     Size of image. Image size or array of width and height values (in that order).
+	 *                               Default 'medium'.
+	 *
+	 * @return array|bool
+	 */
+	public function downsize_image( $downsize, $id, $size ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $id ) ) {
+			return $downsize;
+		}
+
+		$img_url = false;
+		$meta = wp_get_attachment_metadata($id);
+		$width = $height = 0;
+		$is_intermediate = false;
+
+		$rokka_data = get_post_meta( $id, 'rokka_info', true );
+		$rokka_hash = get_post_meta( $id, 'rokka_hash', true );
+
+		// try for a new style intermediate size
+		if ( $intermediate = image_get_intermediate_size($id, $size) ) {
+			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+			$width = $intermediate['width'];
+			$height = $intermediate['height'];
+			$is_intermediate = true;
+		}
+		elseif ( $size == 'thumbnail' ) {
+			// fall back to the old thumbnail
+			if ( ($thumb_file = wp_get_attachment_thumb_file($id)) && $info = getimagesize($thumb_file) ) {
+				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail' );
+				$width = $info[0];
+				$height = $info[1];
+				$is_intermediate = true;
+			}
+		}
+		if ( !$width && !$height && isset( $meta['width'], $meta['height'] ) ) {
+			// any other type: use the real image
+			$width = $meta['width'];
+			$height = $meta['height'];
+		}
+
+		if ( $img_url) {
+			// we have the actual image size, but might need to further constrain it if content_width is narrower
+			list( $width, $height ) = image_constrain_size_for_editor( $width, $height, $size );
+
+			return array( $img_url, $width, $height, $is_intermediate );
+		}
+		return false;
 	}
 
 }

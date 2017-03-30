@@ -302,11 +302,28 @@ class Class_Rokka_Helper {
 	/**
 	 * @param $hash
 	 * @param $format
-	 * @param string $stack
+	 * @param string $size
 	 *
 	 * @return string
 	 */
-	public function get_rokka_url( $hash, $format, $stack = 'full' ) {
+	public function get_rokka_url( $hash, $format, $size = 'thumbnail' ) {
+		if ( is_array( $size ) ) {
+			$stack = null;
+
+			// if size is requests as width / height array -> find matching or nearest Rokka size
+			$rokka_sizes = $this->list_thumbnail_sizes();
+			foreach ( $rokka_sizes as $size_name => $size_values ) {
+				if ( $size[0] <= $size_values[0] ) {
+					$stack = $size_name;
+					break;
+				}
+			}
+			if ( is_null( $stack ) ) {
+				$stack = 'thumbnail';
+			}
+		} else {
+			$stack = $size;
+		}
 		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
 	}
 
@@ -343,6 +360,14 @@ class Class_Rokka_Helper {
 	 */
 	public function get_rokka_api_secret() {
 		return get_option( 'rokka_api_secret' );
+	}
+
+	public function is_on_rokka( $attachment_id ) {
+		if ( wp_attachment_is_image( $attachment_id ) ) {
+			$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
+			return (bool) $rokka_hash;
+		}
+		return false;
 	}
 
 }
