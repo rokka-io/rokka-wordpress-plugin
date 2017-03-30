@@ -57,10 +57,10 @@ class Rokka_Filter_Url {
 			// if size is requests as width / height array -> guess rokka size
 			if ( is_array( $size ) ) {
 				$rokka_sizes = $this->rokka_helper->list_thumbnail_sizes();
-				foreach ( $rokka_sizes as $size_name => $sizes_values ) {
-					if ( $sizes_values[0] >= $size[0] ) {
+				foreach ( $rokka_sizes as $size_name => $size_values ) {
+					if ( $size[0] <= $size_values[0] ) {
 						$stack = $size_name;
-						continue;
+						break;
 					}
 				}
 				if ( is_null( $stack ) ) {
