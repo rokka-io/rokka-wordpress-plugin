@@ -15,7 +15,7 @@ class Rokka_Filter_Url {
 	 *
 	 * @param Class_Rokka_Helper $rokka_helper
 	 */
-	function __construct( Class_Rokka_Helper $rokka_helper ) {
+	public function __construct( Class_Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}
@@ -26,7 +26,8 @@ class Rokka_Filter_Url {
 	public function init() {
 		add_filter( 'wp_get_attachment_image_src', array( $this, 'rewrite_attachment_image_src' ), 10, 4 );
 		add_filter( 'set_url_scheme', array( $this, 'keep_url_scheme' ), 10, 3 );
-		//add_filter( 'wp_get_attachment_url', array( $this, 'rewrite_attachment_url' ), 10, 2 );
+		add_filter( 'wp_get_attachment_url', array( $this, 'rewrite_attachment_url' ), 10, 2 );
+		add_filter( 'wp_prepare_attachment_for_js', array( $this, 'rewrite_attachment_url_for_js' ), 10, 3 );
 	}
 
 	/**
@@ -47,7 +48,7 @@ class Rokka_Filter_Url {
 	 *
 	 * @return false|array Returns an array (url, width, height, is_intermediate), or false, if no image is available.
 	 */
-	function rewrite_attachment_image_src( $image, $attachment_id, $size = 'thumbnail', $icon = false ) {
+	public function rewrite_attachment_image_src( $image, $attachment_id, $size = 'thumbnail', $icon = false ) {
 		$rokka_data = get_post_meta( $attachment_id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
@@ -70,7 +71,7 @@ class Rokka_Filter_Url {
 				$stack = $size;
 			}
 
-			$url = $this->rokka_helper->get_rokka_url( $stack, $rokka_hash, $rokka_data['format'] );
+			$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $stack );
 
 			$image[0] = $url;
 		}
@@ -88,7 +89,7 @@ class Rokka_Filter_Url {
 	 *
 	 * @return string
 	 */
-	function keep_url_scheme( $url, $scheme, $orig_scheme ) {
+	public function keep_url_scheme( $url, $scheme, $orig_scheme ) {
 		if( false !== strpos( $url, $this->rokka_helper->get_rokka_domain() ) ) {
 			$url = str_replace( $scheme . '://', $this->rokka_helper->get_rokka_scheme() . '://', $url );
 		}
@@ -103,8 +104,41 @@ class Rokka_Filter_Url {
 	 *
 	 * @return string
 	 */
-	function rewrite_attachment_url( $url, $post_id ) {
+	public function rewrite_attachment_url( $url, $post_id ) {
+		if ( wp_attachment_is_image( $post_id ) ) {
+			$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
+			$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+			if ( $rokka_hash ) {
+				$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'] );
+			}
+		}
 		return $url;
+	}
+
+	/**
+	 * Rewrites urls of differnent attachment sizes before they are sent to JavaScript.
+	 *
+	 * @param array      $response   Array of prepared attachment data.
+	 * @param int|object $attachment Attachment ID or object.
+	 * @param array      $meta       Array of attachment meta data.
+	 *
+	 * @return array
+	 */
+	public function rewrite_attachment_url_for_js( $response, $attachment, $meta ) {
+		if ( wp_attachment_is_image( $attachment ) ) {
+			$rokka_data = get_post_meta( $attachment->ID, 'rokka_info', true );
+			$rokka_hash = get_post_meta( $attachment->ID, 'rokka_hash', true );
+			if ( $rokka_hash ) {
+				// The response object which is sent to JS holds all urls for the available sizes in the following format:
+				// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
+				// Regenerate the Rokka urls and replace them.
+				foreach( $response['sizes'] as $size => $size_details ) {
+					$response['sizes'][$size]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+				}
+			}
+		}
+
+		return $response;
 	}
 
 }

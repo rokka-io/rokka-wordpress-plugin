@@ -283,7 +283,7 @@ class Class_Rokka_Helper {
 		return $rSizes;
 	}
 
-	public function get_rokka_url( $stack, $hash, $format ) {
+	public function get_rokka_url( $hash, $format, $stack = 'full' ) {
 		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
 	}
 
