@@ -25,6 +25,8 @@ class Rokka_Filter_Url {
 	 */
 	public function init() {
 		add_filter( 'wp_get_attachment_image_src', array( $this, 'rewrite_attachment_image_src' ), 10, 4 );
+		add_filter( 'set_url_scheme', array( $this, 'keep_url_scheme' ), 10, 3 );
+		//add_filter( 'wp_get_attachment_url', array( $this, 'rewrite_attachment_url' ), 10, 2 );
 	}
 
 	/**
@@ -74,6 +76,35 @@ class Rokka_Filter_Url {
 		}
 
 		return $image;
+	}
+
+	/**
+	 * Keep url scheme in Rokka urls.
+	 *
+	 * @param string      $url         The complete URL including scheme and path.
+	 * @param string      $scheme      Scheme applied to the URL. One of 'http', 'https', or 'relative'.
+	 * @param string|null $orig_scheme Scheme requested for the URL. One of 'http', 'https', 'login',
+	 *                                 'login_post', 'admin', 'relative', 'rest', 'rpc', or null.
+	 *
+	 * @return string
+	 */
+	function keep_url_scheme( $url, $scheme, $orig_scheme ) {
+		if( false !== strpos( $url, $this->rokka_helper->get_rokka_domain() ) ) {
+			$url = str_replace( $scheme . '://', $this->rokka_helper->get_rokka_scheme() . '://', $url );
+		}
+		return $url;
+	}
+
+	/**
+	 * Rewrite url to Rokka.
+	 *
+	 * @param string $url     URL for the given attachment.
+	 * @param int    $post_id Attachment ID.
+	 *
+	 * @return string
+	 */
+	function rewrite_attachment_url( $url, $post_id ) {
+		return $url;
 	}
 
 }
