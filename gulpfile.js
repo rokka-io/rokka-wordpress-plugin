@@ -1,12 +1,13 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
-    autoprefixer = require('gulp-autoprefixer');
+    autoprefixer = require('gulp-autoprefixer'),
+    rename = require('gulp-rename'),
+    uglify = require('gulp-uglify');
 
-gulp.task('default', function () {
-});
+gulp.task('default', function () {});
 
-gulp.task('admin-styles', function () {
+gulp.task('styles', function () {
     return gulp.src('./assets/scss/admin.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({
@@ -17,4 +18,14 @@ gulp.task('admin-styles', function () {
         .pipe(gulp.dest('./assets/css'));
 });
 
-gulp.task('styles', ['admin-styles']);
+gulp.task('scripts', function () {
+    return gulp.src([
+        './assets/js/admin.js',
+        './assets/js/settings.js'
+    ])
+        .pipe(uglify())
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(gulp.dest('./assets/js/'));
+});
+
+gulp.task('deploy', ['styles', 'scripts']);
