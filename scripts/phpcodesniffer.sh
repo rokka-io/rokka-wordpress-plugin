@@ -1,11 +1,12 @@
 #!/bin/sh
 
-DIR=`dirname $0`
+HERE=`dirname $0`
+ROOT="$HERE/.."
 
 files_to_check=$1
 if [ -z "$1" ]; then
-    files_to_check="${DIR}/src"
+    files_to_check="${ROOT}"
 fi
 
-$DIR/../bin/phpcs -p --report-width=100 "$files_to_check"
+$ROOT/bin/phpcs -p --report-width=100 "$files_to_check"
 exit $?
