@@ -11,9 +11,19 @@
 class Rokka_Media_Management {
 
 	/**
-	 * Rokka_Media_Management constructor.
+	 * Rokka helper.
+	 *
+	 * @var Rokka_Helper
 	 */
-	public function __construct() {
+	private $rokka_helper;
+
+	/**
+	 * Rokka_Media_Management constructor.
+	 *
+	 * @param Rokka_Helper $rokka_helper Rokka helper.
+	 */
+	public function __construct( Rokka_Helper $rokka_helper ) {
+		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}
 
@@ -23,19 +33,20 @@ class Rokka_Media_Management {
 	public function init() {
 		add_filter( 'manage_media_columns', array( $this, 'add_custom_media_columns' ), 10, 2 );
 		add_action( 'manage_media_custom_column', array( $this, 'print_custom_media_columns_data' ), 10, 2 );
-		add_filter( 'attachment_fields_to_edit', array( $this, 'add_custom_attachment_edit_fields' ), 10, 2 );
+		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_hash_edit_field' ), 10, 2 );
+		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_subject_area_edit_field' ), 10, 2 );
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_custom_attachment_fields' ), 10, 2 );
 	}
 
 	/**
-	 * Adds custom attachment fields to edit screen
+	 * Adds hash as custom attachment field
 	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
 	 *
 	 * @param array   $form_fields An array of attachment form fields.
 	 * @param WP_Post $post        The WP_Post attachment object.
 	 * @return array
 	 */
-	public function add_custom_attachment_edit_fields( $form_fields, $post ) {
+	public function add_attachment_hash_edit_field( $form_fields, $post ) {
 		// add hash field
 		$hash = get_post_meta( $post->ID, 'rokka_hash', true );
 		$hash_field_info = array(
@@ -49,7 +60,18 @@ class Rokka_Media_Management {
 			$form_fields['rokka_hash'] = $hash_field_info;
 		}
 
-		// add subject area field
+		return $form_fields;
+	}
+
+	/**
+	 * Adds subject area as custom attachment field
+	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
+	 *
+	 * @param array   $form_fields An array of attachment form fields.
+	 * @param WP_Post $post        The WP_Post attachment object.
+	 * @return array
+	 */
+	public function add_attachment_subject_area_edit_field( $form_fields, $post ) {
 		$rokka_subject_area = get_post_meta( $post->ID, 'rokka_subject_area', true );
 		$rokka_subject_area_x = '';
 		$rokka_subject_area_y = '';
@@ -138,6 +160,8 @@ jQuery( document ).ready( function () {
 	 * @return array
 	 */
 	function save_custom_attachment_fields( $post, $attachment ) {
+		$hash = '';
+
 		// save hash field
 		if ( isset( $attachment['rokka_hash'] ) ) {
 			if ( '' === trim( $attachment['rokka_hash'] ) ) {
@@ -145,11 +169,38 @@ jQuery( document ).ready( function () {
 				$post['errors']['rokka_hash']['errors'][] = __( 'Rokka Hash is required!', 'rokka' );
 			} else {
 				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash'] );
+				$hash = $attachment['rokka_hash'];
 			}
 		}
+
 		if ( isset( $attachment['rokka_subject_area'] ) ) {
 			update_post_meta( $post['ID'], 'rokka_subject_area', $attachment['rokka_subject_area'] );
+
+			if ( empty( $hash ) ) {
+				$hash = get_post_meta( $post['ID'], 'rokka_hash', true );
+			}
+
+			if ( $hash ) {
+				$width = intval( $attachment['rokka_subject_area']['width'] );
+				$height = intval( $attachment['rokka_subject_area']['height'] );
+				$x = intval( $attachment['rokka_subject_area']['x'] );
+				$y = intval( $attachment['rokka_subject_area']['y'] );
+				if ( $width >= 3 && $height >= 3 ) {
+					// TODO when the rokka hash changes the selection on the image in the editor doesn't work on first load (probably has something to do with img onload event)
+					$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
+				} else {
+					// TODO this doesn't work if image doesn't have a subject area yet
+					// TODO new hash is somehow not available after this call
+					$new_hash = $this->rokka_helper->remove_subject_area( $hash );
+				}
+				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
+			}
 		}
+
+		if ( ! $hash ) {
+			return $post;
+		}
+
 		return $post;
 	}
 
