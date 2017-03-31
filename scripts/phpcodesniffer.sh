@@ -8,5 +8,5 @@ if [ -z "$1" ]; then
     files_to_check="${ROOT}"
 fi
 
-$ROOT/bin/phpcs -p --report-width=100 "$files_to_check"
+$ROOT/bin/phpcs -p --extensions=php --report-width=100 "$files_to_check"
 exit $?
