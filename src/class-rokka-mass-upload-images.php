@@ -1,21 +1,29 @@
 <?php
+/**
+ * Image mass uploader
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 /**
- * Class Class_Rokka_Mass_Upload_Images
+ * Class Rokka_Mass_Upload_Images
  */
 class Rokka_Mass_Upload_Images {
 
 
 	/**
+	 * Rokka helper.
+	 *
 	 * @var Rokka_Helper
 	 */
 	private $rokka_helper;
 
 
 	/**
-	 * class_rokka_mass_upload_images constructor.
+	 * Rokka_Mass_Upload_Images constructor.
 	 *
-	 * @param $rokka_helper
+	 * @param Rokka_Helper $rokka_helper Rokka helper.
 	 */
 	public function __construct( Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
@@ -23,9 +31,10 @@ class Rokka_Mass_Upload_Images {
 
 	}
 
-
+	/**
+	 * Upload image to Rokka
+	 */
 	function rokka_upload_image() {
-
 		try {
 			$image_id = $_POST['id'];
 
@@ -50,45 +59,27 @@ class Rokka_Mass_Upload_Images {
 		}
 	}
 
-
 	/**
-	 * Main function to check if there are images that need to be uploaded to rokka
+	 * Findes all images which are not yet uploaded to Rokka.
+	 *
+	 * @return array Array with ids of images.
 	 */
-	public function process_all_images() {
-
-		$image_posts = $this->get_all_images();
-
-		foreach ( $image_posts as $image ) {
-			if ( empty( get_post_meta( $image->ID, 'rokka_info', true ) ) ) {
-				$image_data = wp_get_attachment_metadata( $image->ID );
-
-				$this->rokka_helper->upload_image_to_rokka( $image->ID, $image_data );
-
-			}
-		}
-	}
-
 	public function get_images_for_upload() {
-
 		$image_ids = $this->get_all_images();
 
 		$image_ids = array_filter( $image_ids, function ( $image_id ) {
-			return ! $this->is_on_rokka( $image_id );
+			return ! $this->rokka_helper->is_on_rokka( $image_id );
 		} );
 
 		return $image_ids;
 	}
 
-	public function is_on_rokka( $image_id ) {
-		return ! empty( get_post_meta( $image_id, 'rokka_info', true ) );
-	}
-
-
 	/**
-	 * @return array
+	 * Get all images from database.
+	 *
+	 * @return array Array with ids of images.
 	 */
 	private function get_all_images() {
-		global $wp_query;
 		$query_images_args = array(
 			'post_type'      => 'attachment',
 			'post_mime_type' => 'image',

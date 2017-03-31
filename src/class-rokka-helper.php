@@ -1,18 +1,36 @@
 <?php
+/**
+ * Rokka helper class.
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 /**
- * Created by PhpStorm.
- * User: philou
- * Date: 06/02/17
- * Time: 14:37
+ * Class Rokka_Helper
  */
 class Rokka_Helper {
 
-	const rokka_url = 'https://api.rokka.io';
+	/**
+	 * Rokka baseurl.
+	 *
+	 * @var string
+	 */
+	const ROKKA_URL = 'https://api.rokka.io';
 
-	const allowed_mime_types = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
+	/**
+	 * List of allowed mime types.
+	 *
+	 * @var array
+	 */
+	const ALLOWED_MIME_TYPES = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
 
-	const full_size_stack_name = 'full';
+	/**
+	 * Stack name of original image.
+	 *
+	 * @var string
+	 */
+	const FULL_SIZE_STACK_NAME = 'full';
 
 	/**
 	 * Rokka_Helper constructor.
@@ -23,6 +41,8 @@ class Rokka_Helper {
 
 
 	/**
+	 * Returns Rokka image client.
+	 *
 	 * @return \Rokka\Client\Image
 	 */
 	public function rokka_get_client() {
@@ -31,8 +51,10 @@ class Rokka_Helper {
 
 
 	/**
-	 * @param $post_id
-	 * @param $data
+	 * Uploads file to Rokka.
+	 *
+	 * @param int   $post_id Attachment id.
+	 * @param array $data Attachment metadata.
 	 *
 	 * @return array|bool $data
 	 */
@@ -40,25 +62,22 @@ class Rokka_Helper {
 		$this->validate_files_before_upload( $post_id );
 		$file_paths  = $this->get_attachment_file_paths( $post_id, true, $data );
 		$client      = $this->rokka_get_client();
-		$fileParts   = explode( '/', $file_paths['full'] );
-		$fileName    = array_pop( $fileParts );
-		$sourceImage = $client->uploadSourceImage( file_get_contents( $file_paths['full'] ), $fileName );
-		//file_put_contents("/tmp/wordpress.log", __METHOD__ . print_r($sourceImage,true) . PHP_EOL, FILE_APPEND);
+		$file_parts   = explode( '/', $file_paths['full'] );
+		$file_name    = array_pop( $file_parts );
+		$source_image = $client->uploadSourceImage( file_get_contents( $file_paths['full'] ), $file_name );
 
-		if ( is_object( $sourceImage ) ) {
-			$sourceImages = $sourceImage->getSourceImages();
-			$sourceImage  = array_pop( $sourceImages );
-			$url          = self::rokka_url . $sourceImage->link . '.' . $sourceImage->format;
-			//todo allenfalls stacks in array integrieren.
+		if ( is_object( $source_image ) ) {
+			$source_images = $source_image->getSourceImages();
+			$source_image  = array_pop( $source_images );
 			$rokka_info = array(
-				'hash'                => $sourceImage->hash,
-				'format'              => $sourceImage->format,
-				'organization'        => $sourceImage->organization,
-				'link'                => $sourceImage->link,
-				'created'             => $sourceImage->created,
+				'hash'                => $source_image->hash,
+				'format'              => $source_image->format,
+				'organization'        => $source_image->organization,
+				'link'                => $source_image->link,
+				'created'             => $source_image->created,
 			);
 			update_post_meta( $post_id, 'rokka_info', $rokka_info );
-			update_post_meta( $post_id, 'rokka_hash', $sourceImage->hash );
+			update_post_meta( $post_id, 'rokka_hash', $source_image->hash );
 
 			return $data;
 		}
@@ -70,7 +89,7 @@ class Rokka_Helper {
 	/**
 	 * Deletes an image from rokka.io
 	 *
-	 * @param $post_id
+	 * @param int $post_id Attachment id.
 	 *
 	 * @return bool
 	 */
@@ -86,26 +105,31 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * @param $post_id
+	 * Validates file before it gets uploaded to Rokka.
+	 *
+	 * @param int $post_id Attachment id.
 	 *
 	 * @return bool
-	 * @throws Exception
+	 *
+	 * @throws Exception Exception on failure.
 	 */
 	private function validate_files_before_upload( $post_id ) {
 		//the meta stuff should be possible here too
 		$file_path     = get_attached_file( $post_id, true );
 		$type          = get_post_mime_type( $post_id );
-		$allowed_types = self::allowed_mime_types;
+		$allowed_types = self::ALLOWED_MIME_TYPES;
 
 		// check mime type of file is in allowed rokka mime types
-		if ( ! in_array( $type, $allowed_types ) ) {
-			$error_msg = sprintf( __( 'Mime type %s is not allowed in rokka', 'rokka-image-cdn' ), $type );
+		if ( ! in_array( $type, $allowed_types, true ) ) {
+			/* translators: %s contains mime type */
+			$error_msg = sprintf( esc_html_x( 'Mime type %s is not allowed in rokka', '%s contains mime type', 'rokka-image-cdn' ), $type );
 			throw new Exception( $error_msg );
 		}
 
 		// Check file exists locally before attempting upload
 		if ( ! file_exists( $file_path ) ) {
-			$error_msg = sprintf( __( 'File %s does not exist', 'rokka-image-cdn' ), $file_path );
+			/* translators: %s contains file path */
+			$error_msg = sprintf( esc_html_x( 'File %s does not exist', '%s contains file path','rokka-image-cdn' ), $file_path );
 			throw new Exception( $error_msg );
 		}
 
@@ -115,10 +139,10 @@ class Rokka_Helper {
 	/**
 	 * Get file paths for all attachment versions.
 	 *
-	 * @param int $attachment_id
-	 * @param bool $exists_locally
-	 * @param array|bool $meta
-	 * @param bool $include_backups
+	 * @param int        $attachment_id Attachment id.
+	 * @param bool       $exists_locally If file exists locally.
+	 * @param array|bool $meta Attachment meta data of false.
+	 * @param bool       $include_backups If backup sizes should be included.
 	 *
 	 * @return array
 	 */
@@ -185,7 +209,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 *
+	 * Creates stacks on Rokka.
 	 */
 	function rokka_ajax_create_stacks() {
 		$sizes = $this->rokka_create_stacks();
@@ -195,12 +219,15 @@ class Rokka_Helper {
 			wp_die();
 		}
 
-		wp_send_json_error( [ 'error' => 'could not process stacks' ] );
+		wp_send_json_error( array(
+			'error' => 'could not process stacks',
+		) );
 		wp_die();
 	}
 
 	/**
-	 * creates and checks stacks on rokka if they don't already exist
+	 * Creates and checks stacks on rokka if they don't already exist.
+	 *
 	 * @return array
 	 */
 	function rokka_create_stacks() {
@@ -264,12 +291,14 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Lists all thumbnail sizes.
+	 *
 	 * @return array
 	 */
 	public function list_thumbnail_sizes() {
 		global $_wp_additional_image_sizes;
 		$sizes  = array();
-		$rSizes = array();
+		$r_sizes = array();
 		foreach ( get_intermediate_image_sizes() as $s ) {
 			$sizes[ $s ] = array( 0, 0 );
 			if ( in_array( $s, array( 'thumbnail', 'medium', 'medium_large', 'large' ) ) ) {
@@ -285,10 +314,10 @@ class Rokka_Helper {
 			}
 		}
 		foreach ( $sizes as $size => $atts ) {
-			$rSizes[ $size ] = $atts;
+			$r_sizes[ $size ] = $atts;
 		}
 
-		return $rSizes;
+		return $r_sizes;
 	}
 
 
@@ -296,7 +325,7 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_rokka_full_size_stack_name () {
-		return self::full_size_stack_name;
+		return self::FULL_SIZE_STACK_NAME;
 	}
 
 	/**

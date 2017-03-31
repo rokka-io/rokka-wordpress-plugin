@@ -6,8 +6,6 @@
  * @subpackage rokka-wordpress-plugin
  */
 
-require_once( ABSPATH . 'wp-includes/media.php' );
-
 /**
  * Class Rokka_Sync
  */

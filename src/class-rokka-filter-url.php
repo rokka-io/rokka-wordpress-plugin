@@ -1,4 +1,10 @@
 <?php
+/**
+ * Rokka url filter
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 /**
  * Class Rokka_Filter_Url
@@ -6,6 +12,8 @@
 class Rokka_Filter_Url {
 
 	/**
+	 * Rokka helper.
+	 *
 	 * @var Rokka_Helper
 	 */
 	private $rokka_helper;
@@ -13,7 +21,7 @@ class Rokka_Filter_Url {
 	/**
 	 * Rokka_Filter_Url constructor.
 	 *
-	 * @param Rokka_Helper $rokka_helper
+	 * @param Rokka_Helper $rokka_helper Rokka helper.
 	 */
 	public function __construct( Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
@@ -76,7 +84,7 @@ class Rokka_Filter_Url {
 	 * @return string
 	 */
 	public function keep_url_scheme( $url, $scheme, $orig_scheme ) {
-		if( false !== strpos( $url, $this->rokka_helper->get_rokka_domain() ) ) {
+		if ( false !== strpos( $url, $this->rokka_helper->get_rokka_domain() ) ) {
 			$url = str_replace( $scheme . '://', $this->rokka_helper->get_rokka_scheme() . '://', $url );
 		}
 		return $url;
@@ -141,8 +149,8 @@ class Rokka_Filter_Url {
 		// The $response array which is sent to JS holds all urls for the available sizes in the following format:
 		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
 		// Regenerate the Rokka urls and replace them.
-		foreach( $response['sizes'] as $size => $size_details ) {
-			$response['sizes'][$size]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+		foreach ( $response['sizes'] as $size => $size_details ) {
+			$response['sizes'][ $size ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
 		}
 
 		return $response;
@@ -164,36 +172,39 @@ class Rokka_Filter_Url {
 		}
 
 		$img_url = false;
-		$meta = wp_get_attachment_metadata($id);
-		$width = $height = 0;
+		$meta = wp_get_attachment_metadata( $id );
+		$height = 0;
+		$width = 0;
 		$is_intermediate = false;
 
 		$rokka_data = get_post_meta( $id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $id, 'rokka_hash', true );
 
 		// try for a new style intermediate size
-		if ( $intermediate = image_get_intermediate_size($id, $size) ) {
+		// @codingStandardsIgnoreStart
+		if ( $intermediate = image_get_intermediate_size( $id, $size ) ) {
 			$img_url = $intermediate['url'];
 			$width = $intermediate['width'];
 			$height = $intermediate['height'];
 			$is_intermediate = true;
 		}
-		elseif ( $size == 'thumbnail' ) {
+		elseif ( 'thumbnail' === $size  ) {
 			// fall back to the old thumbnail
-			if ( ($thumb_file = wp_get_attachment_thumb_file($id)) && $info = getimagesize($thumb_file) ) {
+			if ( ( $thumb_file = wp_get_attachment_thumb_file( $id ) ) && $info = getimagesize( $thumb_file ) ) {
 				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail' );
 				$width = $info[0];
 				$height = $info[1];
 				$is_intermediate = true;
 			}
 		}
-		if ( !$width && !$height && isset( $meta['width'], $meta['height'] ) ) {
+		// @codingStandardsIgnoreEnd
+		if ( ! $width && ! $height && isset( $meta['width'], $meta['height'] ) ) {
 			// any other type: use the real image
 			$width = $meta['width'];
 			$height = $meta['height'];
 		}
 
-		if ( $img_url) {
+		if ( $img_url ) {
 			// we have the actual image size, but might need to further constrain it if content_width is narrower
 			list( $width, $height ) = image_constrain_size_for_editor( $width, $height, $size );
 
@@ -203,9 +214,11 @@ class Rokka_Filter_Url {
 	}
 
 	/**
+	 * Rewrites urls of intermediate size output.
+	 *
 	 * @param array        $data    Array of file relative path, width, and height on success. May also include
 	 *                              file absolute path and URL.
-	 * @param int          $post_id The post_id of the image attachment
+	 * @param int          $post_id The post_id of the image attachment.
 	 * @param string|array $size    Registered image size or flat array of initially-requested height and width
 	 *                              dimensions (in that order).
 	 *

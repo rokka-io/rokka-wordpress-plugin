@@ -1,4 +1,10 @@
 <?php
+/**
+ * Media Management
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 /**
  * Class Rokka_Media_Management
@@ -65,7 +71,7 @@ class Rokka_Media_Management {
 		if ( isset( $attachment_width, $attachment_height ) ) {
 			$big = max( $attachment_width, $attachment_height );
 		} else {
-			die( __( 'Image data does not exist. Please re-upload the image.' ) );
+			die( esc_html__( 'Image data does not exist. Please re-upload the image.' ) );
 		}
 
 		$sizer = $big > 400 ? 400 / $big : 1;

@@ -1,53 +1,64 @@
 <?php
+/**
+ * Rokka settings page
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class Rokka_Image_Cdn_Settings
+ */
 class Rokka_Image_Cdn_Settings {
 
 	/**
 	 * The single instance of Rokka_Image_Cdn_Settings.
-	 * @var    object
-	 * @access  private
-	 * @since    1.0.0
+	 *
+	 * @var Rokka_Image_Cdn_Settings
 	 */
 	private static $_instance = null;
 
 	/**
 	 * The main plugin object.
-	 * @var    object
-	 * @access  public
-	 * @since    1.0.0
+	 *
+	 * @var Rokka_Image_Cdn
 	 */
 	public $parent = null;
 
 	/**
 	 * Prefix for plugin settings.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $base = '';
 
 	/**
 	 * Available settings for plugin.
-	 * @var     array
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var array
 	 */
 	public $settings = array();
 
-
 	/**
-	 * @var Class_Rokka_Mass_Upload_Images
+	 * Instance of Rokka_Mass_Upload_Images.
+	 *
+	 * @var Rokka_Mass_Upload_Images
 	 */
 	private $rokka_mass_upload;
 
-
+	/**
+	 * Rokka_Image_Cdn_Settings constructor.
+	 *
+	 * @param Rokka_Image_Cdn          $parent The main plugin object.
+	 * @param Rokka_Mass_Upload_Images $rokka_mass_upload Instance of Rokka_Mass_Upload_Images.
+	 */
 	public function __construct( $parent, $rokka_mass_upload ) {
 		$this->rokka_mass_upload = $rokka_mass_upload;
-		$this->parent            = $parent;
+		$this->parent = $parent;
 
 		$this->base = 'rokka_';
 
@@ -68,16 +79,14 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Initialise settings
-	 * @return void
+	 * Initialize settings.
 	 */
 	public function init_settings() {
 		$this->settings = $this->settings_fields();
 	}
 
 	/**
-	 * Add settings page to admin menu
-	 * @return void
+	 * Add settings page to admin menu.
 	 */
 	public function add_menu_item() {
 		$page = add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->parent->_token . '_settings', array(
@@ -88,8 +97,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Load settings JS & CSS
-	 * @return void
+	 * Load settings JS & CSS.
 	 */
 	public function settings_assets() {
 		wp_register_script( $this->parent->_token . '-settings-js', $this->parent->assets_url . 'js/settings' . $this->parent->script_suffix . '.js', array( 'jquery' ), '1.0.0' );
@@ -102,11 +110,11 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Add settings link to plugin list table
+	 * Add settings link to plugin list table.
 	 *
-	 * @param  array $links Existing links
+	 * @param  array $links Existing links.
 	 *
-	 * @return array        Modified links
+	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
 		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . __( 'Settings', 'rokka-image-cdn' ) . '</a>';
@@ -116,7 +124,8 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Build settings fields
+	 * Build settings fields.
+	 *
 	 * @return array Fields to be displayed on settings page
 	 */
 	private function settings_fields() {
@@ -172,8 +181,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Register plugin settings
-	 * @return void
+	 * Register plugin settings.
 	 */
 	public function register_settings() {
 		if ( is_array( $this->settings ) ) {
@@ -188,7 +196,7 @@ class Rokka_Image_Cdn_Settings {
 			}
 
 			foreach ( $this->settings as $section => $data ) {
-				if ( $current_section && $current_section != $section ) {
+				if ( $current_section && $current_section !== $section ) {
 					continue;
 				}
 
@@ -238,18 +246,24 @@ class Rokka_Image_Cdn_Settings {
 				if ( ! $current_section ) {
 					break;
 				}
-			} // End foreach().
-		} // End if().
-	}
-
-	public function settings_section( $section ) {
-		$html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
-		echo $html;
+			}
+		}
 	}
 
 	/**
-	 * Load settings page content
-	 * @return void
+	 * Print settings section.
+	 *
+	 * @param array $section Settings section.
+	 */
+	public function settings_section( $section ) {
+		$html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
+		// @codingStandardsIgnoreStart
+		echo $html;
+		// @codingStandardsIgnoreEnd
+	}
+
+	/**
+	 * Load settings page content.
 	 */
 	public function settings_page() {
 		// Build page HTML
