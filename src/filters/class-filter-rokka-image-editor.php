@@ -2,7 +2,7 @@
 /**
  * Image editor
  *
- * @package WordPress\rokka-wordpress-plugin
+ * @package rokka-wordpress-plugin
  */
 
 /**

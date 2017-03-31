@@ -2,7 +2,7 @@
 /**
  * Rokka helper class.
  *
- * @package WordPress\rokka-wordpress-plugin
+ * @package rokka-wordpress-plugin
  */
 
 /**

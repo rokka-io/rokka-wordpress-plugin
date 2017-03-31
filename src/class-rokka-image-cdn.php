@@ -2,7 +2,7 @@
 /**
  * Main class
  *
- * @package WordPress\rokka-wordpress-plugin
+ * @package rokka-wordpress-plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

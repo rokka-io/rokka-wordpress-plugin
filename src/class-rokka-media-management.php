@@ -2,7 +2,7 @@
 /**
  * Media Management
  *
- * @package WordPress\rokka-wordpress-plugin
+ * @package rokka-wordpress-plugin
  */
 
 /**
