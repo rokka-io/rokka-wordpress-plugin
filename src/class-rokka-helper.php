@@ -6,7 +6,7 @@
  * Date: 06/02/17
  * Time: 14:37
  */
-class Class_Rokka_Helper {
+class Rokka_Helper {
 
 	const rokka_url = 'https://api.rokka.io';
 
@@ -15,7 +15,7 @@ class Class_Rokka_Helper {
 	const full_size_stack_name = 'full';
 
 	/**
-	 * Class_Rokka_Helper constructor.
+	 * Rokka_Helper constructor.
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'rokka_ajax_create_stacks' ) );

@@ -63,7 +63,7 @@ class Rokka_Image_Cdn_Settings {
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array(
 			$this,
-			'add_settings_link'
+			'add_settings_link',
 		) );
 	}
 
@@ -82,7 +82,7 @@ class Rokka_Image_Cdn_Settings {
 	public function add_menu_item() {
 		$page = add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->parent->_token . '_settings', array(
 			$this,
-			'settings_page'
+			'settings_page',
 		) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
 	}
@@ -138,7 +138,7 @@ class Rokka_Image_Cdn_Settings {
 					'description' => __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
 					'type'        => 'text',
 					'default'     => '',
-					'placeholder' => __( 'Company' )
+					'placeholder' => __( 'Company' ),
 				),
 				array(
 					'id'          => 'api_key',
@@ -146,7 +146,7 @@ class Rokka_Image_Cdn_Settings {
 					'description' => __( 'Rokka API key', 'rokka-image-cdn' ),
 					'type'        => 'text',
 					'default'     => '',
-					'placeholder' => __( 'Key' )
+					'placeholder' => __( 'Key' ),
 				),
 				array(
 					'id'          => 'api_secret',
@@ -154,16 +154,16 @@ class Rokka_Image_Cdn_Settings {
 					'description' => __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'rokka-image-cdn' ),
 					'type'        => 'text',
 					'default'     => '',
-					'placeholder' => __( 'Secret' )
+					'placeholder' => __( 'Secret' ),
 				),
 				array(
 					'id'          => 'rokka_enabled',
 					'label'       => __( 'Enable Rokka', 'rokka-image-cdn' ),
 					'description' => __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
 					'type'        => 'checkbox',
-					'default'     => ''
+					'default'     => '',
 				),
-			)
+			),
 		);
 
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
@@ -194,16 +194,16 @@ class Rokka_Image_Cdn_Settings {
 
 				// Add section to page
 				//todo refactor this to make it more OOP
-				if ( $section === 'standard' ) {
+				if ( 'standard' === $section ) {
 					add_settings_section( $section, $data['title'], array(
 						$this,
-						'mass_upload_page'
+						'mass_upload_page',
 					), $this->parent->_token . '_settings' );
 
 				} else {
 					add_settings_section( $section, $data['title'], array(
 						$this,
-						'settings_section'
+						'settings_section',
 					), $this->parent->_token . '_settings' );
 				}
 
@@ -220,20 +220,26 @@ class Rokka_Image_Cdn_Settings {
 					register_setting( $this->parent->_token . '_settings', $option_name, $validation );
 
 					// Add field to page
-					add_settings_field( $field['id'], $field['label'], array(
-						$this->parent->admin,
-						'display_field'
-					), $this->parent->_token . '_settings', $section, array(
-						'field'  => $field,
-						'prefix' => $this->base
-					) );
+					add_settings_field(
+						$field['id'],
+						$field['label'],
+						array(
+							$this->parent->admin,
+							'display_field',
+						),
+						$this->parent->_token . '_settings',
+						$section, array(
+							'field'  => $field,
+							'prefix' => $this->base,
+						)
+					);
 				}
 
 				if ( ! $current_section ) {
 					break;
 				}
-			}
-		}
+			} // End foreach().
+		} // End if().
 	}
 
 	public function settings_section( $section ) {
@@ -276,7 +282,11 @@ class Rokka_Image_Cdn_Settings {
 				}
 
 				// Set tab link
-				$tab_link = add_query_arg( array( 'tab' => $section ) );
+				$tab_link = add_query_arg(
+					array(
+						'tab' => $section,
+					)
+				);
 				if ( isset( $_GET['settings-updated'] ) ) {
 					$tab_link = remove_query_arg( 'settings-updated', $tab_link );
 				}
@@ -288,7 +298,7 @@ class Rokka_Image_Cdn_Settings {
 			}
 
 			$html .= '</h2>' . "\n";
-		}
+		} // End if().
 
 		$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 

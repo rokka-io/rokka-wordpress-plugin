@@ -6,16 +6,16 @@
 class Rokka_Filter_Url {
 
 	/**
-	 * @var Class_Rokka_Helper
+	 * @var Rokka_Helper
 	 */
 	private $rokka_helper;
 
 	/**
 	 * Rokka_Filter_Url constructor.
 	 *
-	 * @param Class_Rokka_Helper $rokka_helper
+	 * @param Rokka_Helper $rokka_helper
 	 */
-	public function __construct( Class_Rokka_Helper $rokka_helper ) {
+	public function __construct( Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Rokka synchronization
+ *
+ * @package WordPress
+ * @subpackage rokka-wordpress-plugin
+ */
 
 require_once( ABSPATH . 'wp-includes/media.php' );
 
@@ -8,16 +14,18 @@ require_once( ABSPATH . 'wp-includes/media.php' );
 class Rokka_Sync {
 
 	/**
-	 * @var Class_Rokka_Helper
+	 * Rokka helper.
+	 *
+	 * @var Rokka_Helper
 	 */
 	private $rokka_helper;
 
 	/**
 	 * Rokka_Sync constructor.
 	 *
-	 * @param Class_Rokka_Helper $rokka_helper
+	 * @param Rokka_Helper $rokka_helper Rokka Helper.
 	 */
-	function __construct( Class_Rokka_Helper $rokka_helper ) {
+	function __construct( Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}
@@ -34,7 +42,7 @@ class Rokka_Sync {
 	/**
 	 * Handle upload of image to Rokka.
 	 *
-	 * @param integer $attachment_id
+	 * @param integer $attachment_id Attachment id.
 	 */
 	function rokka_upload( $attachment_id ) {
 		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
@@ -42,7 +50,9 @@ class Rokka_Sync {
 	}
 
 	/**
-	 * @param $post_id
+	 * Deletes an image on Rokka.
+	 *
+	 * @param int $post_id Attachment id.
 	 */
 	function rokka_delete( $post_id ) {
 		$this->rokka_helper->delete_image_from_rokka( $post_id );
@@ -56,11 +66,11 @@ class Rokka_Sync {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param mixed $override Value to return instead of saving. Default null.
-	 * @param string $filename Name of the file to be saved.
+	 * @param mixed           $override Value to return instead of saving. Default null.
+	 * @param string          $filename Name of the file to be saved.
 	 * @param WP_Image_Editor $image WP_Image_Editor instance.
-	 * @param string $mime_type Image mime type.
-	 * @param int $post_id Post ID.
+	 * @param string          $mime_type Image mime type.
+	 * @param int             $post_id Post ID.
 	 *
 	 * @return null|bool
 	 */

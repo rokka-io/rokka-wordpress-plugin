@@ -1,16 +1,13 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: philou
- * Date: 06/02/17
- * Time: 09:00
+ * Class Class_Rokka_Mass_Upload_Images
  */
-class Class_Rokka_Mass_Upload_Images {
+class Rokka_Mass_Upload_Images {
 
 
 	/**
-	 * @var Class_Rokka_Helper
+	 * @var Rokka_Helper
 	 */
 	private $rokka_helper;
 
@@ -20,7 +17,7 @@ class Class_Rokka_Mass_Upload_Images {
 	 *
 	 * @param $rokka_helper
 	 */
-	public function __construct( Class_Rokka_Helper $rokka_helper ) {
+	public function __construct( Rokka_Helper $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'rokka_upload_image' ) );
 
@@ -43,7 +40,7 @@ class Class_Rokka_Mass_Upload_Images {
 					wp_send_json_error( $data );
 				}
 			} else {
-				wp_send_json_error( "This image is already on rokka. No need to upload it another time" );
+				wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-image-cdn' ) );
 			}
 			wp_die(); // this is required to terminate immediately and return a proper response
 
