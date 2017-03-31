@@ -32,11 +32,11 @@ WordPress plugin to integrate Rokka.io image service
     $ npm install
     ```
 
-## Compile assets
+### Compile assets
 
     $ gulp deploy
 
-## Extract messages / Compile translation files
+### Extract messages / Compile translation files
 
 Run the following script to extract messages from PHP-files and generate a new nebis.pot file:
 
