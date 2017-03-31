@@ -1,5 +1,7 @@
 # rokka-wordpress-plugin
 
+[![Build Status](https://travis-ci.org/rokka-io/rokka-wordpress-plugin.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-wordpress-plugin)
+
 WordPress plugin to integrate Rokka.io image service
 
 ## Development
