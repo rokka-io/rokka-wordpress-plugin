@@ -355,6 +355,21 @@ class Rokka_Helper {
 		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
 	}
 
+	public function save_subject_area( $hash, $x, $y, $width, $height ) {
+		$client = $this->rokka_get_client();
+		$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $x, $y, $width, $height );
+		$new_hash = $client->setDynamicMetadata( $subject_area, $hash );
+
+		return $new_hash;
+	}
+
+	public function remove_subject_area( $hash ) {
+		$client = $this->rokka_get_client();
+		$new_hash = $client->deleteDynamicMetadata( 'SubjectArea', $hash );
+
+		return $new_hash;
+	}
+
 	/**
 	 * @return string
 	 */
