@@ -42,12 +42,12 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			img = $('#image-subjectarea-preview-' + postid), imgh = img.height(), imgw = img.width(),
 			sizer = this.hold.sizer, x1, y1, x2, y2, ias = this.iasapi;
 
-		if ( false === this.validateNumeric( width ) || width < 1 ) {
+		if ( false === this.validateNumeric( width ) || width < 3 ) {
 			elWidth.val( 0 );
 			width = 0
 		}
 
-		if ( false === this.validateNumeric( height ) || height < 1 ) {
+		if ( false === this.validateNumeric( height ) || height < 3 ) {
 			elHeight.val( 0 );
 			height = 0;
 		}
