@@ -5,6 +5,14 @@
     "require": {
         "rokka/client": "^0.5.0"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.8",
+        "wp-coding-standards/wpcs": "^0.11.0",
+        "phpunit/phpunit": "^5.7"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
     "license": "MIT",
     "authors": [
         {
