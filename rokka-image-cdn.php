@@ -1,4 +1,10 @@
 <?php
+/**
+ * Main entry point of rokka-wordpress-plugin
+ *
+ * @package rokka-wordpress-plugin
+ */
+
 /*
  * Plugin Name: Rokka Wordpress Plugin
  * Version: 1.0
