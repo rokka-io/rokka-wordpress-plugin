@@ -42,28 +42,31 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			img = $('#image-subjectarea-preview-' + postid), imgh = img.height(), imgw = img.width(),
 			sizer = this.hold.sizer, x1, y1, x2, y2, ias = this.iasapi;
 
-		if ( false === this.validateNumeric( el ) ) {
-			return;
+		if ( false === this.validateNumeric( width ) || width < 1 ) {
+			elWidth.val( 0 );
+			width = 0
 		}
 
-		if ( width < 1 ) {
-			elWidth.val('');
-			return false;
+		if ( false === this.validateNumeric( height ) || height < 1 ) {
+			elHeight.val( 0 );
+			height = 0;
 		}
 
-		if ( height < 1 ) {
-			elHeight.val('');
-			return false;
-		}
-
-		if ( x < 0 ) {
+		if ( false === this.validateNumeric( x ) || x < 0 ) {
 			elX.val( 0 );
-			return false;
+			x = 0;
 		}
 
-		if ( y < 0 ) {
+		if ( false === this.validateNumeric( y ) || y < 0 ) {
 			elY.val( 0 );
-			return false;
+			y = 0;
+		}
+
+		// remove selection if width or height are smaller than minimum
+		if ( width < 3 || height < 3 ) {
+			ias.cancelSelection();
+			ias.update();
+			return
 		}
 
 		x1 = Math.round( x * sizer );
@@ -160,9 +163,8 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 		});
 	},
 
-	validateNumeric: function( el ) {
-		if ( ! this.intval( $( el ).val() ) ) {
-			$( el ).val( '' );
+	validateNumeric: function( num ) {
+		if ( ! this.intval( num ) ) {
 			return false;
 		}
 	}
