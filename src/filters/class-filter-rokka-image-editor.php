@@ -1,10 +1,17 @@
 <?php
+/**
+ * Image editor
+ *
+ * @package rokka-wordpress-plugin
+ */
 
 /**
  * Class Filter_Rokka_Image_Editor
  */
 class Filter_Rokka_Image_Editor {
 	/**
+	 * Rokka client
+	 *
 	 * @var \Rokka\Client\Image
 	 */
 	private $rokka_client;
@@ -12,7 +19,7 @@ class Filter_Rokka_Image_Editor {
 	/**
 	 * Filter_Rokka_Image_Editor constructor.
 	 *
-	 * @param Class_Rokka_Helper $rokka_helper
+	 * @param Rokka_Helper $rokka_helper Rokka helper.
 	 */
 	function __construct( $rokka_helper ) {
 		$this->rokka_client = $rokka_helper->rokka_get_client();
@@ -22,7 +29,7 @@ class Filter_Rokka_Image_Editor {
 	/**
 	 * Initializes image editor.
 	 */
-	 function init () {
+	function init() {
 		add_filter( 'wp_image_editor_before_change', array( $this, 'save_image_editor_changes' ), 10, 2 );
 		add_filter( 'update_attached_file', array( $this, 'handle_image_restore' ), 10, 2 );
 	}
@@ -36,11 +43,11 @@ class Filter_Rokka_Image_Editor {
 	 */
 	public function save_image_editor_changes( $image, $changes ) {
 		// check if it's a save request
-		if( ! empty( $_REQUEST['do'] ) && 'save' == $_REQUEST['do'] && ! empty( $_REQUEST['postid'] ) ) {
+		if ( ! empty( $_REQUEST['do'] ) && 'save' === $_REQUEST['do'] && ! empty( $_REQUEST['postid'] ) ) {
 			$post_id = $_REQUEST['postid'];
 			$hash = get_post_meta( $post_id, 'rokka_hash', true );
 
-			if( ! $hash ) {
+			if ( ! $hash ) {
 				return $image;
 			}
 
@@ -49,8 +56,8 @@ class Filter_Rokka_Image_Editor {
 				switch ( $operation->type ) {
 					case 'rotate':
 						$angle = $operation->angle;
-						if ( $angle != 0 ) {
-							if( $angle > 0 ) {
+						if ( 0 !== $angle ) {
+							if ( $angle > 0 ) {
 								// clockwise rotation in wp is done in negative angles
 								$angle -= 360;
 							}
@@ -60,7 +67,7 @@ class Filter_Rokka_Image_Editor {
 						break;
 					case 'crop':
 						$sel = $operation->sel;
-						$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $sel->x, $sel->y, $sel->w, $sel->h);
+						$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $sel->x, $sel->y, $sel->w, $sel->h );
 						$hash = $this->rokka_client->setDynamicMetadata( $subject_area, $hash );
 						update_post_meta( $post_id, 'rokka_hash', $hash );
 						break;
@@ -81,7 +88,7 @@ class Filter_Rokka_Image_Editor {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		// if file is not stored in Rokka do nothing
-		if( ! $hash ) {
+		if ( ! $hash ) {
 			return $file;
 		}
 
@@ -89,7 +96,7 @@ class Filter_Rokka_Image_Editor {
 		$is_restore = false;
 		if ( ! empty( $backup_sizes ) && isset( $backup_sizes['full-orig'], $file ) ) {
 			// if filename is the same as the original filename it's a restore
-			$is_restore = $backup_sizes['full-orig']['file'] === basename( $file );
+			$is_restore = basename( $file ) === $backup_sizes['full-orig']['file'] ;
 		}
 		// remove custom metadata from Rokka image on restore
 		if ( $is_restore ) {

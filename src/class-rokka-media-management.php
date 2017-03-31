@@ -1,4 +1,9 @@
 <?php
+/**
+ * Media Management
+ *
+ * @package rokka-wordpress-plugin
+ */
 
 /**
  * Class Rokka_Media_Management
@@ -38,7 +43,7 @@ class Rokka_Media_Management {
 			'value' => $hash,
 			'required' => true,
 		);
-		if( array_key_exists( 'rokka_hash', $form_fields ) ) {
+		if ( array_key_exists( 'rokka_hash', $form_fields ) ) {
 			array_merge( $form_fields['rokka_hash'], $hash_field_info );
 		} else {
 			$form_fields['rokka_hash'] = $hash_field_info;
@@ -50,7 +55,7 @@ class Rokka_Media_Management {
 		$rokka_subject_area_y = '';
 		$rokka_subject_area_width = '';
 		$rokka_subject_area_height = '';
-		if( is_array( $rokka_subject_area ) ) {
+		if ( is_array( $rokka_subject_area ) ) {
 			$rokka_subject_area_x = $rokka_subject_area['x'];
 			$rokka_subject_area_y = $rokka_subject_area['y'];
 			$rokka_subject_area_width = $rokka_subject_area['width'];
@@ -62,15 +67,16 @@ class Rokka_Media_Management {
 
 		$attachment_width = $attachment_src[1];
 		$attachment_height = $attachment_src[2];
-		if ( isset( $attachment_width, $attachment_height ) )
+		if ( isset( $attachment_width, $attachment_height ) ) {
 			$big = max( $attachment_width, $attachment_height );
-		else
-			die( __('Image data does not exist. Please re-upload the image.') );
+		} else {
+			die( esc_html__( 'Image data does not exist. Please re-upload the image.' ) );
+		}
 
 		$sizer = $big > 400 ? 400 / $big : 1;
 
 		$html = '';
-		$html .= '<input type="hidden" id="subjectarea-sizer-' . $post_id . '" value="'. $sizer . '" />';
+		$html .= '<input type="hidden" id="subjectarea-sizer-' . $post_id . '" value="' . $sizer . '" />';
 		$html .= '<input type="hidden" id="subjectarea-original-width-' . $post_id . '" value="' . ( isset( $attachment_width ) ? $attachment_width : 0 ) . '" />';
 		$html .= '<input type="hidden" id="subjectarea-original-height-' . $post_id . '" value="' . ( isset( $attachment_height ) ? $attachment_height : 0 ) . '" />';
 
@@ -112,9 +118,9 @@ jQuery( document ).ready( function () {
 		$subject_area_field_info = array(
 			'label' => __( 'Rokka Subject Area', 'rokka' ),
 			'input' => 'html',
-			'html' => $html
+			'html' => $html,
 		);
-		if( array_key_exists( 'rokka_subject_area', $form_fields ) ) {
+		if ( array_key_exists( 'rokka_subject_area', $form_fields ) ) {
 			array_merge( $form_fields['rokka_subject_area'], $subject_area_field_info );
 		} else {
 			$form_fields['rokka_subject_area'] = $subject_area_field_info;
@@ -133,17 +139,16 @@ jQuery( document ).ready( function () {
 	 */
 	function save_custom_attachment_fields( $post, $attachment ) {
 		// save hash field
-		if( isset( $attachment['rokka_hash'] ) ){
-			if ( '' === trim( $attachment['rokka_hash'] ) ){
+		if ( isset( $attachment['rokka_hash'] ) ) {
+			if ( '' === trim( $attachment['rokka_hash'] ) ) {
 				// adding our custom error
 				$post['errors']['rokka_hash']['errors'][] = __( 'Rokka Hash is required!', 'rokka' );
 			} else {
-				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash']);
+				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash'] );
 			}
 		}
-		if( isset( $attachment['rokka_subject_area'] ) ){
-			print_r($attachment['rokka_subject_area']);
-			update_post_meta( $post['ID'], 'rokka_subject_area', $attachment['rokka_subject_area']);
+		if ( isset( $attachment['rokka_subject_area'] ) ) {
+			update_post_meta( $post['ID'], 'rokka_subject_area', $attachment['rokka_subject_area'] );
 		}
 		return $post;
 	}

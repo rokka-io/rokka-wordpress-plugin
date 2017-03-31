@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruleset name="rokka-wordpress-plugin">
+	<description>Coding standards for rokka-wordpress-plugin</description>
+
+    <exclude-pattern>assets/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>index.php</exclude-pattern>
+
+    <exclude-pattern>src/class-rokka-helper.php</exclude-pattern>
+    <exclude-pattern>src/class-rokka-image-cdn-settings.php</exclude-pattern>
+    <exclude-pattern>src/class-rokka-mass-upload-images.php</exclude-pattern>
+    <exclude-pattern>src/filters/class-filter-rokka-image-editor.php</exclude-pattern>
+    <exclude-pattern>src/filters/filter-rokka-content.php</exclude-pattern>
+    <exclude-pattern>src/class-rokka-image-cdn-admin-api.php</exclude-pattern>
+
+    <rule ref="WordPress">
+        <exclude name="Squiz.Commenting.InlineComment" />
+        <exclude name="Squiz.Commenting.LongConditionClosingComment" />
+    </rule>
+
+</ruleset>

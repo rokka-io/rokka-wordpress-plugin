@@ -1,88 +1,87 @@
 <?php
+/**
+ * Main class
+ *
+ * @package rokka-wordpress-plugin
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class Rokka_Image_Cdn
+ */
 class Rokka_Image_Cdn {
 
 	/**
-	 * The single instance of rokka-image-cdn.
-	 * @var    object
-	 * @access  private
-	 * @since    1.0.0
+	 * Rokka_Image_Cdn instance.
+	 *
+	 * @var Rokka_Image_Cdn
 	 */
 	private static $_instance = null;
 
 	/**
-	 * Settings class object
-	 * @var     object
-	 * @access  public
-	 * @since   1.0.0
+	 * Rokka_Image_Cdn_Settings instance.
+	 *
+	 * @var Rokka_Image_Cdn_Settings
 	 */
 	public $settings = null;
 
 	/**
-	 * The version number.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 * The plugin version number.
+	 *
+	 * @var string
 	 */
 	public $_version;
 
 	/**
 	 * The token.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $_token;
 
 	/**
 	 * The main plugin file.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $file;
 
 	/**
 	 * The main plugin directory.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $dir;
 
 	/**
 	 * The plugin assets directory.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $assets_dir;
 
 	/**
 	 * The plugin assets URL.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $assets_url;
 
 	/**
 	 * Suffix for Javascripts.
-	 * @var     string
-	 * @access  public
-	 * @since   1.0.0
+	 *
+	 * @var string
 	 */
 	public $script_suffix;
 
 	/**
-	 * Constructor function.
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
+	 * Rokka_Image_Cdn constructor.
+	 *
+	 * @param string $file Main plugin file path.
+	 * @param string $version Version number.
 	 */
 	public function __construct( $file = '', $version = '1.0.0' ) {
 		$this->_version = $version;
@@ -114,31 +113,22 @@ class Rokka_Image_Cdn {
 
 	/**
 	 * Load admin CSS.
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
 	 */
-	public function admin_enqueue_styles( $hook = '' ) {
+	public function admin_enqueue_styles() {
 		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
 		wp_enqueue_style( $this->_token . '-admin' );
 	}
 
 	/**
 	 * Load admin Javascript.
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
 	 */
-	public function admin_enqueue_scripts( $hook = '' ) {
+	public function admin_enqueue_scripts() {
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		wp_enqueue_script( $this->_token . '-admin' );
 	}
 
 	/**
-	 * Load plugin localisation
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
+	 * Load plugin localisation.
 	 */
 	public function load_localisation() {
 		load_plugin_textdomain( 'rokka-image-cdn', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
@@ -146,13 +136,9 @@ class Rokka_Image_Cdn {
 
 	/**
 	 * Load plugin textdomain
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
 	 */
 	public function load_plugin_textdomain() {
-		$domain = 'rokka-image-cdn';
-
+		$domain = 'rokka-image-cdn'; // textdomain can't be stored in class variable since it must be a single string literal
 		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 
 		load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
@@ -161,11 +147,11 @@ class Rokka_Image_Cdn {
 
 	/**
 	 * Main rokka-image-cdn Instance
-	 *
 	 * Ensures only one instance of rokka-image-cdn is loaded or can be loaded.
 	 *
-	 * @since 1.0.0
-	 * @static
+	 * @param string $file Main plugin file path.
+	 * @param string $version Plugin version.
+	 *
 	 * @return Rokka_Image_Cdn rokka-image-cdn instance
 	 */
 	public static function instance( $file = '', $version = '1.0.0' ) {
@@ -178,37 +164,27 @@ class Rokka_Image_Cdn {
 
 	/**
 	 * Cloning is forbidden.
-	 *
-	 * @since 1.0.0
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->_version ) );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
-	 *
-	 * @since 1.0.0
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->_version ) );
 	}
 
 	/**
 	 * Installation. Runs on activation.
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
 	 */
 	public function install() {
 		$this->_log_version_number();
 	}
 
 	/**
-	 * Log the plugin version number.
-	 * @access  public
-	 * @since   1.0.0
-	 * @return  void
+	 * Log the plugin version number in database.
 	 */
 	private function _log_version_number() {
 		update_option( $this->_token . '_version', $this->_version );

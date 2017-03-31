@@ -1,4 +1,10 @@
 <?php
+/**
+ * Main entry point of rokka-wordpress-plugin
+ *
+ * @package rokka-wordpress-plugin
+ */
+
 /*
  * Plugin Name: Rokka Wordpress Plugin
  * Version: 1.0
@@ -30,7 +36,7 @@ require_once( 'src/class-rokka-image-cdn-admin-api.php' );
 require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-sync.php' );
 require_once( 'src/filters/filter-rokka-content.php' );
-require_once( 'src/filters/filter-rokka-image-editor.php' );
+require_once( 'src/filters/class-filter-rokka-image-editor.php' );
 require_once( 'src/class-rokka-mass-upload-images.php' );
 require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
@@ -47,8 +53,8 @@ require_once( 'vendor/autoload.php' );
 function rokka_image_cdn() {
 
 	$instance     = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
-	$rokka_helper = new Class_Rokka_Helper();
-	$mass_upload  = new Class_Rokka_Mass_Upload_Images( $rokka_helper );
+	$rokka_helper = new Rokka_Helper();
+	$mass_upload  = new Rokka_Mass_Upload_Images( $rokka_helper );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $mass_upload );

@@ -1,5 +1,9 @@
+.DS_store
+.idea/
 vendor/
 node_modules/
+/bin/
+composer.phar
 assets/css/admin.css
 assets/css/admin.css.map
 assets/js/admin.min.js
