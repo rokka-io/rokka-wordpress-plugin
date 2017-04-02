@@ -68,7 +68,6 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			selY = $('#subjectarea-sel-y-' + postid),
 			$img;
 
-		console.log($(image));
 		t.iasapi = $(image).imgAreaSelect({
 			parent: parent,
 			instance: true,
