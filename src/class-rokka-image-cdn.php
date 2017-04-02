@@ -123,7 +123,7 @@ class Rokka_Image_Cdn {
 	 * Load admin Javascript.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
+		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-admin' );
 	}
 

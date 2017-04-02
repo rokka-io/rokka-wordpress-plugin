@@ -104,7 +104,7 @@ class Rokka_Media_Management {
 
 		$html .= "
 <div id='subjectarea-{$post_id}' class='subjectarea-wrap'>
-	<img id='image-subjectarea-preview-{$post_id}' src='{$attachment_src[0]}' />
+	<img id='image-subjectarea-preview-{$post_id}' onload='rokkaSubjectAreaEdit.init({$post_id})' src='{$attachment_src[0]}' />
 </div>
 ";
 
@@ -128,14 +128,6 @@ class Rokka_Media_Management {
 	</label>
 	</div>
 </fieldset>';
-
-		$html .= "
-<script>
-jQuery( document ).ready( function () {
-	rokkaSubjectAreaEdit.init('{$post_id}');
-});
-</script>
-";
 
 		$subject_area_field_info = array(
 			'label' => __( 'Rokka Subject Area', 'rokka' ),
@@ -186,7 +178,6 @@ jQuery( document ).ready( function () {
 				$x = intval( $attachment['rokka_subject_area']['x'] );
 				$y = intval( $attachment['rokka_subject_area']['y'] );
 				if ( $width >= 3 && $height >= 3 ) {
-					// TODO when the rokka hash changes the selection on the image in the editor doesn't work on first load (probably has something to do with img onload event)
 					$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
 				} else {
 					// TODO this doesn't work if image doesn't have a subject area yet
