@@ -365,7 +365,15 @@ class Rokka_Helper {
 
 	public function remove_subject_area( $hash ) {
 		$client = $this->rokka_get_client();
-		$new_hash = $client->deleteDynamicMetadata( 'SubjectArea', $hash );
+		try {
+			$new_hash = $client->deleteDynamicMetadata( 'SubjectArea', $hash );
+		} catch( GuzzleHttp\Exception\ClientException $e ) {
+			// TODO this should be handled otherwise
+			// the deleteDynamicMetadata will throw a ClientException if no SubjectArea existed before
+			// ignore this exception and continue
+			// hash stays the same in this case
+			$new_hash = $hash;
+		}
 
 		return $new_hash;
 	}

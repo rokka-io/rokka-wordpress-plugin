@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5a325df7763dc4841e4d2648b8ba59eb",
-    "content-hash": "989c189ec2be119ddcea20098d46b658",
+    "hash": "631b42477e134ecd6a1b4fe287a2ecf1",
+    "content-hash": "d301fd67146d25c4fddabcc639dd5fa9",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -237,16 +237,16 @@
         },
         {
             "name": "rokka/client",
-            "version": "0.5.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rokka-io/rokka-client-php.git",
-                "reference": "f75b0e61be1b50974d69a8d8ee8545914c9bc101"
+                "reference": "5b6667549a6d5a07d93dc06df51432b9f7f8c434"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rokka-io/rokka-client-php/zipball/f75b0e61be1b50974d69a8d8ee8545914c9bc101",
-                "reference": "f75b0e61be1b50974d69a8d8ee8545914c9bc101",
+                "url": "https://api.github.com/repos/rokka-io/rokka-client-php/zipball/5b6667549a6d5a07d93dc06df51432b9f7f8c434",
+                "reference": "5b6667549a6d5a07d93dc06df51432b9f7f8c434",
                 "shasum": ""
             },
             "require": {
@@ -294,7 +294,7 @@
                 "rokka",
                 "rokka.io"
             ],
-            "time": "2017-03-02 12:42:21"
+            "time": "2017-03-10 08:36:17"
         }
     ],
     "packages-dev": [
@@ -605,16 +605,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "4.0.7",
+            "version": "4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "09e2277d14ea467e5a984010f501343ef29ffc69"
+                "reference": "ef7b2f56815df854e66ceaee8ebe9393ae36a40d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/09e2277d14ea467e5a984010f501343ef29ffc69",
-                "reference": "09e2277d14ea467e5a984010f501343ef29ffc69",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/ef7b2f56815df854e66ceaee8ebe9393ae36a40d",
+                "reference": "ef7b2f56815df854e66ceaee8ebe9393ae36a40d",
                 "shasum": ""
             },
             "require": {
@@ -664,7 +664,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-03-01 09:12:17"
+            "time": "2017-04-02 07:44:40"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1728,7 +1728,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "rokka/client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

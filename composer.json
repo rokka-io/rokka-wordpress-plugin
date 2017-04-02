@@ -3,7 +3,7 @@
     "description": "Rokka.io plugin for WordPress",
     "type": "wordpress-plugin",
     "require": {
-        "rokka/client": "^0.5.0"
+        "rokka/client": "dev-master"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.8",

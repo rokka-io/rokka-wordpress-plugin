@@ -181,8 +181,6 @@ class Rokka_Media_Management {
 				if ( $width >= 3 && $height >= 3 ) {
 					$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
 				} else {
-					// TODO this doesn't work if image doesn't have a subject area yet
-					// TODO new hash is somehow not available after this call
 					$new_hash = $this->rokka_helper->remove_subject_area( $hash );
 				}
 				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
