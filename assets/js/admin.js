@@ -34,63 +34,10 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 		return num;
 	},
 
-	setNumSelection : function( postid, el ) {
-		var sel, elWidth = $('#subjectarea-sel-width-' + postid), elHeight = $('#subjectarea-sel-height-' + postid),
-			width = this.intval( elWidth.val() ), height = this.intval( elHeight.val() ),
-			elX = $('#subjectarea-sel-x-' + postid), elY = $('#subjectarea-sel-y-' + postid),
-			x = this.intval( elX.val() ), y = this.intval( elY.val() ),
-			img = $('#image-subjectarea-preview-' + postid), imgh = img.height(), imgw = img.width(),
-			sizer = this.hold.sizer, x1, y1, x2, y2, ias = this.iasapi;
-
-		if ( false === this.validateNumeric( width ) || width < 3 ) {
-			elWidth.val( 0 );
-			width = 0
+	validateNumeric: function( num ) {
+		if ( ! this.intval( num ) ) {
+			return false;
 		}
-
-		if ( false === this.validateNumeric( height ) || height < 3 ) {
-			elHeight.val( 0 );
-			height = 0;
-		}
-
-		if ( false === this.validateNumeric( x ) || x < 0 ) {
-			elX.val( 0 );
-			x = 0;
-		}
-
-		if ( false === this.validateNumeric( y ) || y < 0 ) {
-			elY.val( 0 );
-			y = 0;
-		}
-
-		// remove selection if width or height are smaller than minimum
-		if ( width < 3 || height < 3 ) {
-			ias.cancelSelection();
-			ias.update();
-			return
-		}
-
-		x1 = Math.round( x * sizer );
-		y1 = Math.round( y * sizer );
-		x2 = x1 + Math.round( width * sizer );
-		y2 = y1 + Math.round( height * sizer );
-
-		if ( x2 > imgw ) {
-			x1 = 0;
-			x2 = imgw;
-			elWidth.val( Math.round( x2 / sizer ) );
-			elX.val( 0 );
-		}
-
-		if ( y2 > imgh ) {
-			y1 = 0;
-			y2 = imgh;
-			elHeight.val( Math.round( y2 / sizer ) );
-			elY.val( 0 );
-		}
-
-		ias.setSelection( x1, y1, x2, y2 );
-		ias.setOptions({ show: true });
-		ias.update();
 	},
 
 	init : function(postid) {
@@ -163,10 +110,80 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 		});
 	},
 
-	validateNumeric: function( num ) {
-		if ( ! this.intval( num ) ) {
-			return false;
+
+	setNumSelection : function( postid, el ) {
+		var sel, elWidth = $('#subjectarea-sel-width-' + postid), elHeight = $('#subjectarea-sel-height-' + postid),
+			width = this.intval( elWidth.val() ), height = this.intval( elHeight.val() ),
+			elX = $('#subjectarea-sel-x-' + postid), elY = $('#subjectarea-sel-y-' + postid),
+			x = this.intval( elX.val() ), y = this.intval( elY.val() ),
+			img = $('#image-subjectarea-preview-' + postid), imgh = img.height(), imgw = img.width(),
+			sizer = this.hold.sizer, x1, y1, x2, y2, ias = this.iasapi;
+
+		if ( false === this.validateNumeric( width ) || width < 3 ) {
+			elWidth.val( 0 );
+			width = 0
 		}
+
+		if ( false === this.validateNumeric( height ) || height < 3 ) {
+			elHeight.val( 0 );
+			height = 0;
+		}
+
+		if ( false === this.validateNumeric( x ) || x < 0 ) {
+			elX.val( 0 );
+			x = 0;
+		}
+
+		if ( false === this.validateNumeric( y ) || y < 0 ) {
+			elY.val( 0 );
+			y = 0;
+		}
+
+		// remove selection if width or height are smaller than minimum
+		if ( width < 3 || height < 3 ) {
+			ias.cancelSelection();
+			ias.update();
+			return
+		}
+
+		x1 = Math.round( x * sizer );
+		y1 = Math.round( y * sizer );
+		x2 = x1 + Math.round( width * sizer );
+		y2 = y1 + Math.round( height * sizer );
+
+		if ( x2 > imgw ) {
+			x1 = 0;
+			x2 = imgw;
+			elWidth.val( Math.round( x2 / sizer ) );
+			elX.val( 0 );
+		}
+
+		if ( y2 > imgh ) {
+			y1 = 0;
+			y2 = imgh;
+			elHeight.val( Math.round( y2 / sizer ) );
+			elY.val( 0 );
+		}
+
+		ias.setSelection( x1, y1, x2, y2 );
+		ias.setOptions({ show: true });
+		ias.update();
+	},
+
+	removeSelection : function( postid ) {
+		var t = this,
+			selW = $('#subjectarea-sel-width-' + postid),
+			selH = $('#subjectarea-sel-height-' + postid),
+			selX = $('#subjectarea-sel-x-' + postid),
+			selY = $('#subjectarea-sel-y-' + postid),
+			ias = this.iasapi;
+
+		selW.val( 0 );
+		selH.val( 0 );
+		selX.val( 0 );
+		selY.val( 0 );
+		ias.cancelSelection();
+		ias.update();
 	}
 };
 })(jQuery);
