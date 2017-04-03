@@ -27,6 +27,11 @@
   }
 }
 
+// Hide subject area in modal view
+.media-modal-content .compat-field-rokka_subject_area {
+  display: none;
+}
+
 // Hide edit attachment button since this is not yet supported
 .wp-core-ui .button.edit-attachment,
 .wp_attachment_image p .button {
