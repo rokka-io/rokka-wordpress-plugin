@@ -43,20 +43,20 @@ class Rokka_Image_Cdn_Settings {
 	public $settings = array();
 
 	/**
-	 * Instance of Rokka_Mass_Upload_Images.
+	 * Instance of Rokka_Sync.
 	 *
-	 * @var Rokka_Mass_Upload_Images
+	 * @var Rokka_Sync
 	 */
-	private $rokka_mass_upload;
+	private $rokka_sync;
 
 	/**
 	 * Rokka_Image_Cdn_Settings constructor.
 	 *
-	 * @param Rokka_Image_Cdn          $parent The main plugin object.
-	 * @param Rokka_Mass_Upload_Images $rokka_mass_upload Instance of Rokka_Mass_Upload_Images.
+	 * @param Rokka_Image_Cdn $parent The main plugin object.
+	 * @param Rokka_Sync      $rokka_sync Instance of Rokka_Sync.
 	 */
-	public function __construct( $parent, $rokka_mass_upload ) {
-		$this->rokka_mass_upload = $rokka_mass_upload;
+	public function __construct( $parent, $rokka_sync ) {
+		$this->rokka_sync = $rokka_sync;
 		$this->parent = $parent;
 
 		$this->base = 'rokka_';
@@ -245,8 +245,10 @@ class Rokka_Image_Cdn_Settings {
 	 * Load settings page content.
 	 */
 	public function settings_page() {
+		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
 		$rokka_settings = array(
-			'imagesToUpload' => $this->rokka_mass_upload->get_images_for_upload(),
+			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
+			'nonce' => $ajax_nonce,
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 
@@ -366,13 +368,15 @@ class Rokka_Image_Cdn_Settings {
 	 *
 	 * Ensures only one instance of Rokka_Image_Cdn_Settings is loaded or can be loaded.
 	 *
-	 * @since 1.0.0
+	 * @param Rokka_Image_Cdn $parent The main plugin object.
+	 * @param Rokka_Sync      $rokka_sync Instance of Rokka_Sync.
+	 *
 	 * @static
 	 * @return Rokka_Image_Cdn_Settings Rokka_Image_Cdn_Settings instance
 	 */
-	public static function instance( $parent, $mass_upload ) {
+	public static function instance( $parent, $rokka_sync ) {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent, $mass_upload );
+			self::$_instance = new self( $parent, $rokka_sync );
 		}
 
 		return self::$_instance;

@@ -37,7 +37,6 @@ require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-sync.php' );
 require_once( 'src/filters/filter-rokka-content.php' );
 require_once( 'src/filters/class-filter-rokka-image-editor.php' );
-require_once( 'src/class-rokka-mass-upload-images.php' );
 require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
 
@@ -51,21 +50,20 @@ require_once( 'vendor/autoload.php' );
  * @return object Rokka_Image_Cdn
  */
 function rokka_image_cdn() {
-
 	$instance     = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
-	$rokka_helper = new Rokka_Helper();
-	$mass_upload  = new Rokka_Mass_Upload_Images( $rokka_helper );
-
-	if ( is_null( $instance->settings ) ) {
-		$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $mass_upload );
-	}
 
 	if ( get_option( 'rokka_rokka_enabled' ) ) {
-		new Rokka_Sync( $rokka_helper );
+		$rokka_helper = new Rokka_Helper();
+
+		$rokka_sync = new Rokka_Sync( $rokka_helper );
 		new Rokka_Media_Management( $rokka_helper );
 		new Rokka_Filter_Url( $rokka_helper );
 		new Filter_Rokka_Content( $rokka_helper );
 		new Filter_Rokka_Image_Editor( $rokka_helper );
+
+		if ( is_null( $instance->settings ) ) {
+			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
+		}
 	}
 
 	return $instance;

@@ -22,7 +22,8 @@ jQuery(document).ready(function ($) {
 						dataType: 'json',
 						data: {
 							action: 'rokka_upload_image',
-							id: image_id
+							image_id: image_id,
+							nonce: rokkaSettings.nonce
 						}
 					}).done(function() {
 						$('#progress_info').append("upload of image id " + image_id + " successful<br />");
