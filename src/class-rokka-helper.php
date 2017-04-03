@@ -368,8 +368,7 @@ class Rokka_Helper {
 		try {
 			$new_hash = $client->deleteDynamicMetadata( 'SubjectArea', $hash );
 		} catch( GuzzleHttp\Exception\ClientException $e ) {
-			// TODO this should be handled otherwise
-			// the deleteDynamicMetadata will throw a ClientException if no SubjectArea existed before
+			// the deleteDynamicMetadata will throw a ClientException if the SubjectArea doesn't exist
 			// ignore this exception and continue
 			// hash stays the same in this case
 			$new_hash = $hash;
