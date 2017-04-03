@@ -36,6 +36,7 @@ class Rokka_Sync {
 		add_filter( 'wp_save_image_editor_file', array( $this, 'rokka_save_image_editor_file' ), 10, 5 );
 
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
+		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'ajax_rokka_create_stacks' ) );
 	}
 
 	/**
@@ -84,6 +85,7 @@ class Rokka_Sync {
 
 		if ( ! $nonce_valid ) {
 			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
 		}
 
 		try {
@@ -143,6 +145,28 @@ class Rokka_Sync {
 		$query_images = new WP_Query( $query_images_args );
 
 		return $query_images->posts;
+	}
+
+	/**
+	 * Creates stacks on Rokka.
+	 */
+	public function rokka_ajax_create_stacks() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		$sizes = $this->rokka_helper->rokka_create_stacks();
+
+		if ( $sizes ) {
+			wp_send_json_success( $sizes );
+			wp_die();
+		}
+
+		wp_send_json_error( __( 'Could not process stacks.', 'rokka-image-cdn' ), 400 );
+		wp_die();
 	}
 
 }

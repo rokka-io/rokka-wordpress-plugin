@@ -31,13 +31,6 @@ class Rokka_Helper {
 	 */
 	const FULL_SIZE_STACK_NAME = 'full';
 
-	/**
-	 * Rokka_Helper constructor.
-	 */
-	public function __construct() {
-		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'rokka_ajax_create_stacks' ) );
-	}
-
 
 	/**
 	 * Returns Rokka image client.
@@ -148,23 +141,6 @@ class Rokka_Helper {
 			return (bool) $rokka_hash;
 		}
 		return false;
-	}
-
-	/**
-	 * Creates stacks on Rokka.
-	 */
-	function rokka_ajax_create_stacks() {
-		$sizes = $this->rokka_create_stacks();
-
-		if ( $sizes ) {
-			wp_send_json_success( $sizes );
-			wp_die();
-		}
-
-		wp_send_json_error( array(
-			'error' => 'could not process stacks',
-		) );
-		wp_die();
 	}
 
 	/**
