@@ -63,11 +63,11 @@ class Rokka_Helper {
 			$source_images = $source_image->getSourceImages();
 			$source_image  = array_pop( $source_images );
 			$rokka_info = array(
-				'hash'                => $source_image->hash,
-				'format'              => $source_image->format,
-				'organization'        => $source_image->organization,
-				'link'                => $source_image->link,
-				'created'             => $source_image->created,
+				'hash' => $source_image->hash,
+				'format' => $source_image->format,
+				'organization' => $source_image->organization,
+				'link' => $source_image->link,
+				'created' => $source_image->created,
 			);
 			update_post_meta( $attachment_id, 'rokka_info', $rokka_info );
 			update_post_meta( $attachment_id, 'rokka_hash', $source_image->hash );
@@ -107,9 +107,8 @@ class Rokka_Helper {
 	 * @throws Exception Exception on failure.
 	 */
 	private function validate_attachment_before_upload( $attachment_id ) {
-		//the meta stuff should be possible here too
-		$file_path     = get_attached_file( $attachment_id, true );
-		$type          = get_post_mime_type( $attachment_id );
+		$file_path = get_attached_file( $attachment_id, true );
+		$type = get_post_mime_type( $attachment_id );
 		$allowed_types = self::ALLOWED_MIME_TYPES;
 
 		// check mime type of file is in allowed rokka mime types
@@ -149,9 +148,10 @@ class Rokka_Helper {
 	 * @return array
 	 */
 	function rokka_create_stacks() {
-		$sizes           = $this->list_thumbnail_sizes();
-		$client          = $this->rokka_get_client();
-		$stacks          = $client->listStacks();
+		// TODO refactor this method
+		$sizes = $this->list_thumbnail_sizes();
+		$client = $this->rokka_get_client();
+		$stacks = $client->listStacks();
 		//create a noop stack if it not exists already
 		try {
 			$client->getStack( $this->get_rokka_full_size_stack_name() );
@@ -219,7 +219,10 @@ class Rokka_Helper {
 		global $_wp_additional_image_sizes;
 		$sizes  = array();
 		$r_sizes = array();
+
+		// @codingStandardsIgnoreStart
 		foreach ( get_intermediate_image_sizes() as $s ) {
+		// @codingStandardsIgnoreEnd
 			$sizes[ $s ] = array( 0, 0 );
 			if ( in_array( $s, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
 				$sizes[ $s ][0] = get_option( $s . '_size_w' ) ?: 768;
