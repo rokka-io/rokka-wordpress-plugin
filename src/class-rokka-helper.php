@@ -52,7 +52,7 @@ class Rokka_Helper {
 	/**
 	 * Uploads file to Rokka.
 	 *
-	 * @param int   $attachment_id Attachment id.
+	 * @param int $attachment_id Attachment id.
 	 *
 	 * @return bool
 	 */
@@ -62,7 +62,9 @@ class Rokka_Helper {
 		$file_path = get_attached_file( $attachment_id );
 		$file_name = wp_basename( $file_path );
 		$client = $this->rokka_get_client();
+		// @codingStandardsIgnoreStart
 		$source_image = $client->uploadSourceImage( file_get_contents( $file_path ), $file_name );
+		// @codingStandardsIgnoreEnd
 
 		if ( is_object( $source_image ) ) {
 			$source_images = $source_image->getSourceImages();
@@ -135,6 +137,20 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Checks if given attachement is already on Rokka.
+	 *
+	 * @param int $attachment_id Attachment id.
+	 * @return bool
+	 */
+	public function is_on_rokka( $attachment_id ) {
+		if ( wp_attachment_is_image( $attachment_id ) ) {
+			$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
+			return (bool) $rokka_hash;
+		}
+		return false;
+	}
+
+	/**
 	 * Creates stacks on Rokka.
 	 */
 	function rokka_ajax_create_stacks() {
@@ -173,18 +189,20 @@ class Rokka_Helper {
 				$delete   = false;
 				foreach ( $stacks->getStacks() as $stack ) {
 
-					if ( $stack->name == $name ) {
+					if ( $stack->name === $name ) {
 						$continue = false;
 
 						//check if the max width was changed in the meantime (in wordpress config)
+						// @codingStandardsIgnoreStart
 						$stack_operations = $stack->stackOperations;
+						// @codingStandardsIgnoreEnd
 						foreach ( $stack_operations as $operation ) {
 							$operation = $operation->toArray();
 
-							if ( $operation['name'] == 'resize' ) {
+							if ( 'resize' === $operation['name'] ) {
 								$stack_width  = $operation['options']['width'];
 								$stack_height = $operation['options']['height'];
-								if ( $stack_width != $size[0] || $stack_height != $size[1] ) {
+								if ( $stack_width !== $size[0] || $stack_height !== $size[1] ) {
 
 									$continue = true;
 									$delete   = true;
@@ -205,7 +223,7 @@ class Rokka_Helper {
 						'height'  => $size[1],
 						//aspect ratio will be kept
 						'mode'    => 'box',
-						'upscale' => false
+						'upscale' => false,
 					] );
 
 					$client->createStack( $name, [ $resize ] );
@@ -227,7 +245,7 @@ class Rokka_Helper {
 		$r_sizes = array();
 		foreach ( get_intermediate_image_sizes() as $s ) {
 			$sizes[ $s ] = array( 0, 0 );
-			if ( in_array( $s, array( 'thumbnail', 'medium', 'medium_large', 'large' ) ) ) {
+			if ( in_array( $s, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
 				$sizes[ $s ][0] = get_option( $s . '_size_w' ) ?: 768;
 				$sizes[ $s ][1] = get_option( $s . '_size_h' ) ?: 10000;
 			} else {
@@ -248,16 +266,20 @@ class Rokka_Helper {
 
 
 	/**
+	 * Gets stack name of full size image
+	 *
 	 * @return string
 	 */
-	public function get_rokka_full_size_stack_name () {
+	public function get_rokka_full_size_stack_name() {
 		return self::FULL_SIZE_STACK_NAME;
 	}
 
 	/**
-	 * @param $hash
-	 * @param $format
-	 * @param string $size
+	 * Returns Rokka url of image
+	 *
+	 * @param string $hash Rokka hash.
+	 * @param string $format File format.
+	 * @param string $size Image size.
 	 *
 	 * @return string
 	 */
@@ -282,6 +304,17 @@ class Rokka_Helper {
 		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
 	}
 
+	/**
+	 * Saves subject area on Rokka.
+	 *
+	 * @param string $hash Rokka hash.
+	 * @param int    $x X value of subject area.
+	 * @param int    $y Y value of subject area.
+	 * @param int    $width Width of subject area.
+	 * @param int    $height Height of subject area.
+	 *
+	 * @return false|string New hash on success. False on failure.
+	 */
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
 		$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $x, $y, $width, $height );
@@ -290,11 +323,18 @@ class Rokka_Helper {
 		return $new_hash;
 	}
 
+	/**
+	 * Deletes subject area on Rokka.
+	 *
+	 * @param string $hash Rokka hash.
+	 *
+	 * @return false|string New hash on success. False on failure.
+	 */
 	public function remove_subject_area( $hash ) {
 		$client = $this->rokka_get_client();
 		try {
 			$new_hash = $client->deleteDynamicMetadata( 'SubjectArea', $hash );
-		} catch( GuzzleHttp\Exception\ClientException $e ) {
+		} catch ( GuzzleHttp\Exception\ClientException $e ) {
 			// the deleteDynamicMetadata will throw a ClientException if the SubjectArea doesn't exist
 			// ignore this exception and continue
 			// hash stays the same in this case
@@ -305,6 +345,8 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Returns Rokka url scheme.
+	 *
 	 * @return string
 	 */
 	public function get_rokka_scheme() {
@@ -312,39 +354,39 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * @return mixed|void
+	 * Returns Rokka domain from options.
+	 *
+	 * @return string|bool
 	 */
 	public function get_rokka_domain() {
 		return get_option( 'rokka_domain' );
 	}
 
 	/**
-	 * @return mixed|void
+	 * Returns Rokka company name from options.
+	 *
+	 * @return string|bool
 	 */
 	public function get_rokka_company_name() {
 		return get_option( 'rokka_company_name' );
 	}
 
 	/**
-	 * @return mixed|void
+	 * Returns Rokka api key from options.
+	 *
+	 * @return string|bool
 	 */
 	public function get_rokka_api_key() {
 		return get_option( 'rokka_api_key' );
 	}
 
 	/**
-	 * @return mixed|void
+	 * Returns Rokka api secret from options.
+	 *
+	 * @return string|bool
 	 */
 	public function get_rokka_api_secret() {
 		return get_option( 'rokka_api_secret' );
-	}
-
-	public function is_on_rokka( $attachment_id ) {
-		if ( wp_attachment_is_image( $attachment_id ) ) {
-			$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
-			return (bool) $rokka_hash;
-		}
-		return false;
 	}
 
 }
