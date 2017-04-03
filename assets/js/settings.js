@@ -53,11 +53,11 @@ jQuery(document).ready(function ($) {
 			url: ajaxurl,
 			data: {action: 'rokka_create_stacks'},
 			success: function (response) {
-				$('#progress_info_stacks').append("stack creation successful!<br />");
+				$('#progress_info_stacks').html("<div id='setting-error-settings_updated' class='updated settings-error notice is-dismissible'> <p><strong>Stack creation successful!</strong></p><button type='button' class='notice-dismiss display-none'></button></div>");
 
 			},
 			error: function (response) {
-				$('#progress_info_stacks').append("stack creation failed!<br />");
+				$('#progress_info_stacks').html("<div id='setting-error-settings_updated' class='notice-error settings-error notice is-dismissible'> <p><strong>Stack creation failed!</strong></p><button type='button' class='notice-dismiss display-none'></button></div>");
 			}
 		});
 	});
