@@ -250,54 +250,20 @@ class Rokka_Image_Cdn_Settings {
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 
-		// Build page HTML
+// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h2>' . __( 'Rokka Settings', 'rokka-image-cdn' ) . '</h2>' . "\n";
+		// $html .= '<h2>' . __( 'Rokkaaa' , 'rokka-image-cdn' ) . '</h2>' . "\n";
 
-		$tab = '';
-		if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
-			$tab .= $_GET['tab'];
-		}
+		$html .= '<ul id="settings-sections" class="nav-tabs-wrap">' . "\n";
+		$html .= '<li><a id="nav-tab-select-01" class="nav-tab current" href="#settings">' . __( 'Settings' , 'plugin_textdomain' ) . '</a></li>' . "\n";
+		$html .= '<li><a id="nav-tab-select-02" class="nav-tab" href="#create">' . __( 'Create stacks on Rokka' , 'plugin_textdomain' ) . '</a></li>' . "\n";
+		$html .= '<li><a id="nav-tab-select-03" class="nav-tab" href="#upload">' . __( 'Upload images to Rokka' , 'plugin_textdomain' ) . '</a></li>' . "\n";
+		$html .= '</ul>' . "\n";
+		$html .= '<div class="clear"></div>' . "\n";
 
-		// Show page tabs
-		if ( is_array( $this->settings ) && 1 < count( $this->settings ) ) {
-
-			$html .= '<h2 class="nav-tab-wrapper">' . "\n";
-
-			$c = 0;
-			foreach ( $this->settings as $section => $data ) {
-
-				// Set tab class
-				$class = 'nav-tab';
-				if ( ! isset( $_GET['tab'] ) ) {
-					if ( 0 == $c ) {
-						$class .= ' nav-tab-active';
-					}
-				} else {
-					if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
-						$class .= ' nav-tab-active';
-					}
-				}
-
-				// Set tab link
-				$tab_link = add_query_arg(
-					array(
-						'tab' => $section,
-					)
-				);
-				if ( isset( $_GET['settings-updated'] ) ) {
-					$tab_link = remove_query_arg( 'settings-updated', $tab_link );
-				}
-
-				// Output tab
-				$html .= '<a href="' . $tab_link . '" class="' . esc_attr( $class ) . '">' . esc_html( $data['title'] ) . '</a>' . "\n";
-
-				++ $c;
-			}
-
-			$html .= '</h2>' . "\n";
-		} // End if().
-
+		$html .= '<div id="column-left">' . "\n";
+		$html .= '<div id="tab-01" class="current">' . "\n";
+		$html .= '<div class="tab-content">' . "\n";
 		$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 
 		// Get settings fields
@@ -306,21 +272,91 @@ class Rokka_Image_Cdn_Settings {
 		do_settings_sections( $this->parent->_token . '_settings' );
 		$html .= ob_get_clean();
 
-		$html .= '<p class="submit">' . "\n";
+		$html .= '<table class="form-table">' . "\n";
+		$html .= '<tbody>' . "\n";
+		$html .= '<tr>' . "\n";
+		$html .= '<th scope="row"></th>' . "\n";
+		$html .= '<td>' . "\n";
 		$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-		$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings', 'rokka-image-cdn' ) ) . '" />' . "\n";
-		$html .= '</p>' . "\n";
+		$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'rokka-image-cdn' ) ) . '" />' . "\n";
+		$html .= '</td>' . "\n";
+		$html .= '</tr>' . "\n";
+		$html .= '</tbody>' . "\n";
+		$html .= '</table>' . "\n";
+
 		$html .= '</form>' . "\n";
 		$html .= '</div>' . "\n";
+		$html .= '</div><!--end #tab-01 -->' . "\n";
+
+
+		$html .= '<div id="tab-02" class="display-none">' . "\n";
+		$html .= '<div class="tab-content">' . "\n";
+
+		$html .= '<table class="form-table">' . "\n";
+		$html .= '<tbody>' . "\n";
+
+		$html .= '<tr>' . "\n";
+		// $html .= '<th scope="row"></th>' . "\n";
+		$html .= '<td colspan="2">' . "\n";
+		$html .=  esc_attr( __( 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.' , 'rokka-image-cdn'));
+		$html .= '</td>' . "\n";
+		$html .= '</tr>' . "\n";
+
+		$html .= '<tr>' . "\n";
+		$html .= '<td class="th">' . "\n";
+		$html .= '<a href="#" class="button button-primary" id="create-rokka-stacks" >' . "\n";
+		$html .=  esc_attr( __( 'Create stacks on Rokka' , 'rokka-image-cdn'));
+		$html .= '</a>' . "\n";
+		$html .= '</td>' . "\n";
+		$html .= '<td>' . "\n";
+		$html .= '<div id="progress_info_stacks"></div>' . "\n";
+		$html .= '</td>' . "\n";
+		$html .= '</tr>' . "\n";
+
+		$html .= '</tbody>' . "\n";
+		$html .= '</table>' . "\n";
+
+		$html .= '</div>' . "\n";
+		$html .= '</div><!--end #tab-02 -->' . "\n";
+
+
+		$html .= '<div id="tab-03" class="display-none">' . "\n";
+		$html .= '<div class="tab-content">' . "\n";
+		$html .= '<a href="#" class="button button-primary" id="mass-upload-everything">' . "\n";
+		$html .=  esc_attr( __( 'Upload images to Rokka' , 'rokka-image-cdn'));
+		$html .= '</a>' . "\n";
+		$html .= '<div id="progressbar"></div>' . "\n";
+		$html .= '<div id="progress_info"></div>' . "\n";
+		$html .= '</div>' . "\n";
+		$html .= '</div><!--end #tab-03 -->' . "\n";
+
+		$html .= '</div><!--end #column-left -->' . "\n";
+
+
+
+		$html .= '<div id="column-right">' . "\n";
+
+		$html .= '<div class="column-right-wrap">' . "\n";
+		$html .= '<div id="logo-rokka"><svg viewBox="0 0 206 48" xmlns="http://www.w3.org/2000/svg"><g id="Page-1-Copy-11" fill="#000" fill-rule="evenodd"><g id="Desktop-HD" transform="translate(-52 -53)"><g id="Group" transform="translate(52 53)"><path d="M65.652 38.602h7.122V28.72h2.013c.774 0 1.548 0 2.323-.155l4.955 10.037h7.741l-6.038-11.735c2.942-1.699 4.645-4.787 4.49-8.184 0-5.867-4.026-9.573-11.148-9.573H65.652v29.492zM76.8 15.286c2.942 0 4.18 1.236 4.18 3.706 0 2.625-1.548 3.86-4.49 3.86h-3.716v-7.566H76.8zm22.142 8.493c0-5.096 2.477-8.647 6.813-8.647 4.335 0 6.968 3.397 6.968 8.647 0 5.404-2.478 8.8-6.968 8.8-4.336 0-6.813-3.396-6.813-8.8zm-7.587 0c-.155 4.169 1.239 8.183 3.87 11.117 6.04 5.404 15.175 5.404 21.059 0 2.787-3.088 4.18-7.103 3.87-11.272.156-4.014-1.238-8.029-3.87-11.117-6.039-5.404-15.174-5.404-21.058 0-2.632 3.242-4.026 7.257-3.871 11.272zm39.948 14.823V26.558h2.942l6.813 12.044h8.207l-8.826-15.132 8.206-14.36h-7.897l-6.193 11.426h-3.097V9.11h-7.277v29.337h7.122v.155zm28.026 0V26.558h2.942l6.813 12.044h8.206l-8.825-15.132 8.051-14.206h-7.897l-6.193 11.427h-3.097V9.11h-7.123v29.337h7.123v.155zm18.116 0h7.742l1.548-5.405h9.29l1.704 5.405h7.742L195.097 9.264h-7.123l-10.529 29.338zm13.936-21.154l2.787 9.728h-5.574l2.787-9.728zm6.038-10.809V2.316h-11.767v4.17h11.767v.153z" id="rokka-text"></path><g id="rokka-box"><path id="Rechteck_6_Kopie_23" opacity=".8" d="M24.774 27.33L0 13.588v20.381l24.774 13.588z"></path><path id="Rechteck_6_Kopie_24" d="M24.774 27.33l24.774-13.588V33.97L24.774 47.557z"></path><path id="Rechteck_6_Kopie_23-2" opacity=".5" d="M49.548 13.588L24.774 0v20.382l24.774 13.587z"></path><path id="Rechteck_6_Kopie_23-3" opacity=".3" d="M0 13.588L24.774 0v20.382L0 33.969z"></path></g></g></g></g></svg></div>' . "\n";
+
+		$html .= '<div id="banner-website" class="banner">' . "\n";
+		$html .=  esc_attr( __( 'Banner Website' , 'rokka-image-cdn'));
+		$html .= '</div>' . "\n";
+
+		$html .= '<div id="banner-liip" class="banner">' . "\n";
+		$html .= '<div>Banner 2<br>Limmatstrasse 183<br>CH-8005 Zürich<br>Switzerland</div>' . "\n";
+		$html .= '</div>' . "\n";
+
+		$html .= '</div>' . "\n";
+
+		$html .= '</div><!--end #column-right -->' . "\n";
+
+
+
+		$html .= '</div><!--end #wrap -->' . "\n";
 
 		echo $html;
 		?>
-		<button class="button button-primary" id="create-rokka-stacks"><?php esc_attr_e( 'Create stacks on Rokka', 'rokka-image-cdn' ); ?></button>
-		<div id="progress_info_stacks"></div>
-		<br/>
-		<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka', 'rokka-image-cdn' ); ?></button>
-		<div id="progressbar"></div>
-		<div id="progress_info"></div>
 
 		<?php
 	}
