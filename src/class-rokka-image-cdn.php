@@ -131,7 +131,7 @@ class Rokka_Image_Cdn {
 		wp_enqueue_script( $this->_token . '-subject-area' );
 
 		// Load only on rokka settings page
-		if( $hook === 'settings_page_rokka-image-cdn_settings' ) {
+		if ( 'settings_page_rokka-image-cdn_settings' === $hook ) {
 			wp_register_script( $this->_token . '-settings-js', $this->assets_url . 'js/settings' . $this->script_suffix . '.js', array( 'jquery' ), '1.0.0', true );
 			wp_enqueue_script( $this->_token . '-settings-js' );
 
