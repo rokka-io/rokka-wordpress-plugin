@@ -1,16 +1,15 @@
 .compat-attachment-fields {
-    td, th {
-        vertical-align: top;
-    }
+  width: 100%;
+
+  td, th {
+    vertical-align: top;
+    text-align: left;
+  }
 }
 
 .compat-field-rokka_hash {
-  label {
-    float: right;
-  }
-  .label span {
-    width: auto;
-    display: inline-block;
+  input {
+    width: 100%;
   }
 }
 
@@ -21,4 +20,15 @@
     max-width: 400px;
     max-height: 400px;
   }
+}
+.subjectarea-sel {
+  input[type="text"] {
+    width: 70px;
+  }
+}
+
+// Hide edit attachment button since this is not yet supported
+.wp-core-ui .button.edit-attachment,
+.wp_attachment_image p .button {
+  display: none;
 }
