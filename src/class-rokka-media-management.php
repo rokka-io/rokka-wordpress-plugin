@@ -50,9 +50,8 @@ class Rokka_Media_Management {
 		// add hash field
 		$hash = get_post_meta( $post->ID, 'rokka_hash', true );
 		$hash_field_info = array(
-			'label' => __( 'Rokka Hash', 'rokka' ),
+			'label' => __( 'Rokka Hash', 'rokka-image-cdn' ),
 			'value' => $hash,
-			'required' => true,
 		);
 		if ( array_key_exists( 'rokka_hash', $form_fields ) ) {
 			array_merge( $form_fields['rokka_hash'], $hash_field_info );
@@ -92,7 +91,7 @@ class Rokka_Media_Management {
 		if ( isset( $attachment_width, $attachment_height ) ) {
 			$big = max( $attachment_width, $attachment_height );
 		} else {
-			die( esc_html__( 'Image data does not exist. Please re-upload the image.' ) );
+			die( esc_html__( 'Image data does not exist. Please re-upload the image.', 'rokka-image-cdn' ) );
 		}
 
 		$sizer = $big > 400 ? 400 / $big : 1;
@@ -110,28 +109,27 @@ class Rokka_Media_Management {
 
 		$html .= '
 <fieldset id="subjectarea-sel-' . $post_id . '" class="subjectarea-sel">
-	<legend>Selection</legend>
-	<label><span>X</span>
-		<input type="text" id="subjectarea-sel-x-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][x]" value="' . $rokka_subject_area_x . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
-	</label>
-	<br />
-	<label><span>Y</span>
-		<input type="text" id="subjectarea-sel-y-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][y]" value="' . $rokka_subject_area_y . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
-	</label>
 	<div class="nowrap">
-	<label><span class="screen-reader-text">selection width</span>
-		<input type="text" id="subjectarea-sel-width-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][width]" value="' . $rokka_subject_area_width . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
-	</label>
-	<span class="subjectarea-separator">&times;</span>
-	<label><span class="screen-reader-text">selection height</span>
-	<input type="text" id="subjectarea-sel-height-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][height]" value="' . $rokka_subject_area_height . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
-	</label>
+		<label><span>' . esc_html__( 'Offset X', 'rokka-image-cdn' ) . '</span>
+			<input type="text" id="subjectarea-sel-x-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][x]" value="' . $rokka_subject_area_x . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+		</label>
+		<label><span>' . esc_html__( 'Offset Y', 'rokka-image-cdn' ) . '</span>
+			<input type="text" id="subjectarea-sel-y-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][y]" value="' . $rokka_subject_area_y . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+		</label>
 	</div>
-	<input type="button" onclick="rokkaSubjectAreaEdit.removeSelection(' . $post_id . ')" class="button" value="' . esc_attr__( 'Remove selection' ) . '" />
+	<div class="nowrap">
+		<label><span>' . esc_html__( 'Width', 'rokka-image-cdn' ) . '</span>
+			<input type="text" id="subjectarea-sel-width-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][width]" value="' . $rokka_subject_area_width . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+		</label>
+		<label><span>' . esc_html__( 'Height', 'rokka-image-cdn' ) . '</span>
+		<input type="text" id="subjectarea-sel-height-' . $post_id . '" name="attachments[' . $post_id . '][rokka_subject_area][height]" value="' . $rokka_subject_area_height . '" onkeyup="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" onblur="rokkaSubjectAreaEdit.setNumSelection(' . $post_id . ', this)" />
+		</label>
+	</div>
+	<input type="button" onclick="rokkaSubjectAreaEdit.removeSelection(' . $post_id . ')" class="button" value="' . esc_attr__( 'Remove selection', 'rokka-image-cdn' ) . '" />
 </fieldset>';
 
 		$subject_area_field_info = array(
-			'label' => __( 'Rokka Subject Area', 'rokka' ),
+			'label' => __( 'Rokka Subject Area', 'rokka-image-cdn' ),
 			'input' => 'html',
 			'html' => $html,
 		);
@@ -159,7 +157,7 @@ class Rokka_Media_Management {
 		if ( isset( $attachment['rokka_hash'] ) ) {
 			if ( '' === trim( $attachment['rokka_hash'] ) ) {
 				// adding our custom error
-				$post['errors']['rokka_hash']['errors'][] = __( 'Rokka Hash is required!', 'rokka' );
+				$post['errors']['rokka_hash']['errors'][] = __( 'Rokka Hash is required!', 'rokka-image-cdn' );
 			} else {
 				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash'] );
 				$hash = $attachment['rokka_hash'];
@@ -205,7 +203,7 @@ class Rokka_Media_Management {
 	public function add_custom_media_columns( $posts_columns, $detached ) {
 		// add hash column
 		$new_columns = array(
-			'hash' => __( 'Rokka Hash', 'rokka' ),
+			'hash' => __( 'Rokka Hash', 'rokka-image-cdn' ),
 		);
 		return array_merge( $posts_columns, $new_columns );
 	}
