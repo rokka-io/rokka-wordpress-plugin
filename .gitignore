@@ -7,4 +7,5 @@ composer.phar
 assets/css/admin.css
 assets/css/admin.css.map
 assets/js/admin.min.js
+assets/js/rokka-subject-area.min.js
 assets/js/settings.min.js

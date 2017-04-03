@@ -123,8 +123,10 @@ class Rokka_Image_Cdn {
 	 * Load admin Javascript.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
+		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.js', array( 'jquery' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-admin' );
+		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'js/rokka-subject-area.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
+		wp_enqueue_script( $this->_token . '-subject-area' );
 	}
 
 	/**
