@@ -42,8 +42,7 @@ class Rokka_Sync {
 	 * @param integer $attachment_id Attachment id.
 	 */
 	function rokka_upload( $attachment_id ) {
-		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
-		$this->rokka_helper->upload_image_to_rokka( $attachment_id, $attachment_meta );
+		$this->rokka_helper->upload_image_to_rokka( $attachment_id );
 	}
 
 	/**
