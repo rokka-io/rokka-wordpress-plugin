@@ -37,23 +37,21 @@ class Rokka_Mass_Upload_Images {
 		try {
 			$image_id = $_POST['id'];
 
-			if ( empty( get_post_meta( $image_id, 'rokka_info', true ) ) ) {
-				$image_data = wp_get_attachment_metadata( $image_id );
+			if ( ! $this->rokka_helper->is_on_rokka( $image_id ) ) {
+				$upload_success = $this->rokka_helper->upload_image_to_rokka( $image_id );
 
-				$data = $this->rokka_helper->upload_image_to_rokka( $image_id, $image_data );
-
-				if ( $data ) {
+				if ( $upload_success ) {
 					wp_send_json_success( $image_id );
 				} else {
-					wp_send_json_error( $data );
+					wp_send_json_error( $image_id, 400 );
 				}
 			} else {
-				wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-image-cdn' ) );
+				wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-image-cdn' ), 400 );
 			}
 			wp_die(); // this is required to terminate immediately and return a proper response
 
 		} catch ( Exception $e ) {
-			wp_send_json_error( $e->getMessage() );
+			wp_send_json_error( $e->getMessage(), 400 );
 			wp_die();
 		}
 	}

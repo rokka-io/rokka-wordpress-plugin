@@ -52,18 +52,17 @@ class Rokka_Helper {
 	/**
 	 * Uploads file to Rokka.
 	 *
-	 * @param int   $post_id Attachment id.
-	 * @param array $data Attachment metadata.
+	 * @param int   $attachment_id Attachment id.
 	 *
-	 * @return array|bool $data
+	 * @return bool
 	 */
-	public function upload_image_to_rokka( $post_id, $data ) {
-		$this->validate_files_before_upload( $post_id );
-		$file_paths  = $this->get_attachment_file_paths( $post_id, true, $data );
-		$client      = $this->rokka_get_client();
-		$file_parts   = explode( '/', $file_paths['full'] );
-		$file_name    = array_pop( $file_parts );
-		$source_image = $client->uploadSourceImage( file_get_contents( $file_paths['full'] ), $file_name );
+	public function upload_image_to_rokka( $attachment_id ) {
+		$this->validate_attachment_before_upload( $attachment_id );
+
+		$file_path = get_attached_file( $attachment_id );
+		$file_name = wp_basename( $file_path );
+		$client = $this->rokka_get_client();
+		$source_image = $client->uploadSourceImage( file_get_contents( $file_path ), $file_name );
 
 		if ( is_object( $source_image ) ) {
 			$source_images = $source_image->getSourceImages();
@@ -75,10 +74,10 @@ class Rokka_Helper {
 				'link'                => $source_image->link,
 				'created'             => $source_image->created,
 			);
-			update_post_meta( $post_id, 'rokka_info', $rokka_info );
-			update_post_meta( $post_id, 'rokka_hash', $source_image->hash );
+			update_post_meta( $attachment_id, 'rokka_info', $rokka_info );
+			update_post_meta( $attachment_id, 'rokka_hash', $source_image->hash );
 
-			return $data;
+			return true;
 		}
 
 		return false;
@@ -88,12 +87,12 @@ class Rokka_Helper {
 	/**
 	 * Deletes an image from rokka.io
 	 *
-	 * @param int $post_id Attachment id.
+	 * @param int $attachment_id Attachment id.
 	 *
 	 * @return bool
 	 */
-	public function delete_image_from_rokka( $post_id ) {
-		$hash = get_post_meta( $post_id, 'rokka_hash', true );
+	public function delete_image_from_rokka( $attachment_id ) {
+		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		if ( $hash ) {
 			$client = $this->rokka_get_client();
@@ -106,16 +105,16 @@ class Rokka_Helper {
 	/**
 	 * Validates file before it gets uploaded to Rokka.
 	 *
-	 * @param int $post_id Attachment id.
+	 * @param int $attachment_id Attachment id.
 	 *
 	 * @return bool
 	 *
 	 * @throws Exception Exception on failure.
 	 */
-	private function validate_files_before_upload( $post_id ) {
+	private function validate_attachment_before_upload( $attachment_id ) {
 		//the meta stuff should be possible here too
-		$file_path     = get_attached_file( $post_id, true );
-		$type          = get_post_mime_type( $post_id );
+		$file_path     = get_attached_file( $attachment_id, true );
+		$type          = get_post_mime_type( $attachment_id );
 		$allowed_types = self::ALLOWED_MIME_TYPES;
 
 		// check mime type of file is in allowed rokka mime types
@@ -133,78 +132,6 @@ class Rokka_Helper {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Get file paths for all attachment versions.
-	 *
-	 * @param int        $attachment_id Attachment id.
-	 * @param bool       $exists_locally If file exists locally.
-	 * @param array|bool $meta Attachment meta data of false.
-	 * @param bool       $include_backups If backup sizes should be included.
-	 *
-	 * @return array
-	 */
-	function get_attachment_file_paths( $attachment_id, $exists_locally = true, $meta = false, $include_backups = true ) {
-		$paths     = array();
-		$file_path = get_attached_file( $attachment_id, true );
-		$file_name = basename( $file_path );
-		$backups   = get_post_meta( $attachment_id, '_wp_attachment_backup_sizes', true );
-
-		if ( ! $meta ) {
-			$meta = get_post_meta( $attachment_id, '_wp_attachment_metadata', true );
-		}
-
-		if ( is_wp_error( $meta ) ) {
-			return $paths;
-		}
-
-		$original_file = $file_path; // Not all attachments will have meta
-
-		if ( isset( $meta['file'] ) ) {
-			$original_file = str_replace( $file_name, basename( $meta['file'] ), $file_path );
-		}
-
-		// Original file
-		$paths['full'] = $original_file;
-
-		// Sizes
-		if ( isset( $meta['sizes'] ) ) {
-			foreach ( $meta['sizes'] as $size => $file ) {
-				if ( isset( $file['file'] ) ) {
-					$paths[ $size ] = str_replace( $file_name, $file['file'], $file_path );
-				}
-			}
-		}
-
-		// Thumb
-		if ( isset( $meta['thumb'] ) ) {
-			$paths[] = str_replace( $file_name, $meta['thumb'], $file_path );
-		}
-
-		// Backups
-		if ( $include_backups && is_array( $backups ) ) {
-			foreach ( $backups as $backup ) {
-				$paths[] = str_replace( $file_name, $backup['file'], $file_path );
-			}
-		}
-
-		// Allow other processes to add files to be uploaded
-		$paths = apply_filters( 'rokka_attachment_file_paths', $paths, $attachment_id, $meta );
-
-		// Remove duplicates
-		$paths = array_unique( $paths );
-
-		// Remove paths that don't exist
-		if ( $exists_locally ) {
-			foreach ( $paths as $key => $path ) {
-				if ( ! file_exists( $path ) ) {
-					unset( $paths[ $key ] );
-				}
-			}
-		}
-
-		return $paths;
 	}
 
 	/**
