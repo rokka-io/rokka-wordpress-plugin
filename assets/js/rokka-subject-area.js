@@ -113,7 +113,10 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			elX = $('#subjectarea-sel-x-' + postid), elY = $('#subjectarea-sel-y-' + postid),
 			x = this.intval( elX.val() ), y = this.intval( elY.val() ),
 			img = $('#image-subjectarea-preview-' + postid), imgh = img.height(), imgw = img.width(),
+			subjectAreaInfo = $('#subjectarea-info-' + postid),
 			sizer = this.hold.sizer, x1, y1, x2, y2, ias = this.iasapi;
+
+		subjectAreaInfo.text( '' );
 
 		if ( false === this.validateNumeric( width ) || width < 3 ) {
 			elWidth.val( 0 );
@@ -152,6 +155,8 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			x2 = imgw;
 			elWidth.val( Math.round( x2 / sizer ) );
 			elX.val( 0 );
+			// TODO this text should be translatable
+			subjectAreaInfo.text( 'Please reduce width to apply this X value.' );
 		}
 
 		if ( y2 > imgh ) {
@@ -159,6 +164,8 @@ var rokkaSubjectAreaEdit = window.rokkaSubjectAreaEdit = {
 			y2 = imgh;
 			elHeight.val( Math.round( y2 / sizer ) );
 			elY.val( 0 );
+			// TODO this text should be translatable
+			subjectAreaInfo.text( 'Please reduce height to apply this Y value.' );
 		}
 
 		ias.setSelection( x1, y1, x2, y2 );
