@@ -92,20 +92,6 @@ class Rokka_Image_Cdn_Settings {
 			$this,
 			'settings_page',
 		) );
-		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
-	}
-
-	/**
-	 * Load settings JS & CSS.
-	 */
-	public function settings_assets() {
-		wp_register_script( $this->parent->_token . '-settings-js', $this->parent->assets_url . 'js/settings' . $this->parent->script_suffix . '.js', array( 'jquery' ), '1.0.0' );
-		wp_enqueue_script( $this->parent->_token . '-settings-js' );
-
-		// add progessbar for mass upload
-		wp_enqueue_script( 'jquery-ui-progressbar' );
-		wp_enqueue_style( 'rokka-jquery-ui', ROKKA_PLUGIN_PATH . '/assets/css/jquery-ui.min.css' );
-		wp_enqueue_style( 'rokka-jquery-ui' );
 	}
 
 	/**
@@ -204,12 +190,6 @@ class Rokka_Image_Cdn_Settings {
 				if ( 'standard' === $section ) {
 					add_settings_section( $section, $data['title'], array(
 						$this,
-						'mass_upload_page',
-					), $this->parent->_token . '_settings' );
-
-				} else {
-					add_settings_section( $section, $data['title'], array(
-						$this,
 						'settings_section',
 					), $this->parent->_token . '_settings' );
 				}
@@ -265,6 +245,11 @@ class Rokka_Image_Cdn_Settings {
 	 * Load settings page content.
 	 */
 	public function settings_page() {
+		$rokka_settings = array(
+			'imagesToUpload' => $this->rokka_mass_upload->get_images_for_upload(),
+		);
+		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
+
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 		$html .= '<h2>' . __( 'Rokka Settings', 'rokka-image-cdn' ) . '</h2>' . "\n";
@@ -330,100 +315,13 @@ class Rokka_Image_Cdn_Settings {
 
 		echo $html;
 		?>
-		<a href="#bla" class="button button-primary"
-		   id="create-rokka-stacks"><?php echo esc_attr( __( 'Create stacks on Rokka', 'rokka-image-cdn' ) ); ?></a>
+		<button class="button button-primary" id="create-rokka-stacks"><?php esc_attr_e( 'Create stacks on Rokka', 'rokka-image-cdn' ); ?></button>
 		<div id="progress_info_stacks"></div>
 		<br/>
-		<a href="#bla" class="button button-primary"
-		   id="mass-upload-everything"><?php echo esc_attr( __( 'Upload images to Rokka', 'rokka-image-cdn' ) ); ?></a>
+		<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka', 'rokka-image-cdn' ); ?></button>
 		<div id="progressbar"></div>
 		<div id="progress_info"></div>
 
-		<?php
-	}
-
-
-	public function mass_upload_page() {
-		?>
-		<script type="text/javascript">
-			jQuery(document).ready(function ($) {
-
-				$('#mass-upload-everything').click(function (e) {
-					console.log('start mass upload'); //todo remove
-
-
-					var image_ids_to_upload = <?php echo json_encode( $this->rokka_mass_upload->get_images_for_upload() ); ?>;
-					image_ids_to_upload = Object.keys(image_ids_to_upload).map(function (k) {
-						return image_ids_to_upload[k]
-					});
-
-
-					var progress_fraction = 100 / image_ids_to_upload.length;
-					var progress_step = 0;
-					if (image_ids_to_upload.length > 0) {
-						$("#progressbar").progressbar({
-							value: 0
-						});
-						$('#progress_info').append("<br />");
-						rokka_upload_image(image_ids_to_upload);
-						function rokka_upload_image(image_ids_to_upload) {
-							if (image_ids_to_upload.length > 0) {
-								var image_id = image_ids_to_upload.shift();
-								$.ajax({
-									type: 'POST',
-									url: ajaxurl,
-									dataType: "json",
-									data: {action: 'rokka_upload_image', id: image_id},
-									success: function (response) {
-										if (response.success) {
-											$('#progress_info').append("upload of image id " + image_id + " successful <br />");
-
-										} else {
-											$('#progress_info').append("upload of image id " + image_id + " failed! Message: " + response.data + "<br />");
-										}
-										progress_step += 1;
-										$("#progressbar").progressbar({
-											value: progress_step * progress_fraction
-										});
-										rokka_upload_image(image_ids_to_upload);
-									},
-									error: function (response) {
-										progress_step += 1;
-										$("#progressbar").progressbar({
-											value: progress_step * progress_fraction
-										});
-										$('#progress_info').append("upload of image id " + image_id + " failed! The Server Returned an Error  <br />");
-
-										rokka_upload_image(image_ids_to_upload);
-									}
-								});
-							}
-							else {
-								$('#progress_info').append("image upload done! <br />");
-							}
-						}
-					}
-					else {
-						$('#progress_info').append("Nothing to process here, all images are already uploaded to Rokka.<br />");
-					}
-				});
-
-				$('#create-rokka-stacks').click(function (e) {
-					$.ajax({
-						type: 'GET',
-						url: ajaxurl,
-						data: {action: 'rokka_create_stacks'},
-						success: function (response) {
-							$('#progress_info_stacks').append("stack creation successful! <br />");
-
-						},
-						error: function (response) {
-							$('#progress_info_stacks').append("stack creation failed! <br />");
-						}
-					});
-				});
-			});
-		</script>
 		<?php
 	}
 
