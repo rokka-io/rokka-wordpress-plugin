@@ -121,12 +121,25 @@ class Rokka_Image_Cdn {
 
 	/**
 	 * Load admin Javascript.
+	 *
+	 * @param string $hook Current page hook.
 	 */
-	public function admin_enqueue_scripts() {
+	public function admin_enqueue_scripts( $hook ) {
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.js', array( 'jquery' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-admin' );
 		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'js/rokka-subject-area.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-subject-area' );
+
+		// Load only on rokka settings page
+		if( $hook === 'settings_page_rokka-image-cdn_settings' ) {
+			wp_register_script( $this->_token . '-settings-js', $this->assets_url . 'js/settings' . $this->script_suffix . '.js', array( 'jquery' ), '1.0.0', true );
+			wp_enqueue_script( $this->_token . '-settings-js' );
+
+			// add progessbar for mass upload
+			wp_enqueue_script( 'jquery-ui-progressbar' );
+			wp_enqueue_style( 'rokka-jquery-ui', ROKKA_PLUGIN_PATH . '/assets/css/jquery-ui.min.css' );
+			wp_enqueue_style( 'rokka-jquery-ui' );
+		}
 	}
 
 	/**
