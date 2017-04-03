@@ -159,37 +159,31 @@ class Rokka_Media_Management {
 		// save hash field
 		if ( isset( $attachment['rokka_hash'] ) ) {
 			if ( '' === trim( $attachment['rokka_hash'] ) ) {
-				// adding our custom error
-				$post['errors']['rokka_hash']['errors'][] = __( 'Rokka Hash is required!', 'rokka-image-cdn' );
+				delete_post_meta( $post['ID'], 'rokka_hash' );
 			} else {
 				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash'] );
 				$hash = $attachment['rokka_hash'];
 			}
 		}
 
+		// stop saving rokka specific fields if rokka hash was removed
+		if ( empty( $hash ) ) {
+			return $post;
+		}
+
 		if ( isset( $attachment['rokka_subject_area'] ) ) {
 			update_post_meta( $post['ID'], 'rokka_subject_area', $attachment['rokka_subject_area'] );
 
-			if ( empty( $hash ) ) {
-				$hash = get_post_meta( $post['ID'], 'rokka_hash', true );
+			$width = intval( $attachment['rokka_subject_area']['width'] );
+			$height = intval( $attachment['rokka_subject_area']['height'] );
+			$x = intval( $attachment['rokka_subject_area']['x'] );
+			$y = intval( $attachment['rokka_subject_area']['y'] );
+			if ( $width >= 3 && $height >= 3 ) {
+				$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
+			} else {
+				$new_hash = $this->rokka_helper->remove_subject_area( $hash );
 			}
-
-			if ( $hash ) {
-				$width = intval( $attachment['rokka_subject_area']['width'] );
-				$height = intval( $attachment['rokka_subject_area']['height'] );
-				$x = intval( $attachment['rokka_subject_area']['x'] );
-				$y = intval( $attachment['rokka_subject_area']['y'] );
-				if ( $width >= 3 && $height >= 3 ) {
-					$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
-				} else {
-					$new_hash = $this->rokka_helper->remove_subject_area( $hash );
-				}
-				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
-			}
-		}
-
-		if ( ! $hash ) {
-			return $post;
+			update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
 		}
 
 		return $post;
