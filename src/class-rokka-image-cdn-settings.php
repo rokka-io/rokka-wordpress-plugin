@@ -229,11 +229,17 @@ class Rokka_Image_Cdn_Settings {
 		$rokka_settings = array(
 			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
 			'nonce' => $ajax_nonce,
+			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
+			'labels' => array(
+				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-image-cdn' ),
+				'createStacksSuccess' => esc_html__( 'Stack creation successful!', 'rokka-image-cdn' ),
+				'createStacksFail' => esc_html__( 'Stack creation successful!', 'rokka-image-cdn' ),
+			)
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
 		<div class="wrap" id="<?php echo esc_attr( $this->parent->_token ); ?>_settings">
-			<h2><?php esc_html_e( 'Rokka Settings' , 'rokka-image-cdn' ); ?></h2>
+			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-image-cdn' ); ?></h1>
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
@@ -259,14 +265,14 @@ class Rokka_Image_Cdn_Settings {
 							<?php esc_html_e( 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.' , 'rokka-image-cdn' ); ?>
 						</p>
 						<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
-						<div id="progress_info_stacks"></div>
+						<div id="progress-info-stacks"></div>
 					</div>
 				</div><!--end #tab-02 -->
 				<div id="tab-03" class="tab">
 					<div class="tab-content">
 						<a href="#" class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
 						<div id="progressbar"></div>
-						<div id="progress_info"></div>
+						<div id="progress-info"></div>
 					</div>
 				</div><!--end #tab-03 -->
 			</div><!--end #column-left -->

@@ -103,8 +103,15 @@ label .description {
   text-align: right;
 }
 
-#progress_info_stacks {
-  padding: 11px 0 0 0;
+#create-rokka-stacks {
+  margin-bottom: 15px;
+}
+#progress-info-stacks {
+  .loading-indicator {
+    img, span {
+      vertical-align: middle;
+    }
+  }
 }
 
 // Right column (Banner)
