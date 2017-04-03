@@ -103,7 +103,8 @@ label .description {
   text-align: right;
 }
 
-#create-rokka-stacks {
+button#create-rokka-stacks,
+button#mass-upload-everything {
   margin-bottom: 15px;
 }
 #progress-info-stacks {
@@ -112,6 +113,26 @@ label .description {
       vertical-align: middle;
     }
   }
+}
+#upload-progressbar {
+  margin-bottom: 10px;
+  .ui-progressbar-value {
+    background-color: #00a0d2;
+  }
+}
+#upload-progress-log-wrapper {
+  display: none;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+}
+#upload-progress-log {
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  font-family: monospace;
 }
 
 // Right column (Banner)

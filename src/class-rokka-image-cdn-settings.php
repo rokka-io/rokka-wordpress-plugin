@@ -233,7 +233,11 @@ class Rokka_Image_Cdn_Settings {
 			'labels' => array(
 				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-image-cdn' ),
 				'createStacksSuccess' => esc_html__( 'Stack creation successful!', 'rokka-image-cdn' ),
-				'createStacksFail' => esc_html__( 'Stack creation successful!', 'rokka-image-cdn' ),
+				'createStacksFail' => esc_html__( 'Stack creation failed! Error:', 'rokka-image-cdn' ),
+				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-image-cdn' ),
+				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
+				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
+				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to Rokka.', 'rokka-image-cdn' ),
 			)
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
@@ -270,9 +274,13 @@ class Rokka_Image_Cdn_Settings {
 				</div><!--end #tab-02 -->
 				<div id="tab-03" class="tab">
 					<div class="tab-content">
-						<a href="#" class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
-						<div id="progressbar"></div>
-						<div id="progress-info"></div>
+						<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></button>
+						<div id="upload-progress-info"></div>
+						<div id="upload-progressbar"></div>
+						<div id="upload-progress-log-wrapper">
+							<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
+							<textarea id="upload-progress-log" disabled="disabled"></textarea>
+						</div>
 					</div>
 				</div><!--end #tab-03 -->
 			</div><!--end #column-left -->

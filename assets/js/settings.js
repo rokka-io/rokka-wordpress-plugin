@@ -1,17 +1,38 @@
 jQuery(document).ready(function ($) {
+	function getCurrentDateTime() {
+		var currentdate = new Date();
+		return '[' + ('0' + currentdate.getDate()).slice(-2) + "."
+		+ ('0' + (currentdate.getMonth()+1)).slice(-2)  + "."
+		+ currentdate.getFullYear() + " "
+		+ ('0' + (currentdate.getHours()+1)).slice(-2) + ":"
+		+ ('0' + (currentdate.getMinutes()+1)).slice(-2) + ":"
+		+ ('0' + (currentdate.getSeconds()+1)).slice(-2) + ']';
+	}
+
 	$('#mass-upload-everything').click(function (e) {
+		var uploadProgressbar = $('#upload-progressbar'),
+			uploadProgressLogWrapper = $('#upload-progress-log-wrapper'),
+			uploadProgressLog = $('#upload-progress-log'),
+			uploadProgresInfo = $('#upload-progress-info');
 		var imageIdsToUpload = rokkaSettings.imagesToUpload;
 		imageIdsToUpload = Object.keys(imageIdsToUpload).map(function (k) {
 			return imageIdsToUpload[k]
 		});
 
+		uploadProgresInfo.html('');
+		uploadProgressLog.val('');
+		uploadProgressLogWrapper.hide();
+
 		var progressFraction = 100 / imageIdsToUpload.length;
 		var progressStep = 0;
 		if (imageIdsToUpload.length > 0) {
-			$('#progressbar').progressbar({
+			// initialize progressbar
+			uploadProgressbar.progressbar({
 				value: 0
 			});
-			$('#progress-info').append('<br />');
+			uploadProgressLogWrapper.show();
+
+			// upload first image
 			rokkaUploadImage(imageIdsToUpload);
 
 			function rokkaUploadImage(imageIdsToUpload) {
@@ -27,22 +48,21 @@ jQuery(document).ready(function ($) {
 							nonce: rokkaSettings.nonce
 						}
 					}).done(function() {
-						$('#progress-info').append('upload of image id ' + imageId + ' successful<br />');
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadSingleImageSuccess + ' ' + imageId + '\n');
 					}).fail(function( res ) {
-						$('#progress-info').append('upload of image id ' + imageId + ' failed! The Server Returned an Error: ' + res.responseJSON.data + '<br />');
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadSingleImageFail + ' ' + imageId + ' / Error: ' + res.responseJSON.data + '\n');
 					}).always(function() {
 						progressStep += 1;
-						$('#progressbar').progressbar({
-							value: progressStep * progressFraction
-						});
+						uploadProgressbar.progressbar('value', progressStep * progressFraction);
 						rokkaUploadImage(imageIdsToUpload);
 					});
 				} else {
-					$('#progress-info').append('image upload done! <br />');
+					uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadImagesSuccess);
+					uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.uploadImagesSuccess + '</p></div>')
 				}
 			}
 		} else {
-			$('#progress-info').append('Nothing to process here, all images are already uploaded to Rokka.<br />');
+			uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.uploadImagesAlreadyUploaded + '</p></div>');
 		}
 	});
 
@@ -59,7 +79,7 @@ jQuery(document).ready(function ($) {
 		}).done(function() {
 			$('#progress-info-stacks').html('<div class="notice notice-success"><p>' + rokkaSettings.labels.createStacksSuccess + '</p></div>');
 		}).fail(function( res ) {
-			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.createStacksFail + '. Error: ' + res.responseJSON.data + '</p></div>');
+			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.createStacksFail + ' ' + res.responseJSON.data + '</p></div>');
 		});
 	});
 });
