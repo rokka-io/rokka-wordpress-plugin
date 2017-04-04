@@ -8,6 +8,8 @@
 	<exclude-pattern>tests/*</exclude-pattern>
 	<exclude-pattern>index.php</exclude-pattern>
 
+	<exclude-pattern>src/class-rokka-image-editor.php</exclude-pattern>
+
 	<rule ref="WordPress">
 		<exclude name="Squiz.Commenting.InlineComment" />
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
