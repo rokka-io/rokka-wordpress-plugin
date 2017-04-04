@@ -141,7 +141,7 @@ class Rokka_Image_Cdn {
 	 * Load plugin localisation.
 	 */
 	public function load_localisation() {
-		load_plugin_textdomain( 'rokka-image-cdn', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( 'rokka-image-cdn', false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Rokka_Image_Cdn {
 		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 
 		load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
-		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
 	/**
