@@ -16,7 +16,7 @@
     "plugin"
   ],
   "author": "Liip AG",
-  "license": "MIT",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/rokka-io/rokka-wordpress-plugin/issues"
   },

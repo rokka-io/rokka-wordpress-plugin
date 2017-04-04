@@ -1,23 +1,42 @@
 {
-  "name": "rokka/rokka-client-php",
+  "name": "rokka/rokka-wordpress-plugin",
   "description": "Rokka.io plugin for WordPress",
   "type": "wordpress-plugin",
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin/",
+  "authors": [
+    {
+      "name": "Liip AG",
+      "email": "contact@liip.ch",
+      "homepage": "https://liip.ch/",
+      "role": "Developer"
+    },
+    {
+      "name": "Juerg Hunziker",
+      "email": "juerg.hunziker@liip.ch",
+      "role": "Developer"
+    },
+    {
+      "name": "Philippe Savary",
+      "email": "philippe.savary@liip.ch",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/rokka-io/rokka-wordpress-plugin",
+    "docs": "http://rokka.io",
+    "issues": "https://github.com/rokka-io/rokka-wordpress-plugin/issues",
+    "email": "contact@liip.ch"
+  },
   "require": {
     "rokka/client": "^0.5.1"
+  },
+  "config": {
+    "bin-dir": "bin"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.8",
     "wp-coding-standards/wpcs": "^0.11.0",
     "phpunit/phpunit": "^5.7"
-  },
-  "config": {
-    "bin-dir": "bin"
-  },
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Liip AG",
-      "email": "info@liip.ch"
-    }
-  ]
+  }
 }
