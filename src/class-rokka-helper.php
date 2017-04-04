@@ -15,7 +15,14 @@ class Rokka_Helper {
 	 *
 	 * @var string
 	 */
-	const ROKKA_URL = 'https://api.rokka.io';
+	const ROKKA_SCHEME = 'https';
+
+	/**
+	 * Rokka baseurl.
+	 *
+	 * @var string
+	 */
+	const ROKKA_DOMAIN = 'rokka.io';
 
 	/**
 	 * List of allowed mime types.
@@ -147,12 +154,12 @@ class Rokka_Helper {
 	 *
 	 * @return array
 	 */
-	function rokka_create_stacks() {
-		// TODO refactor this method
-		$sizes = $this->list_thumbnail_sizes();
+	public function rokka_create_stacks() {
+		$sizes = $this->get_available_image_sizes();
 		$client = $this->rokka_get_client();
 		$stacks = $client->listStacks();
-		//create a noop stack if it not exists already
+
+		// Create a noop stack (full size stack) if it not exists already
 		try {
 			$client->getStack( $this->get_rokka_full_size_stack_name() );
 		} catch ( Exception $e ) {
@@ -163,12 +170,15 @@ class Rokka_Helper {
 			foreach ( $sizes as $name => $size ) {
 				$continue = true;
 				$delete   = false;
-				foreach ( $stacks->getStacks() as $stack ) {
+				$width = $size[0];
+				$height = $size[1];
 
+				// loop through all stacks which are already on Rokka
+				foreach ( $stacks->getStacks() as $stack ) {
 					if ( $stack->name === $name ) {
 						$continue = false;
 
-						//check if the max width was changed in the meantime (in wordpress config)
+						//check if width or height was changed in the meantime (in WordPress config)
 						// @codingStandardsIgnoreStart
 						$stack_operations = $stack->stackOperations;
 						// @codingStandardsIgnoreEnd
@@ -178,31 +188,29 @@ class Rokka_Helper {
 							if ( 'resize' === $operation['name'] ) {
 								$stack_width  = $operation['options']['width'];
 								$stack_height = $operation['options']['height'];
-								if ( $stack_width !== $size[0] || $stack_height !== $size[1] ) {
-
+								if ( $stack_width !== $width || $stack_height !== $height ) {
 									$continue = true;
-									$delete   = true;
+									$delete = true;
 								}
 							}
 						}
-
-						continue;
+						break;
 					}
 				}
 
-				if ( $continue && $size[0] > 0 ) {
+				if ( $continue && $width > 0 ) {
 					if ( $delete ) {
 						$client->deleteStack( $name );
 					}
-					$resize = new \Rokka\Client\Core\StackOperation( 'resize', [
-						'width'   => $size[0],
-						'height'  => $size[1],
+					$resize_operation = new \Rokka\Client\Core\StackOperation( 'resize', array(
+						'width'   => $width,
+						'height'  => $height,
 						//aspect ratio will be kept
 						'mode'    => 'box',
 						'upscale' => false,
-					] );
+					) );
 
-					$client->createStack( $name, [ $resize ] );
+					$client->createStack( $name, array( $resize_operation ) );
 				}
 			}
 		}
@@ -211,36 +219,30 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Lists all thumbnail sizes.
+	 * Gets all image sizes
 	 *
 	 * @return array
 	 */
-	public function list_thumbnail_sizes() {
+	public function get_available_image_sizes() {
 		global $_wp_additional_image_sizes;
 		$sizes  = array();
-		$r_sizes = array();
 
-		// @codingStandardsIgnoreStart
-		foreach ( get_intermediate_image_sizes() as $s ) {
-		// @codingStandardsIgnoreEnd
-			$sizes[ $s ] = array( 0, 0 );
-			if ( in_array( $s, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
-				$sizes[ $s ][0] = get_option( $s . '_size_w' ) ?: 768;
-				$sizes[ $s ][1] = get_option( $s . '_size_h' ) ?: 10000;
+		foreach ( get_intermediate_image_sizes() as $_size ) {
+			$sizes[ $_size ] = array( 0, 0 );
+			if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
+				$sizes[ $_size ]['width']  = get_option( "{$_size}_size_w" );
+				$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
 			} else {
-				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $s ] ) ) {
-					$sizes[ $s ] = array(
-						$_wp_additional_image_sizes[ $s ]['width'],
-						$_wp_additional_image_sizes[ $s ]['height'],
+				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+					$sizes[ $_size ] = array(
+						$_wp_additional_image_sizes[ $_size ]['width'],
+						$_wp_additional_image_sizes[ $_size ]['height'],
 					);
 				}
 			}
 		}
-		foreach ( $sizes as $size => $atts ) {
-			$r_sizes[ $size ] = $atts;
-		}
 
-		return $r_sizes;
+		return $sizes;
 	}
 
 
@@ -267,7 +269,7 @@ class Rokka_Helper {
 			$stack = null;
 
 			// if size is requests as width / height array -> find matching or nearest Rokka size
-			$rokka_sizes = $this->list_thumbnail_sizes();
+			$rokka_sizes = $this->get_available_image_sizes();
 			foreach ( $rokka_sizes as $size_name => $size_values ) {
 				if ( $size[0] <= $size_values[0] ) {
 					$stack = $size_name;
@@ -329,7 +331,7 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_rokka_scheme() {
-		return 'https';
+		return self::ROKKA_SCHEME;
 	}
 
 	/**
@@ -338,7 +340,7 @@ class Rokka_Helper {
 	 * @return string|bool
 	 */
 	public function get_rokka_domain() {
-		return get_option( 'rokka_domain' );
+		return self::ROKKA_DOMAIN;
 	}
 
 	/**

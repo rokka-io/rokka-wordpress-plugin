@@ -83,14 +83,6 @@ class Rokka_Image_Cdn_Settings {
 	public function init_settings() {
 		$this->settings_fields = array(
 			array(
-				'id'          => 'domain',
-				'label'       => __( 'Rokka URL', 'rokka-image-cdn' ),
-				'description' => __( 'The domain where rokka images are stored. Don\'t change this value unless you know what you are doing', 'rokka-image-cdn' ),
-				'type'        => 'text',
-				'default'     => 'rokka.io',
-				'placeholder' => 'rokka.io',
-			),
-			array(
 				'id'          => 'company_name',
 				'label'       => __( 'Company name', 'rokka-image-cdn' ),
 				'description' => __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
