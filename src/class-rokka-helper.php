@@ -230,8 +230,8 @@ class Rokka_Helper {
 		foreach ( get_intermediate_image_sizes() as $_size ) {
 			$sizes[ $_size ] = array( 0, 0 );
 			if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
-				$sizes[ $_size ]['width']  = get_option( "{$_size}_size_w" );
-				$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
+				$sizes[ $_size ][0]  = get_option( "{$_size}_size_w" );
+				$sizes[ $_size ][1] = get_option( "{$_size}_size_h" );
 			} else {
 				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
 					$sizes[ $_size ] = array(
