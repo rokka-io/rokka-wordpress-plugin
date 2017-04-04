@@ -57,7 +57,6 @@
   width: 29%;
   max-width: 260px;
   float: right;
-  border: 0px solid #ccc;
   text-align: center;
 }
 .column-right-wrap {
@@ -136,23 +135,26 @@ button#mass-upload-everything {
 }
 
 // Right column (Banner)
-#logo-rokka svg {
+.logo {
   height: auto;
   width: 100%;
-  margin: 0 0 40px 0;
+  margin-bottom: 40px;
 }
-.banner {
+#logo-liip {
+  img {
+    max-width: 150px;
+    height: auto;
+  }
+}
+#address-block {
+  background-color:#A4C339;
   width: auto;
-  margin: 0 0 20px 0;
-  padding: 20px 0 20px 0;
-}
-#banner-website {
-  height: 60px;
-  color: #fff;
-  background-image: linear-gradient(14deg, #A4C339 0%, #6EA644 58%);
-}
-#banner-liip {
-  background: #ccc;
+  padding: 20px 0;
+  color: #ffffff;
+
+  .company {
+    font-weight: bold;
+  }
 }
 
 // Mobile view
