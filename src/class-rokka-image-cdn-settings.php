@@ -109,6 +109,13 @@ class Rokka_Image_Cdn_Settings {
 				'description' => __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
 				'type'        => 'checkbox',
 			),
+			array(
+				'id'          => 'output_parsing',
+				'label'       => __( 'Enable output parsing', 'rokka-image-cdn' ),
+				'description' => __( 'This feature will parse the output and try to find Rokka images for hardcoded image links pointing to local images. Relative links will be ignored.', 'rokka-image-cdn' ),
+				'type'        => 'checkbox',
+				'default'     => '',
+			),
 		);
 	}
 

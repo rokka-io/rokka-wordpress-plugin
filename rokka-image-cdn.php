@@ -54,8 +54,10 @@ function rokka_image_cdn() {
 		$rokka_sync = new Rokka_Sync( $rokka_helper );
 		new Rokka_Media_Management( $rokka_helper );
 		new Rokka_Filter_Url( $rokka_helper );
-		new Filter_Rokka_Content( $rokka_helper );
 		new Filter_Rokka_Image_Editor( $rokka_helper );
+		if ( get_option( 'rokka_output_parsing') ) {
+			new Filter_Rokka_Content( $rokka_helper );
+		}
 
 		if ( is_null( $instance->settings ) ) {
 			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
