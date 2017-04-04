@@ -242,7 +242,7 @@ class Rokka_Image_Cdn_Settings {
 				<div id="tab-02" class="tab">
 					<div class="tab-content">
 						<p>
-							<?php esc_html_e( 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.' , 'rokka-image-cdn' ); ?>
+							<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. Before you enable Rokka the first time, please make sure you have executed this command and all images are uploaded to Rokka already. This is nescessary in order to provide the images in the right size from Rokka. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
 						</p>
 						<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
 						<div id="progress-info-stacks"></div>
@@ -250,6 +250,9 @@ class Rokka_Image_Cdn_Settings {
 				</div><!--end #tab-02 -->
 				<div id="tab-03" class="tab">
 					<div class="tab-content">
+						<p>
+							<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
+						</p>
 						<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></button>
 						<div id="upload-progress-info"></div>
 						<div id="upload-progressbar"></div>
