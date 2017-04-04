@@ -6,23 +6,23 @@
  */
 
 /**
- * Class Filter_Rokka_Image_Editor
+ * Class Rokka_Image_Editor
  */
-class Filter_Rokka_Image_Editor {
+class Rokka_Image_Editor {
 	/**
-	 * Rokka client
+	 * Rokka helper
 	 *
-	 * @var \Rokka\Client\Image
+	 * @var Rokka_Helper
 	 */
-	private $rokka_client;
+	private $rokka_helper;
 
 	/**
-	 * Filter_Rokka_Image_Editor constructor.
+	 * Rokka_Image_Editor constructor.
 	 *
 	 * @param Rokka_Helper $rokka_helper Rokka helper.
 	 */
 	function __construct( $rokka_helper ) {
-		$this->rokka_client = $rokka_helper->rokka_get_client();
+		$this->rokka_helper = $rokka_helper;
 		$this->init();
 	}
 
@@ -67,9 +67,7 @@ class Filter_Rokka_Image_Editor {
 						break;
 					case 'crop':
 						$sel = $operation->sel;
-						$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $sel->x, $sel->y, $sel->w, $sel->h );
-						$hash = $this->rokka_client->setDynamicMetadata( $subject_area, $hash );
-						update_post_meta( $post_id, 'rokka_hash', $hash );
+						// TODO implement Rokka API call to do cropping
 						break;
 				}
 			}
@@ -100,9 +98,7 @@ class Filter_Rokka_Image_Editor {
 		}
 		// remove custom metadata from Rokka image on restore
 		if ( $is_restore ) {
-			// remove subject area
-			$hash = $this->rokka_client->deleteDynamicMetadata( 'SubjectArea', $hash );
-			update_post_meta( $attachment_id, 'rokka_hash', $hash );
+			// TODO restore image on Rokka
 		}
 
 		return $file;

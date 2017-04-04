@@ -29,7 +29,7 @@ require_once( 'src/class-rokka-image-cdn-settings.php' );
 require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-sync.php' );
 require_once( 'src/filters/filter-rokka-content.php' );
-require_once( 'src/filters/class-filter-rokka-image-editor.php' );
+require_once( 'src/class-rokka-image-editor.php' );
 require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
 
@@ -55,7 +55,7 @@ function rokka_image_cdn() {
 		if ( is_admin() ) {
 			$rokka_sync = new Rokka_Sync( $rokka_helper );
 			new Rokka_Media_Management( $rokka_helper );
-			new Filter_Rokka_Image_Editor( $rokka_helper );
+			new Rokka_Image_Editor( $rokka_helper );
 
 			if ( is_null( $instance->settings ) ) {
 				$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
