@@ -1,0 +1,207 @@
+# German translations for rokka-wordpress-plugin package
+# German messages for rokka-wordpress-plugin.
+# This file is put in the public domain.
+# Juerg Hunziker <juerg.hunziker@liip.ch>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rokka-wordpress-plugin 1.0.0\n"
+"Report-Msgid-Bugs-To: contact@liip.ch\n"
+"POT-Creation-Date: 2017-04-04 11:50+0200\n"
+"PO-Revision-Date: 2017-04-04 11:53+0200\n"
+"Last-Translator: Juerg Hunziker <juerg.hunziker@liip.ch>\n"
+"Language-Team: German\n"
+"Language: de_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/class-rokka-helper.php:124
+#, php-format
+msgctxt "%s contains mime type"
+msgid "Mime type %s is not allowed in rokka"
+msgstr ""
+
+#: src/class-rokka-helper.php:131
+#, php-format
+msgctxt "%s contains file path"
+msgid "File %s does not exist"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:87
+msgid "Company name"
+msgstr "Firmen name"
+
+#: src/class-rokka-image-cdn-settings.php:88
+msgid "Your Company name you have registered on Rokka with"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:90
+msgid "Company"
+msgstr "Firma"
+
+#: src/class-rokka-image-cdn-settings.php:94
+msgid "API Key"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:95
+msgid "Rokka API key"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:97
+msgid "Key"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:101
+msgid "API Secret"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:102
+msgid ""
+"This is a secret text field - any data saved here will not be displayed "
+"after the page has reloaded, but it will be saved."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:104
+msgid "Secret"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:108
+msgid "Enable Rokka"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:109
+msgid "This will enable the Rokka.io functionality."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:119
+#: src/class-rokka-image-cdn-settings.php:207
+msgid "Rokka Settings"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:130
+#: src/class-rokka-image-cdn-settings.php:211
+msgid "Settings"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:144
+msgid "Main settings"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:186
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:195
+msgid "Creating stacks..."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:196
+msgid "Stack creation successful!"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:197
+msgid "Stack creation failed! Error:"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:198
+msgid "Upload of image successful. Image ID:"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:199
+msgid "Upload of image failed! Image ID:"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:200
+msgid "Image upload finished!"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:201
+msgid "Nothing to process here, all images are already uploaded to Rokka."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:212
+#: src/class-rokka-image-cdn-settings.php:232
+msgid "Create stacks on Rokka"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:213
+#: src/class-rokka-image-cdn-settings.php:238
+msgid "Upload images to Rokka"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:230
+msgid ""
+"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
+"eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam "
+"voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet "
+"clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit "
+"amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam "
+"nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed "
+"diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet "
+"clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:242
+msgid "Log:"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:252
+msgid "Banner Website"
+msgstr ""
+
+#: src/class-rokka-image-cdn-settings.php:394
+#: src/class-rokka-image-cdn-settings.php:403
+#: src/class-rokka-image-cdn.php:179 src/class-rokka-image-cdn.php:186
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: src/class-rokka-media-management.php:53
+#: src/class-rokka-media-management.php:203
+msgid "Rokka Hash"
+msgstr ""
+
+#: src/class-rokka-media-management.php:94
+msgid "Image data does not exist. Please re-upload the image."
+msgstr ""
+
+#: src/class-rokka-media-management.php:113
+msgid "Offset X"
+msgstr ""
+
+#: src/class-rokka-media-management.php:116
+msgid "Offset Y"
+msgstr ""
+
+#: src/class-rokka-media-management.php:121
+msgid "Width"
+msgstr ""
+
+#: src/class-rokka-media-management.php:124
+msgid "Height"
+msgstr ""
+
+#: src/class-rokka-media-management.php:131
+msgid "Remove selection"
+msgstr ""
+
+#: src/class-rokka-media-management.php:135
+msgid "Rokka Subject Area"
+msgstr ""
+
+#: src/class-rokka-sync.php:87 src/class-rokka-sync.php:157
+msgid "Permission denied! There was something wrong with the nonce."
+msgstr ""
+
+#: src/class-rokka-sync.php:104
+msgid "This image is already on Rokka. No need to upload it another time."
+msgstr ""
+
+#: src/class-rokka-sync.php:107
+msgid "image_id parameter missing."
+msgstr ""
+
+#: src/class-rokka-sync.php:168
+msgid "Could not process stacks."
+msgstr ""

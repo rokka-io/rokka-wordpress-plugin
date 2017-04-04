@@ -101,9 +101,8 @@ class Rokka_Image_Cdn {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 
-		// Handle localisation
-		$this->load_plugin_textdomain();
-		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+		// Load textdomain
+		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 	}
 
 	/**
@@ -138,20 +137,10 @@ class Rokka_Image_Cdn {
 	}
 
 	/**
-	 * Load plugin localisation.
-	 */
-	public function load_localisation() {
-		load_plugin_textdomain( 'rokka-image-cdn', false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
-	}
-
-	/**
 	 * Load plugin textdomain
 	 */
 	public function load_plugin_textdomain() {
 		$domain = 'rokka-image-cdn'; // textdomain can't be stored in class variable since it must be a single string literal
-		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
-
-		load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
 		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
