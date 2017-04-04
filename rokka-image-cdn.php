@@ -6,21 +6,18 @@
  */
 
 /*
- * Plugin Name: Rokka Wordpress Plugin
- * Version: 1.0
- * Plugin URI: http://rokka.io/
+ * Plugin Name: Rokka.io
+ * Version: 1.0.0
+ * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.
- * Author: Philippe Savary
+ * Author: Liip AG
  * Author URI: http://liip.ch/
  * Requires at least: 4.0
  * Tested up to: 4.0
+ * License: GPL2
  *
- * Text Domain: Rokka_Image_Cdn
- * Domain Path: /lang/
- *
- * @package WordPress
- * @author Philippe Savary
- * @since 1.0.0
+ * Text Domain: rokka-image-cdn
+ * Domain Path: /languages/
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

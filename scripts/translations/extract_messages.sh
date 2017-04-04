@@ -2,8 +2,13 @@
 
 HERE=`dirname $0`
 ROOT="$HERE/../.."
-(cd "$ROOT/src/" && \
+(cd "$ROOT/" && \
 find "." \
+     -not -path "assets/*" \
+     -not -path "bin/*" \
+     -not -path "node_modules/*" \
+     -not -path "tests/*" \
+     -not -path "vendor/*" \
      -type f \( -name "*.php" \) \
      | xargs xgettext --language=PHP --add-comments=TRANSLATORS: --force-po --from-code=UTF-8 --no-wrap --foreign-user --package-name="rokka-wordpress-plugin" --package-version=1.0.0 --msgid-bugs-address=info@liip.ch \
      --keyword=__ \
@@ -24,5 +29,5 @@ find "." \
      --keyword=esc_html__ \
      --keyword=esc_html_e \
      --keyword=esc_html_x:1,2c \
-     -o "lang/rokka-image-cdn.pot" -
+     -o "languages/rokka-image-cdn.pot" -
 )
