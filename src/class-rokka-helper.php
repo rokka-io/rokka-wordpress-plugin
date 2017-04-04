@@ -38,6 +38,43 @@ class Rokka_Helper {
 	 */
 	const FULL_SIZE_STACK_NAME = 'full';
 
+	/**
+	 * Company name.
+	 *
+	 * @var string
+	 */
+	private $company_name = '';
+
+	/**
+	 * Rokka API Key.
+	 *
+	 * @var string
+	 */
+	private $api_key = '';
+
+	/**
+	 * Rokka API Secret.
+	 *
+	 * @var string
+	 */
+	private $api_secret = '';
+
+	/**
+	 * Rokka_Helper constructor.
+	 */
+	public function __construct() {
+		$this->load_options();
+	}
+
+	/**
+	 * Loads options from database
+	 */
+	protected function load_options() {
+		// loading options is expensive so we just do it once
+		$this->company_name = get_option( 'rokka_company_name' );
+		$this->api_key = get_option( 'rokka_api_key' );
+		$this->api_secret = get_option( 'rokka_api_secret' );
+	}
 
 	/**
 	 * Returns Rokka image client.
@@ -349,7 +386,7 @@ class Rokka_Helper {
 	 * @return string|bool
 	 */
 	public function get_rokka_company_name() {
-		return get_option( 'rokka_company_name' );
+		return $this->company_name;
 	}
 
 	/**
@@ -358,7 +395,7 @@ class Rokka_Helper {
 	 * @return string|bool
 	 */
 	public function get_rokka_api_key() {
-		return get_option( 'rokka_api_key' );
+		return $this->api_key;
 	}
 
 	/**
@@ -367,7 +404,7 @@ class Rokka_Helper {
 	 * @return string|bool
 	 */
 	public function get_rokka_api_secret() {
-		return get_option( 'rokka_api_secret' );
+		return $this->api_secret;
 	}
 
 }
