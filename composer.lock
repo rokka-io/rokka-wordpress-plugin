@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "631b42477e134ecd6a1b4fe287a2ecf1",
-    "content-hash": "d301fd67146d25c4fddabcc639dd5fa9",
+    "hash": "ff89793ee34ba3380b56655a839c9454",
+    "content-hash": "57eb906bd0a7ebf80226260ce8f45b99",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -237,7 +237,7 @@
         },
         {
             "name": "rokka/client",
-            "version": "dev-master",
+            "version": "0.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rokka-io/rokka-client-php.git",
@@ -1728,9 +1728,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "rokka/client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
