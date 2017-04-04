@@ -55,7 +55,7 @@ function rokka_image_cdn() {
 		new Rokka_Media_Management( $rokka_helper );
 		new Rokka_Filter_Url( $rokka_helper );
 		new Filter_Rokka_Image_Editor( $rokka_helper );
-		if ( get_option( 'rokka_output_parsing') ) {
+		if ( get_option( 'rokka_output_parsing' ) ) {
 			new Filter_Rokka_Content( $rokka_helper );
 		}
 
