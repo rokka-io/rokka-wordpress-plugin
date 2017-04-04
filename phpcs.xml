@@ -15,6 +15,7 @@
 		<exclude name="Squiz.Commenting.InlineComment" />
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
 		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
+		<exclude name="WordPress.VIP.RestrictedFunctions" />
 	</rule>
 
 </ruleset>
