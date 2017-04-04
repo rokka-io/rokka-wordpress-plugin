@@ -47,7 +47,7 @@ function rokka_image_cdn() {
 
 	if ( get_option( 'rokka_rokka_enabled' ) ) {
 		new Rokka_Filter_Url( $rokka_helper );
-		if ( get_option( 'rokka_output_parsing' ) ) {
+		if ( ! is_admin() && get_option( 'rokka_output_parsing' ) ) {
 			new Rokka_Filter_Content( $rokka_helper );
 		}
 	}
