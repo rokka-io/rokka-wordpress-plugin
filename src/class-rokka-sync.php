@@ -2,7 +2,7 @@
 /**
  * Rokka synchronization
  *
- * @package rokka-wordpress-plugin
+ * @package rokka-image-cdn
  */
 
 /**
