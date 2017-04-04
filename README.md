@@ -38,7 +38,7 @@ WordPress plugin to integrate Rokka.io image service
 
 ### Extract messages / Compile translation files
 
-Run the following script to extract messages from PHP-files and generate a new nebis.pot file:
+Run the following script to extract messages from PHP-files and generate a new rokka-image-cdn.pot file:
 
     $ scripts/translations/extract_messages.sh
 
@@ -49,3 +49,11 @@ Update all .po files with newly extracted messages from .pot file:
 To compile all .po files to .mo files use the following script:
 
     $ scripts/translations/compile_translation_files.sh
+
+### Before you commit to the Repository
+
+Execute the code sniffer by executing the following command from the plugin root:
+
+    $ scripts/phpcodesniffer.sh
+
+Correct the errors the sniffer has found prior to commiting. Commit when fixed, so the build will pass on Github.
