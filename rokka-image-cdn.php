@@ -26,12 +26,12 @@ define( 'ROKKA_PLUGIN_PATH', plugins_url( '', __FILE__ ) );
 // Load plugin class files
 require_once( 'src/class-rokka-image-cdn.php' );
 require_once( 'src/class-rokka-image-cdn-settings.php' );
-require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-sync.php' );
-require_once( 'src/filters/filter-rokka-content.php' );
 require_once( 'src/class-rokka-image-editor.php' );
 require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
+require_once( 'src/class-rokka-filter-url.php' );
+require_once( 'src/class-rokka-filter-content.php' );
 
 //add vendor library
 require_once( 'vendor/autoload.php' );
@@ -49,7 +49,7 @@ function rokka_image_cdn() {
 
 		new Rokka_Filter_Url( $rokka_helper );
 		if ( get_option( 'rokka_output_parsing' ) ) {
-			new Filter_Rokka_Content( $rokka_helper );
+			new Rokka_Filter_Content( $rokka_helper );
 		}
 
 		if ( is_admin() ) {
