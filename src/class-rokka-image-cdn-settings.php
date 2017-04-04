@@ -2,7 +2,7 @@
 /**
  * Rokka settings page
  *
- * @package rokka-wordpress-plugin
+ * @package rokka-image-cdn
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,6 +34,13 @@ class Rokka_Image_Cdn_Settings {
 	 * @var string
 	 */
 	public $base = '';
+
+	/**
+	 * Menu slug.
+	 *
+	 * @var string
+	 */
+	public $menu_slug = '';
 
 	/**
 	 * Available settings fields for plugin.
@@ -123,7 +130,8 @@ class Rokka_Image_Cdn_Settings {
 	 * Add settings page to admin menu.
 	 */
 	public function add_menu_item() {
-		add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->parent->_token . '_settings', array( $this, 'settings_page' ) );
+		$this->menu_slug = $this->parent->_token . '_settings';
+		add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->menu_slug, array( $this, 'settings_page' ) );
 	}
 
 	/**

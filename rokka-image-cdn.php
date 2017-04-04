@@ -1,23 +1,20 @@
 <?php
 /**
- * Main entry point of rokka-wordpress-plugin
- *
- * @package rokka-wordpress-plugin
- */
-
-/*
  * Plugin Name: Rokka.io
  * Version: 1.0.0
  * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.
  * Author: Liip AG
  * Author URI: http://liip.ch/
- * Requires at least: 4.0
- * Tested up to: 4.0
  * License: GPL2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 4.0
+ * Tested up to: 4.7
  *
  * Text Domain: rokka-image-cdn
  * Domain Path: /languages/
+ *
+ * @package rokka-image-cdn
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,25 +39,27 @@ require_once( 'vendor/autoload.php' );
 /**
  * Returns the main instance of Rokka_Image_Cdn to prevent the need to use globals.
  *
- * @since  1.0.0
- * @return object Rokka_Image_Cdn
+ * @return Rokka_Image_Cdn Rokka_Image_Cdn instance
  */
 function rokka_image_cdn() {
-	$instance     = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
+	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
 
 	if ( get_option( 'rokka_rokka_enabled' ) ) {
 		$rokka_helper = new Rokka_Helper();
 
-		$rokka_sync = new Rokka_Sync( $rokka_helper );
-		new Rokka_Media_Management( $rokka_helper );
 		new Rokka_Filter_Url( $rokka_helper );
-		new Filter_Rokka_Image_Editor( $rokka_helper );
 		if ( get_option( 'rokka_output_parsing' ) ) {
 			new Filter_Rokka_Content( $rokka_helper );
 		}
 
-		if ( is_null( $instance->settings ) ) {
-			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
+		if ( is_admin() ) {
+			$rokka_sync = new Rokka_Sync( $rokka_helper );
+			new Rokka_Media_Management( $rokka_helper );
+			new Filter_Rokka_Image_Editor( $rokka_helper );
+
+			if ( is_null( $instance->settings ) ) {
+				$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
+			}
 		}
 	}
 
