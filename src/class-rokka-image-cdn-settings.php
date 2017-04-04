@@ -36,11 +36,11 @@ class Rokka_Image_Cdn_Settings {
 	public $base = '';
 
 	/**
-	 * Available settings for plugin.
+	 * Available settings fields for plugin.
 	 *
 	 * @var array
 	 */
-	public $settings = array();
+	public $settings_fields = array();
 
 	/**
 	 * Instance of Rokka_Sync.
@@ -64,13 +64,13 @@ class Rokka_Image_Cdn_Settings {
 		// Initialise settings
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
 
-		// Register plugin settings
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
-
 		// Add settings page to menu
 		add_action( 'admin_menu', array( $this, 'add_menu_item' ) );
 
-		// Add settings link to plugins page
+		// Register plugin settings
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+
+		// Add settings link to plugin list table
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array(
 			$this,
 			'add_settings_link',
@@ -81,17 +81,50 @@ class Rokka_Image_Cdn_Settings {
 	 * Initialize settings.
 	 */
 	public function init_settings() {
-		$this->settings = $this->settings_fields();
+		$this->settings_fields = array(
+			array(
+				'id'          => 'domain',
+				'label'       => __( 'Rokka URL', 'rokka-image-cdn' ),
+				'description' => __( 'The domain where rokka images are stored. Don\'t change this value unless you know what you are doing', 'rokka-image-cdn' ),
+				'type'        => 'text',
+				'default'     => 'rokka.io',
+				'placeholder' => 'rokka.io',
+			),
+			array(
+				'id'          => 'company_name',
+				'label'       => __( 'Company name', 'rokka-image-cdn' ),
+				'description' => __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
+				'type'        => 'text',
+				'placeholder' => __( 'Company' ),
+			),
+			array(
+				'id'          => 'api_key',
+				'label'       => __( 'API Key', 'rokka-image-cdn' ),
+				'description' => __( 'Rokka API key', 'rokka-image-cdn' ),
+				'type'        => 'text',
+				'placeholder' => __( 'Key' ),
+			),
+			array(
+				'id'          => 'api_secret',
+				'label'       => __( 'API Secret', 'rokka-image-cdn' ),
+				'description' => __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'rokka-image-cdn' ),
+				'type'        => 'text',
+				'placeholder' => __( 'Secret' ),
+			),
+			array(
+				'id'          => 'rokka_enabled',
+				'label'       => __( 'Enable Rokka', 'rokka-image-cdn' ),
+				'description' => __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
+				'type'        => 'checkbox',
+			),
+		);
 	}
 
 	/**
 	 * Add settings page to admin menu.
 	 */
 	public function add_menu_item() {
-		$page = add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->parent->_token . '_settings', array(
-			$this,
-			'settings_page',
-		) );
+		add_options_page( __( 'Rokka Settings', 'rokka-image-cdn' ), __( 'Rokka Settings', 'rokka-image-cdn' ), 'manage_options', $this->parent->_token . '_settings', array( $this, 'settings_page' ) );
 	}
 
 	/**
@@ -102,110 +135,46 @@ class Rokka_Image_Cdn_Settings {
 	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . __( 'Settings', 'rokka-image-cdn' ) . '</a>';
-		array_push( $links, $settings_link );
+		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . esc_html__( 'Settings', 'rokka-image-cdn' ) . '</a>';
+		// add settings link as first element
+		array_unshift( $links, $settings_link );
 
 		return $links;
-	}
-
-	/**
-	 * Build settings fields.
-	 *
-	 * @return array Fields to be displayed on settings page
-	 */
-	private function settings_fields() {
-		$settings['standard'] = array(
-			'title'       => __( 'Rokka Main Configuration', 'rokka-image-cdn' ),
-			'description' => __( 'Please enter your credentials below', 'rokka-image-cdn' ),
-			'fields'      => array(
-				array(
-					'id'          => 'domain',
-					'label'       => __( 'Rokka URL', 'rokka-image-cdn' ),
-					'description' => __( 'The domain where rokka images are stored. Don\'t change this value unless you know what you are doing', 'rokka-image-cdn' ),
-					'type'        => 'url',
-					'default'     => 'rokka.io',
-					'disabled'    => 'disabled',
-					'placeholder' => 'rokka.io',
-				),
-				array(
-					'id'          => 'company_name',
-					'label'       => __( 'Company name', 'rokka-image-cdn' ),
-					'description' => __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
-					'type'        => 'text',
-					'default'     => '',
-					'placeholder' => __( 'Company' ),
-				),
-				array(
-					'id'          => 'api_key',
-					'label'       => __( 'API Key', 'rokka-image-cdn' ),
-					'description' => __( 'Rokka API key', 'rokka-image-cdn' ),
-					'type'        => 'text',
-					'default'     => '',
-					'placeholder' => __( 'Key' ),
-				),
-				array(
-					'id'          => 'api_secret',
-					'label'       => __( 'API Secret', 'rokka-image-cdn' ),
-					'description' => __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'rokka-image-cdn' ),
-					'type'        => 'text',
-					'default'     => '',
-					'placeholder' => __( 'Secret' ),
-				),
-				array(
-					'id'          => 'rokka_enabled',
-					'label'       => __( 'Enable Rokka', 'rokka-image-cdn' ),
-					'description' => __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
-					'type'        => 'checkbox',
-					'default'     => '',
-				),
-			),
-		);
-
-		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
-
-		return $settings;
 	}
 
 	/**
 	 * Register plugin settings.
 	 */
 	public function register_settings() {
-		if ( is_array( $this->settings ) ) {
-			foreach ( $this->settings as $section => $data ) {
+		$section = 'default';
 
-				// Add section to page
-				add_settings_section( $section, $data['title'], array(
+		// Add section to page
+		add_settings_section( $section, __( 'Main settings', 'rokka-image-cdn' ), array(
+			$this,
+			'settings_section',
+		), $this->parent->_token . '_settings' );
+
+		foreach ( $this->settings_fields as $field ) {
+			// Register field
+			$option_name = $this->base . $field['id'];
+			register_setting( $this->parent->_token . '_settings', $option_name );
+
+			// Add field to page
+			add_settings_field(
+				$field['id'],
+				$field['label'],
+				array(
 					$this,
-					'settings_section',
-				), $this->parent->_token . '_settings' );
-
-				foreach ( $data['fields'] as $field ) {
-					// Validation callback for field
-					$validation = '';
-					if ( isset( $field['callback'] ) ) {
-						$validation = $field['callback'];
-					}
-
-					// Register field
-					$option_name = $this->base . $field['id'];
-					register_setting( $this->parent->_token . '_settings', $option_name, $validation );
-
-					// Add field to page
-					add_settings_field(
-						$field['id'],
-						$field['label'],
-						array(
-							$this->parent->admin,
-							'display_field',
-						),
-						$this->parent->_token . '_settings',
-						$section, array(
-							'field'  => $field,
-							'prefix' => $this->base,
-						)
-					);
-				}
-			}
+					'display_field',
+				),
+				$this->parent->_token . '_settings',
+				$section,
+				array(
+					'field' => $field,
+					'prefix' => $this->base,
+					'label_for' => $field['id'],
+				)
+			);
 		}
 	}
 
@@ -215,16 +184,16 @@ class Rokka_Image_Cdn_Settings {
 	 * @param array $section Settings section.
 	 */
 	public function settings_section( $section ) {
-		$html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
-		// @codingStandardsIgnoreStart
-		echo $html;
-		// @codingStandardsIgnoreEnd
 	}
 
 	/**
 	 * Load settings page content.
 	 */
 	public function settings_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'rokka-image-cdn' ) );
+		}
+
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
 		$rokka_settings = array(
 			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
@@ -258,8 +227,8 @@ class Rokka_Image_Cdn_Settings {
 							// Get settings fields
 							settings_fields( $this->parent->_token . '_settings' );
 							do_settings_sections( $this->parent->_token . '_settings' );
+							submit_button();
 							?>
-							<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Settings' , 'rokka-image-cdn' ); ?>" />
 						</form>
 					</div>
 				</div><!--end #tab-01 -->
@@ -301,6 +270,108 @@ class Rokka_Image_Cdn_Settings {
 			</div><!--end #column-right -->
 		</div><!--end #wrap -->
 		<?php
+	}
+
+	/**
+	 * Generate HTML for displaying fields
+	 *
+	 * @param array $data Additional data which is added in add_settings_field() method.
+	 */
+	public function display_field( $data = array() ) {
+		// Get field info
+		if ( isset( $data['field'] ) ) {
+			$field = $data['field'];
+		} else {
+			$field = $data;
+		}
+
+		// Check for prefix on option name
+		$option_name = '';
+		if ( isset( $data['prefix'] ) ) {
+			$option_name = $data['prefix'];
+		}
+
+		// Get saved data
+		$data = '';
+
+		$option_name .= $field['id'];
+		$option = get_option( $option_name );
+
+		// Get data to display in field
+		if ( isset( $option ) ) {
+			$data = $option;
+		}
+
+		// Show default data if no option saved and default is supplied
+		if ( false === $data && isset( $field['default'] ) ) {
+			$data = $field['default'];
+		} elseif ( false === $data ) {
+			$data = '';
+		}
+
+		$html = '';
+
+		switch ( $field['type'] ) {
+			case 'text':
+			case 'url':
+			case 'email':
+				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				break;
+
+			case 'textarea':
+				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
+				$html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . $data . '</textarea><br/>' . "\n";
+				break;
+
+			case 'checkbox':
+				$checked = '';
+				if ( $data && 'on' === $data ) {
+					$checked = 'checked="checked"';
+				}
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
+				break;
+
+			case 'radio':
+				foreach ( $field['options'] as $k => $v ) {
+					$checked = false;
+					if ( $k === $data ) {
+						$checked = true;
+					}
+					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
+				}
+				break;
+
+			case 'select':
+				$html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
+				foreach ( $field['options'] as $k => $v ) {
+					$selected = false;
+					if ( $k === $data ) {
+						$selected = true;
+					}
+					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
+				}
+				$html .= '</select>';
+				break;
+		}
+
+		switch ( $field['type'] ) {
+			case 'radio':
+				$html .= '<br/><span class="description">' . $field['description'] . '</span>';
+				break;
+
+			case 'checkbox':
+				$html .= '<span class="description">' . $field['description'] . '</span>';
+				break;
+
+			default:
+				$html .= '<div><span class="description">' . $field['description'] . '</span></div>' . "\n";
+				break;
+		}
+
+		// @codingStandardsIgnoreStart
+		echo $html;
+		// @codingStandardsIgnoreEnd
 	}
 
 	/**

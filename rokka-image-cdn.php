@@ -32,7 +32,6 @@ define( 'ROKKA_PLUGIN_PATH', plugins_url( '', __FILE__ ) );
 // Load plugin class files
 require_once( 'src/class-rokka-image-cdn.php' );
 require_once( 'src/class-rokka-image-cdn-settings.php' );
-require_once( 'src/class-rokka-image-cdn-admin-api.php' );
 require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-sync.php' );
 require_once( 'src/filters/filter-rokka-content.php' );

@@ -101,11 +101,6 @@ class Rokka_Image_Cdn {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 
-		// Load API for generic admin functions
-		if ( is_admin() ) {
-			$this->admin = new Rokka_Image_Cdn_Admin_API();
-		}
-
 		// Handle localisation
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );

@@ -10,7 +10,6 @@
 
 	<exclude-pattern>src/filters/class-filter-rokka-image-editor.php</exclude-pattern>
 	<exclude-pattern>src/filters/filter-rokka-content.php</exclude-pattern>
-	<exclude-pattern>src/class-rokka-image-cdn-admin-api.php</exclude-pattern>
 
 	<rule ref="WordPress">
 		<exclude name="Squiz.Commenting.InlineComment" />
