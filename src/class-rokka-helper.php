@@ -265,18 +265,21 @@ class Rokka_Helper {
 		$sizes  = array();
 
 		foreach ( get_intermediate_image_sizes() as $_size ) {
-			$sizes[ $_size ] = array( 0, 0 );
+			$width = 0;
+			$height = 0;
 			if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
-				$sizes[ $_size ][0]  = get_option( "{$_size}_size_w" );
-				$sizes[ $_size ][1] = get_option( "{$_size}_size_h" );
+				$width = intval( get_option( "{$_size}_size_w" ) );
+				$height = intval( get_option( "{$_size}_size_h" ) );
 			} else {
 				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
-					$sizes[ $_size ] = array(
-						$_wp_additional_image_sizes[ $_size ]['width'],
-						$_wp_additional_image_sizes[ $_size ]['height'],
-					);
+					$width = $_wp_additional_image_sizes[ $_size ]['width'];
+					$height = $_wp_additional_image_sizes[ $_size ]['height'];
 				}
 			}
+			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (Rokka maximum)
+			$width = ( $width > 0 && $width < 10000 ) ? $width : 10000;
+			$height = ( $height > 0 && $height < 10000 ) ? $height : 10000;
+			$sizes[ $_size ] = array( $width, $height );
 		}
 
 		return $sizes;
