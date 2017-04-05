@@ -209,13 +209,14 @@ class Rokka_Helper {
 				$delete = false;
 				$width = $size[0];
 				$height = $size[1];
+				$crop = $size[2];
 
 				// loop through all stacks which are already on Rokka
 				foreach ( $stacks->getStacks() as $stack ) {
 					if ( $stack->name === $name ) {
 						$continue = false;
 
-						//check if width or height was changed in the meantime (in WordPress config)
+						// check if width, height or mode was changed in the meantime (in WordPress config)
 						// @codingStandardsIgnoreStart
 						$stack_operations = $stack->stackOperations;
 						// @codingStandardsIgnoreEnd
@@ -225,7 +226,8 @@ class Rokka_Helper {
 							if ( 'resize' === $operation['name'] ) {
 								$stack_width = intval( $operation['options']['width'] );
 								$stack_height = intval( $operation['options']['height'] );
-								if ( $stack_width !== $width || $stack_height !== $height ) {
+								$stack_crop = ( $operation['options']['mode'] === 'fill' ) ? true : false;
+								if ( $stack_width !== $width || $stack_height !== $height || $stack_crop !== $crop ) {
 									$continue = true;
 									$delete = true;
 								}
@@ -239,15 +241,23 @@ class Rokka_Helper {
 					if ( $delete ) {
 						$client->deleteStack( $name );
 					}
-					$resize_operation = new \Rokka\Client\Core\StackOperation( 'resize', array(
-						'width'   => $width,
-						'height'  => $height,
-						//aspect ratio will be kept
-						'mode'    => 'box',
+
+					$operations = array();
+					$mode = $crop  ? 'fill' : 'box';
+					$operations[] = new \Rokka\Client\Core\StackOperation( 'resize', array(
+						'width' => $width,
+						'height' => $height,
+						'mode' => $mode,
 						'upscale' => false,
 					) );
+					if( $crop ) {
+						$operations[] = new \Rokka\Client\Core\StackOperation( 'crop', array(
+							'width' => $width,
+							'height' => $height,
+						) );
+					}
 
-					$client->createStack( $name, array( $resize_operation ) );
+					$client->createStack( $name, $operations );
 				}
 			}
 		}
@@ -267,19 +277,22 @@ class Rokka_Helper {
 		foreach ( get_intermediate_image_sizes() as $_size ) {
 			$width = 0;
 			$height = 0;
+			$crop = false;
 			if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
 				$width = intval( get_option( "{$_size}_size_w" ) );
 				$height = intval( get_option( "{$_size}_size_h" ) );
+				$crop = (bool) get_option( "{$_size}_crop" );
 			} else {
 				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
 					$width = $_wp_additional_image_sizes[ $_size ]['width'];
 					$height = $_wp_additional_image_sizes[ $_size ]['height'];
+					$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
 				}
 			}
 			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (Rokka maximum)
 			$width = ( $width > 0 && $width < 10000 ) ? $width : 10000;
 			$height = ( $height > 0 && $height < 10000 ) ? $height : 10000;
-			$sizes[ $_size ] = array( $width, $height );
+			$sizes[ $_size ] = array( $width, $height, $crop );
 		}
 
 		return $sizes;
