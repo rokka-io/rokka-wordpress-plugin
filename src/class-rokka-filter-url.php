@@ -31,45 +31,14 @@ class Rokka_Filter_Url {
 	 * Initializes media management.
 	 */
 	public function init() {
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'rewrite_attachment_image_src' ), 10, 4 );
 		add_filter( 'set_url_scheme', array( $this, 'keep_url_scheme' ), 10, 3 );
 		add_filter( 'wp_get_attachment_url', array( $this, 'rewrite_attachment_url' ), 10, 2 );
 		add_filter( 'wp_get_attachment_thumb_url', array( $this, 'rewrite_attachment_thumb_url' ), 10, 2 );
 		add_filter( 'wp_prepare_attachment_for_js', array( $this, 'rewrite_attachment_url_for_js' ), 10, 3 );
 		add_filter( 'image_downsize', array( $this, 'downsize_image' ), 10, 3 );
 		add_filter( 'image_get_intermediate_size', array( $this, 'rewrite_intermediate_size_url' ), 10, 3 );
-	}
-
-	/**
-	 * Retrieve an image to represent an attachment.
-	 *
-	 * A mime icon for files, thumbnail or intermediate size for images.
-	 *
-	 * The returned array contains four values: the URL of the attachment image src,
-	 * the width of the image file, the height of the image file, and a boolean
-	 * representing whether the returned array describes an intermediate (generated)
-	 * image size or the original, full-sized upload.
-	 *
-	 * @param array|false  $image         Either array with src, width & height, icon src, or false.
-	 * @param int          $attachment_id Image attachment ID.
-	 * @param string|array $size          Size of image. Image size or array of width and height values
-	 *                                    (in that order). Default 'thumbnail'.
-	 * @param bool         $icon          Whether the image should be treated as an icon. Default false.
-	 *
-	 * @return false|array Returns an array (url, width, height, is_intermediate), or false, if no image is available.
-	 */
-	public function rewrite_attachment_image_src( $image, $attachment_id, $size = 'thumbnail', $icon = false ) {
-		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
-			return $image;
-		}
-
-		$rokka_data = get_post_meta( $attachment_id, 'rokka_info', true );
-		$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
-		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
-
-		$image[0] = $url;
-
-		return $image;
+		add_filter( 'wp_calculate_image_srcset_meta', array( $this, 'rewrite_srcset_meta' ), 10, 4 );
+		add_filter( 'wp_calculate_image_srcset', array( $this, 'rewrite_image_srcset_sources' ), 10, 5 );
 	}
 
 	/**
@@ -104,7 +73,10 @@ class Rokka_Filter_Url {
 
 		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'] );
+		$attachment_meta = wp_get_attachment_metadata( $post_id );
+		$filename = wp_basename( $attachment_meta['file'] );
+
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $this->rokka_helper->get_rokka_full_size_stack_name(), $filename );
 
 		return $url;
 	}
@@ -124,7 +96,10 @@ class Rokka_Filter_Url {
 
 		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail' );
+		$attachment_meta = wp_get_attachment_metadata( $post_id );
+		$filename = $attachment_meta['sizes']['thumbnail']['file'];
+
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail', $filename );
 
 		return $url;
 	}
@@ -149,7 +124,8 @@ class Rokka_Filter_Url {
 		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
 		// Regenerate the Rokka urls and replace them.
 		foreach ( $response['sizes'] as $size => $size_details ) {
-			$response['sizes'][ $size ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
+			$filename = $meta['sizes'][ $size ]['file'];
+			$response['sizes'][ $size ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size, $filename );
 		}
 
 		return $response;
@@ -190,7 +166,8 @@ class Rokka_Filter_Url {
 		elseif ( 'thumbnail' === $size  ) {
 			// fall back to the old thumbnail
 			if ( ( $thumb_file = wp_get_attachment_thumb_file( $id ) ) && $info = getimagesize( $thumb_file ) ) {
-				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail' );
+				$file_name = $meta['sizes']['thumbnail']['file'];
+				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], 'thumbnail', $file_name );
 				$width = $info[0];
 				$height = $info[1];
 				$is_intermediate = true;
@@ -230,9 +207,94 @@ class Rokka_Filter_Url {
 
 		$rokka_data = get_post_meta( $post_id, 'rokka_info', true );
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size );
 
+		$filename = $data['file'];
+		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size, $filename );
 		return $data;
+	}
+
+	/**
+	 * Rewrite image srcset meta
+	 *
+	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
+	 * @param array  $size_array    Array of width and height values in pixels (in that order).
+	 * @param string $image_src     The 'src' of the image.
+	 * @param int    $attachment_id The image attachment ID or 0 if not supplied.
+	 *
+	 * @return array
+	 */
+	public function rewrite_srcset_meta( $image_meta, $size_array, $image_src, $attachment_id ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
+			return $image_meta;
+		}
+
+		// copy original image meta data
+		$rewritten_image_meta = $image_meta;
+		// rewrite attachment meta data to Rokka filenames
+		// this is a pretty nasty hack to get the $src_matched boolean in media.php to be true (and srcset gets printed)
+		$rewritten_image_meta['file'] = $this->rokka_helper->sanitize_rokka_filename( wp_basename( $image_meta['file'] ) );
+		foreach ( $image_meta['sizes'] as $size_name => $size ) {
+			$rewritten_image_meta['sizes'][ $size_name ]['file'] = $this->rokka_helper->sanitize_rokka_filename( $size['file'] );
+		}
+
+		return $rewritten_image_meta;
+	}
+
+	/**
+	 * Filters an image's 'srcset' sources.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param array  $sources {
+	 *     One or more arrays of source data to include in the 'srcset'.
+	 *
+	 *     @type array $width {
+	 *         @type string $url        The URL of an image source.
+	 *         @type string $descriptor The descriptor type used in the image candidate string,
+	 *                                  either 'w' or 'x'.
+	 *         @type int    $value      The source width if paired with a 'w' descriptor, or a
+	 *                                  pixel density value if paired with an 'x' descriptor.
+	 *     }
+	 * }
+	 * @param array  $size_array    Array of width and height values in pixels (in that order).
+	 * @param string $image_src     The 'src' of the image.
+	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
+	 * @param int    $attachment_id Image attachment ID or 0.
+	 *
+	 * @return array
+	 */
+	public function rewrite_image_srcset_sources( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
+			return $sources;
+		}
+
+		$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
+		$rokka_data = get_post_meta( $attachment_id, 'rokka_info', true );
+
+		$available_image_sizes = $this->rokka_helper->get_available_image_sizes();
+
+		$prepared_available_image_sizes = array();
+		foreach ( $available_image_sizes as $size_name => $size ) {
+			$width = $size[0];
+			$prepared_available_image_sizes[ $width ] = $size_name;
+		}
+
+		$rewritten_sources = array();
+		foreach ( $sources as $source_width => $source ) {
+			// copy original source data
+			$rewritten_sources[ $source_width ] = $source;
+			if ( array_key_exists( $source_width, $prepared_available_image_sizes ) ) {
+				$size_name = $prepared_available_image_sizes[ $source_width ];
+				$filename = $image_meta['sizes'][ $size_name ]['file'];
+				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $size_name, $filename );
+			} else {
+				$filename = $image_meta['file'];
+				// if the size doesn't exists it must be the original image
+				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_data['format'], $this->rokka_helper->get_rokka_full_size_stack_name(), $filename );
+			}
+		}
+
+		return $rewritten_sources;
 	}
 
 }

@@ -114,12 +114,13 @@ class Rokka_Filter_Content {
 			if ( ! empty( $attachment_info ) ) {
 				$attachment_id = $attachment_info[0];
 				$attachment_size = $attachment_info[1];
+				$attachment_file_name = $attachment_info[2];
 
 				if ( $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
 					$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 					$rokka_info = get_post_meta( $attachment_id, 'rokka_info', true );
 
-					$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_info['format'], $attachment_size );
+					$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $rokka_info['format'], $attachment_size, $attachment_file_name );
 					$rewritten_urls[ $match ] = $url;
 				}
 			}
@@ -196,6 +197,7 @@ class Rokka_Filter_Content {
 			if ( $original_file === $file_name || in_array( $file_name, $resized_image_files, true ) ) {
 				$attachment_info[0] = $attachment_id;
 				$attachment_info[1] = $size;
+				$attachment_info[2] = $file_name;
 			}
 		}
 

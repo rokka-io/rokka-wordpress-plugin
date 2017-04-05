@@ -314,10 +314,11 @@ class Rokka_Helper {
 	 * @param string $hash Rokka hash.
 	 * @param string $format File format.
 	 * @param string $size Image size.
+	 * @param string $filename Image filename.
 	 *
 	 * @return string
 	 */
-	public function get_rokka_url( $hash, $format, $size = 'thumbnail' ) {
+	public function get_rokka_url( $hash, $format, $size = 'thumbnail', $filename = '' ) {
 		if ( is_array( $size ) ) {
 			$stack = null;
 
@@ -335,7 +336,21 @@ class Rokka_Helper {
 		} else {
 			$stack = $size;
 		}
-		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+		if ( ! empty( $filename ) ) {
+			return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
+		} else {
+			return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+		}
+	}
+
+	/**
+	 * Sanitizes filename before sending it to Rokka.
+	 *
+	 * @param string $filename Filename to sanitize.
+	 * @return string
+	 */
+	public function sanitize_rokka_filename( $filename ) {
+		return preg_replace( '/[^a-z0-9\-\.]/', '-', strtolower( $filename ) );
 	}
 
 	/**
