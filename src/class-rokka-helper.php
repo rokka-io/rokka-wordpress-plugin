@@ -206,7 +206,7 @@ class Rokka_Helper {
 		if ( ! empty( $sizes ) ) {
 			foreach ( $sizes as $name => $size ) {
 				$continue = true;
-				$delete   = false;
+				$delete = false;
 				$width = $size[0];
 				$height = $size[1];
 
@@ -223,8 +223,8 @@ class Rokka_Helper {
 							$operation = $operation->toArray();
 
 							if ( 'resize' === $operation['name'] ) {
-								$stack_width  = $operation['options']['width'];
-								$stack_height = $operation['options']['height'];
+								$stack_width = intval( $operation['options']['width'] );
+								$stack_height = intval( $operation['options']['height'] );
 								if ( $stack_width !== $width || $stack_height !== $height ) {
 									$continue = true;
 									$delete = true;
