@@ -226,7 +226,7 @@ class Rokka_Helper {
 							if ( 'resize' === $operation['name'] ) {
 								$stack_width = intval( $operation['options']['width'] );
 								$stack_height = intval( $operation['options']['height'] );
-								$stack_crop = ( $operation['options']['mode'] === 'fill' ) ? true : false;
+								$stack_crop = ( 'fill' === $operation['options']['mode'] ) ? true : false;
 								if ( $stack_width !== $width || $stack_height !== $height || $stack_crop !== $crop ) {
 									$continue = true;
 									$delete = true;
@@ -250,7 +250,7 @@ class Rokka_Helper {
 						'mode' => $mode,
 						'upscale' => false,
 					) );
-					if( $crop ) {
+					if ( $crop ) {
 						$operations[] = new \Rokka\Client\Core\StackOperation( 'crop', array(
 							'width' => $width,
 							'height' => $height,
