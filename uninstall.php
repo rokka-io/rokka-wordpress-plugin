@@ -10,9 +10,9 @@
  * @package rokka-image-cdn
  */
 
-// If plugin is not being uninstalled, exit (do nothing)
+// if uninstall.php is not called by WordPress, die
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
+	die;
 }
 
-// Do something here if plugin is being uninstalled.
+// Remove everything plugin related if plugin is being uninstalled.
