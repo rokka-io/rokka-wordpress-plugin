@@ -150,7 +150,7 @@ class Rokka_Sync {
 	/**
 	 * Creates stacks on Rokka.
 	 */
-	public function rokka_ajax_create_stacks() {
+	public function ajax_rokka_create_stacks() {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
