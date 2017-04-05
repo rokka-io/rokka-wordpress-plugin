@@ -158,11 +158,12 @@ class Rokka_Media_Management {
 
 		// save hash field
 		if ( isset( $attachment['rokka_hash'] ) ) {
-			if ( '' === trim( $attachment['rokka_hash'] ) ) {
+			$rokka_hash = sanitize_text_field( $attachment['rokka_hash'] );
+			if ( '' === trim( $rokka_hash ) ) {
 				delete_post_meta( $post['ID'], 'rokka_hash' );
 			} else {
-				update_post_meta( $post['ID'], 'rokka_hash', $attachment['rokka_hash'] );
-				$hash = $attachment['rokka_hash'];
+				update_post_meta( $post['ID'], 'rokka_hash', $rokka_hash );
+				$hash = $rokka_hash;
 			}
 		}
 
