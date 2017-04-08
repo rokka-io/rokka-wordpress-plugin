@@ -47,6 +47,10 @@ class Rokka_Media_Management {
 	 * @return array
 	 */
 	public function add_attachment_hash_edit_field( $form_fields, $post ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $post->ID ) ) {
+			return $form_fields;
+		}
+
 		// add hash field
 		$hash = get_post_meta( $post->ID, 'rokka_hash', true );
 		$hash_field_info = array(
@@ -71,6 +75,10 @@ class Rokka_Media_Management {
 	 * @return array
 	 */
 	public function add_attachment_subject_area_edit_field( $form_fields, $post ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $post->ID ) ) {
+			return $form_fields;
+		}
+
 		$rokka_subject_area = get_post_meta( $post->ID, 'rokka_subject_area', true );
 		$rokka_subject_area_x = '';
 		$rokka_subject_area_y = '';
@@ -91,7 +99,8 @@ class Rokka_Media_Management {
 		if ( isset( $attachment_width, $attachment_height ) ) {
 			$big = max( $attachment_width, $attachment_height );
 		} else {
-			die( esc_html__( 'Image data does not exist. Please re-upload the image.', 'rokka-image-cdn' ) );
+			// Image data does not exist
+			return $form_fields;
 		}
 
 		$sizer = $big > 400 ? 400 / $big : 1;
