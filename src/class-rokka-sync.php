@@ -32,6 +32,7 @@ class Rokka_Sync {
 	 */
 	protected function init() {
 		add_action( 'add_attachment', array( $this, 'rokka_upload' ), 10, 1 );
+		add_filter( 'update_attached_file', array( $this, 'rokka_update' ), 10, 2 );
 		add_action( 'delete_attachment', array( $this, 'rokka_delete' ), 10, 1 );
 		add_filter( 'wp_save_image_editor_file', array( $this, 'rokka_save_image_editor_file' ), 10, 5 );
 
@@ -49,12 +50,40 @@ class Rokka_Sync {
 	}
 
 	/**
+	 * Updates file on rokka.
+	 *
+	 * @param string $file          Path to the attached file to update.
+	 * @param int    $attachment_id Attachment ID.
+	 *
+	 * @return bool
+	 */
+	public function rokka_update( $file, $attachment_id ) {
+		// This check is also needed that this function is not executed when the attachment is added (add_attachment action)
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
+			return $file;
+		}
+
+		// delete old image on rokka before uploading new one
+		$this->rokka_helper->delete_image_from_rokka( $attachment_id );
+
+		// upload new file to rokka
+		$this->rokka_helper->upload_image_to_rokka( $attachment_id, $file );
+		return $file;
+	}
+
+	/**
 	 * Deletes an image on Rokka.
 	 *
 	 * @param int $post_id Attachment id.
+	 *
+	 * @return bool
 	 */
 	public function rokka_delete( $post_id ) {
-		$this->rokka_helper->delete_image_from_rokka( $post_id );
+		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+			return false;
+		}
+
+		return $this->rokka_helper->delete_image_from_rokka( $post_id );
 	}
 
 	/**

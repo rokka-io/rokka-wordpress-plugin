@@ -89,14 +89,18 @@ class Rokka_Helper {
 	/**
 	 * Uploads file to Rokka.
 	 *
-	 * @param int $attachment_id Attachment id.
+	 * @param int    $attachment_id Attachment id.
+	 * @param string $file_path Path to file which should be uploaded.
 	 *
 	 * @return bool
 	 */
-	public function upload_image_to_rokka( $attachment_id ) {
-		$this->validate_attachment_before_upload( $attachment_id );
+	public function upload_image_to_rokka( $attachment_id, $file_path = '' ) {
+		if ( empty( $file_path ) ) {
+			$file_path = get_attached_file( $attachment_id );
+		}
 
-		$file_path = get_attached_file( $attachment_id );
+		$this->validate_attachment_before_upload( $attachment_id, $file_path );
+
 		$file_name = wp_basename( $file_path );
 		$client = $this->rokka_get_client();
 		// @codingStandardsIgnoreStart
@@ -105,7 +109,7 @@ class Rokka_Helper {
 
 		if ( is_object( $source_image ) ) {
 			$source_images = $source_image->getSourceImages();
-			$source_image  = array_pop( $source_images );
+			$source_image = array_pop( $source_images );
 			$rokka_info = array(
 				'hash' => $source_image->hash,
 				'format' => $source_image->format,
@@ -122,7 +126,6 @@ class Rokka_Helper {
 		return false;
 	}
 
-
 	/**
 	 * Deletes an image from rokka.io
 	 *
@@ -134,6 +137,9 @@ class Rokka_Helper {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		if ( $hash ) {
+			delete_post_meta( $attachment_id, 'rokka_info' );
+			delete_post_meta( $attachment_id, 'rokka_hash' );
+			delete_post_meta( $attachment_id, 'rokka_subject_area' );
 			$client = $this->rokka_get_client();
 			return $client->deleteSourceImage( $hash );
 		}
@@ -144,14 +150,17 @@ class Rokka_Helper {
 	/**
 	 * Validates file before it gets uploaded to Rokka.
 	 *
-	 * @param int $attachment_id Attachment id.
+	 * @param int    $attachment_id Attachment id.
+	 * @param string $file_path Path to file which should be uploaded.
 	 *
 	 * @return bool
 	 *
 	 * @throws Exception Exception on failure.
 	 */
-	private function validate_attachment_before_upload( $attachment_id ) {
-		$file_path = get_attached_file( $attachment_id, true );
+	private function validate_attachment_before_upload( $attachment_id, $file_path ) {
+		if ( empty( $file_path ) ) {
+			$file_path = get_attached_file( $attachment_id );
+		}
 		$type = get_post_mime_type( $attachment_id );
 		$allowed_types = self::ALLOWED_MIME_TYPES;
 
