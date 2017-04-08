@@ -199,9 +199,9 @@ class Rokka_Media_Management {
 	 * @return array
 	 */
 	public function add_custom_media_columns( $posts_columns, $detached ) {
-		// add hash column
+		// add rokka column
 		$new_columns = array(
-			'hash' => __( 'Rokka Hash', 'rokka-image-cdn' ),
+			'rokka' => __( 'Rokka', 'rokka-image-cdn' ),
 		);
 		return array_merge( $posts_columns, $new_columns );
 	}
@@ -213,10 +213,23 @@ class Rokka_Media_Management {
 	 * @param int    $post_id Id of current post.
 	 */
 	public function print_custom_media_columns_data( $column, $post_id ) {
-		// add data to hash column
-		if ( 'hash' === $column ) {
-			$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-			echo esc_html( $rokka_hash );
+		// add data to rokka column
+		if ( 'rokka' === $column ) {
+			$output = '';
+			if ( $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
+				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
+					$output .= 'synced to rokka!';
+					$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+				} else {
+					$output .= 'not yet on rokka';
+				}
+			} else {
+				$output .= 'This mime type is not supported on rokka';
+			}
+
+			// @codingStandardsIgnoreStart
+			echo $output;
+			// @codingStandardsIgnoreEnd
 		}
 	}
 

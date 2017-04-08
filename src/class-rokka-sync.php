@@ -165,9 +165,11 @@ class Rokka_Sync {
 	private function get_all_images() {
 		$query_images_args = array(
 			'post_type'      => 'attachment',
-			'post_mime_type' => 'image',
+			'post_mime_type' => Rokka_Helper::ALLOWED_MIME_TYPES,
 			'post_status'    => 'inherit',
-			'posts_per_page' => - 1,
+			// @codingStandardsIgnoreStart
+			'posts_per_page' => -1,
+			// @codingStandardsIgnoreEnd
 			'fields'         => 'ids',
 		);
 

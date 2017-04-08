@@ -99,7 +99,9 @@ class Rokka_Helper {
 			$file_path = get_attached_file( $attachment_id );
 		}
 
-		$this->validate_attachment_before_upload( $attachment_id, $file_path );
+		if ( ! $this->is_valid_attachment( $attachment_id, $file_path ) ) {
+			return false;
+		}
 
 		$file_name = wp_basename( $file_path );
 		$client = $this->rokka_get_client();
@@ -148,7 +150,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Validates file before it gets uploaded to Rokka.
+	 * Checks if attachment is valid before it gets uploaded to Rokka.
 	 *
 	 * @param int    $attachment_id Attachment id.
 	 * @param string $file_path Path to file which should be uploaded.
@@ -157,18 +159,14 @@ class Rokka_Helper {
 	 *
 	 * @throws Exception Exception on failure.
 	 */
-	private function validate_attachment_before_upload( $attachment_id, $file_path ) {
+	private function is_valid_attachment( $attachment_id, $file_path ) {
 		if ( empty( $file_path ) ) {
 			$file_path = get_attached_file( $attachment_id );
 		}
-		$type = get_post_mime_type( $attachment_id );
-		$allowed_types = self::ALLOWED_MIME_TYPES;
 
 		// check mime type of file is in allowed rokka mime types
-		if ( ! in_array( $type, $allowed_types, true ) ) {
-			/* translators: %s contains mime type */
-			$error_msg = sprintf( esc_html_x( 'Mime type %s is not allowed in rokka', '%s contains mime type', 'rokka-image-cdn' ), $type );
-			throw new Exception( $error_msg );
+		if ( ! $this->is_allowed_mime_type( $attachment_id ) ) {
+			return false;
 		}
 
 		// Check file exists locally before attempting upload
@@ -179,6 +177,20 @@ class Rokka_Helper {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if attachment has an allowed mime type
+	 *
+	 * @param int $attachment_id Attachment id.
+	 *
+	 * @return bool
+	 */
+	public function is_allowed_mime_type( $attachment_id ) {
+		$type = get_post_mime_type( $attachment_id );
+		$allowed_types = self::ALLOWED_MIME_TYPES;
+
+		return in_array( $type, $allowed_types, true );
 	}
 
 	/**
