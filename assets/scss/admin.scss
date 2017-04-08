@@ -79,12 +79,6 @@
 }
 
 // Tab content
-.tab {
-  display: none;
-  &.active {
-    display: block;
-  }
-}
 .tab-content {
   padding: 20px;
 }

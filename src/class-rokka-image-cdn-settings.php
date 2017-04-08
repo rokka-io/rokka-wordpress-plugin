@@ -201,6 +201,11 @@ class Rokka_Image_Cdn_Settings {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'rokka-image-cdn' ) );
 		}
 
+		$current_tab = 'settings';
+		if ( isset( $_GET['tab'] ) ) {
+			$current_tab = $_GET['tab'];
+		}
+
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
 		$rokka_settings = array(
 			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
@@ -223,23 +228,11 @@ class Rokka_Image_Cdn_Settings {
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a id="nav-tab-select-01" class="nav-tab active" href="#settings"><?php esc_html_e( 'Settings' , 'rokka-image-cdn' ); ?></a>
-					<a id="nav-tab-select-02" class="nav-tab" href="#create"><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></a>
-					<a id="nav-tab-select-03" class="nav-tab" href="#upload"><?php esc_html_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
+					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=settings" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-image-cdn' ); ?></a>
+					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=stacks" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></a>
+					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=upload" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
 				</div>
-				<div id="tab-01" class="tab active">
-					<div class="tab-content">
-						<form method="post" action="options.php" enctype="multipart/form-data">
-							<?php
-							// Get settings fields
-							settings_fields( $this->parent->_token . '_settings' );
-							do_settings_sections( $this->parent->_token . '_settings' );
-							submit_button();
-							?>
-						</form>
-					</div>
-				</div><!--end #tab-01 -->
-				<div id="tab-02" class="tab">
+				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
 						<p>
 							<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. Before you enable Rokka the first time, please make sure you have executed this command and all images are uploaded to Rokka already. This is nescessary in order to provide the images in the right size from Rokka. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
@@ -247,8 +240,7 @@ class Rokka_Image_Cdn_Settings {
 						<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
 						<div id="progress-info-stacks"></div>
 					</div>
-				</div><!--end #tab-02 -->
-				<div id="tab-03" class="tab">
+				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<p>
 							<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
@@ -261,7 +253,18 @@ class Rokka_Image_Cdn_Settings {
 							<textarea id="upload-progress-log" disabled="disabled"></textarea>
 						</div>
 					</div>
-				</div><!--end #tab-03 -->
+				<?php else : ?>
+					<div class="tab-content">
+						<form method="post" action="options.php" enctype="multipart/form-data">
+							<?php
+							// Get settings fields
+							settings_fields( $this->parent->_token . '_settings' );
+							do_settings_sections( $this->parent->_token . '_settings' );
+							submit_button();
+							?>
+						</form>
+					</div>
+				<?php endif ; ?>
 			</div><!--end #column-left -->
 
 			<div id="column-right">
