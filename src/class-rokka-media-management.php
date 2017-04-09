@@ -44,55 +44,10 @@ class Rokka_Media_Management {
 		// handle bulk actions
 		add_filter( 'bulk_actions-upload', array( $this, 'add_bulk_actions' ), 10, 1 );
 		add_filter( 'handle_bulk_actions-upload', array( $this, 'handle_upload_bulk_action' ), 10, 3 );
+		add_filter( 'handle_bulk_actions-upload', array( $this, 'handle_delete_bulk_action' ), 10, 3 );
 
 		// display all notices after executing list actions
 		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
-	}
-
-	/**
-	 * Adds custom bulk actions.
-	 *
-	 * @param array $bulk_actions An array of the available bulk actions.
-	 *
-	 * @return array
-	 */
-	public function add_bulk_actions( $bulk_actions ) {
-		$bulk_actions['rokka_upload'] = __( 'Upload to rokka', 'rokka-image-cdn' );
-		$bulk_actions['rokka_delete'] = __( 'Delete from rokka', 'rokka-image-cdn' );
-		return $bulk_actions;
-	}
-	/**
-	 * Handles rokka upload bulk action.
-	 *
-	 * @param string $redirect_to The redirect URL.
-	 * @param string $doaction    The action being taken.
-	 * @param array  $post_ids    The items to take the action on.
-	 *
-	 * @return string
-	 */
-	public function handle_upload_bulk_action( $redirect_to, $doaction, $post_ids ) {
-		if ( 'rokka_upload' !== $doaction ) {
-			return $redirect_to;
-		}
-		$image_count = count( $post_ids );
-		foreach ( $post_ids as $post_id ) {
-			if ( ! $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
-				$image_count--;
-			} elseif ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
-				$image_count--;
-			} else {
-				$this->rokka_helper->upload_image_to_rokka( $post_id );
-			}
-		}
-		if ( $image_count > 0 ) {
-			/* translators: %s contains image count */
-			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been uploaded to rokka.', '%s images have been uploaded to rokka.', $image_count, '%s contains image count', 'rokka-image-cdn' ), $image_count ) );
-		}
-		return $redirect_to;
 	}
 
 	/**
@@ -340,6 +295,83 @@ class Rokka_Media_Management {
 
 		wp_safe_redirect( wp_get_referer() );
 		exit;
+	}
+
+	/**
+	 * Adds custom bulk actions.
+	 *
+	 * @param array $bulk_actions An array of the available bulk actions.
+	 *
+	 * @return array
+	 */
+	public function add_bulk_actions( $bulk_actions ) {
+		$bulk_actions['rokka_upload'] = __( 'Upload to rokka', 'rokka-image-cdn' );
+		$bulk_actions['rokka_delete'] = __( 'Delete from rokka', 'rokka-image-cdn' );
+		return $bulk_actions;
+	}
+
+	/**
+	 * Handles rokka upload bulk action.
+	 *
+	 * @param string $redirect_to The redirect URL.
+	 * @param string $doaction    The action being taken.
+	 * @param array  $post_ids    The items to take the action on.
+	 *
+	 * @return string
+	 */
+	public function handle_upload_bulk_action( $redirect_to, $doaction, $post_ids = array() ) {
+		if ( 'rokka_upload' !== $doaction ) {
+			return $redirect_to;
+		}
+		$image_count = count( $post_ids );
+		foreach ( $post_ids as $post_id ) {
+			if ( ! $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				$image_count--;
+			} elseif ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				$image_count--;
+			} else {
+				$this->rokka_helper->upload_image_to_rokka( $post_id );
+			}
+		}
+		if ( $image_count > 0 ) {
+			/* translators: %s contains image count */
+			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been uploaded to rokka.', '%s images have been uploaded to rokka.', $image_count, '%s contains image count', 'rokka-image-cdn' ), $image_count ) );
+		}
+		return $redirect_to;
+	}
+
+	/**
+	 * Handles rokka delete bulk action.
+	 *
+	 * @param string $redirect_to The redirect URL.
+	 * @param string $doaction    The action being taken.
+	 * @param array  $post_ids    The items to take the action on.
+	 *
+	 * @return string
+	 */
+	public function handle_delete_bulk_action( $redirect_to, $doaction, $post_ids = array() ) {
+		if ( 'rokka_delete' !== $doaction ) {
+			return $redirect_to;
+		}
+		$image_count = count( $post_ids );
+		foreach ( $post_ids as $post_id ) {
+			if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is not yet on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				$image_count--;
+			} else {
+				$this->rokka_helper->delete_image_from_rokka( $post_id );
+			}
+		}
+		if ( $image_count > 0 ) {
+			/* translators: %s contains image count */
+			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been deleted from rokka.', '%s images have been deleted from rokka.', $image_count, '%s contains image count', 'rokka-image-cdn' ), $image_count ) );
+		}
+		return $redirect_to;
 	}
 
 	/**
