@@ -343,7 +343,7 @@ class Rokka_Helper {
 		if ( is_array( $size ) ) {
 			$stack = null;
 
-			// if size is requests as width / height array -> find matching or nearest Rokka size
+			// if size is requested as width / height array -> find matching or nearest Rokka size
 			$rokka_sizes = $this->get_available_image_sizes();
 			foreach ( $rokka_sizes as $size_name => $size_values ) {
 				if ( $size[0] <= $size_values[0] ) {
