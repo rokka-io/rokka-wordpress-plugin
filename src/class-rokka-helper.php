@@ -60,6 +60,13 @@ class Rokka_Helper {
 	private $api_secret = '';
 
 	/**
+	 * Rokka enabled.
+	 *
+	 * @var bool
+	 */
+	private $rokka_enabled = false;
+
+	/**
 	 * Rokka_Helper constructor.
 	 */
 	public function __construct() {
@@ -74,6 +81,10 @@ class Rokka_Helper {
 		$this->company_name = get_option( 'rokka_company_name' );
 		$this->api_key = get_option( 'rokka_api_key' );
 		$this->api_secret = get_option( 'rokka_api_secret' );
+		$this->rokka_enabled = get_option( 'rokka_rokka_enabled' );
+		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
+			$this->rokka_enabled = false;
+		}
 	}
 
 	/**
@@ -82,7 +93,7 @@ class Rokka_Helper {
 	 * @return \Rokka\Client\Image
 	 */
 	public function rokka_get_client() {
-		return \Rokka\Client\Factory::getImageClient( get_option( 'rokka_company_name' ), get_option( 'rokka_api_key' ), get_option( 'rokka_api_secret' ) );
+		return \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), $this->get_rokka_api_secret() );
 	}
 
 
@@ -424,7 +435,7 @@ class Rokka_Helper {
 	/**
 	 * Returns Rokka domain from options.
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
 	public function get_rokka_domain() {
 		return self::ROKKA_DOMAIN;
@@ -433,7 +444,7 @@ class Rokka_Helper {
 	/**
 	 * Returns Rokka company name from options.
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
 	public function get_rokka_company_name() {
 		return $this->company_name;
@@ -442,7 +453,7 @@ class Rokka_Helper {
 	/**
 	 * Returns Rokka api key from options.
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
 	public function get_rokka_api_key() {
 		return $this->api_key;
@@ -451,10 +462,19 @@ class Rokka_Helper {
 	/**
 	 * Returns Rokka api secret from options.
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
 	public function get_rokka_api_secret() {
 		return $this->api_secret;
+	}
+
+	/**
+	 * Returns if rokka is enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_rokka_enabled() {
+		return $this->rokka_enabled;
 	}
 
 }
