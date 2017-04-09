@@ -82,6 +82,11 @@ class Rokka_Image_Cdn_Settings {
 			$this,
 			'add_settings_link',
 		) );
+
+		// Add endpoints for AJAX actions
+		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
+		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
+		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'ajax_rokka_create_stacks' ) );
 	}
 
 	/**
@@ -454,6 +459,100 @@ class Rokka_Image_Cdn_Settings {
 		$query_images = new WP_Query( $query_images_args );
 
 		return $query_images->posts;
+	}
+
+	/**
+	 * Upload image to Rokka (rokka_upload_image ajax endpoint)
+	 */
+	public function ajax_rokka_upload_image() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		try {
+			if ( isset( $_POST['image_id'] ) ) {
+				$image_id = intval( $_POST['image_id'] );
+
+				if ( ! $this->rokka_helper->is_on_rokka( $image_id ) ) {
+					$upload_success = $this->rokka_helper->upload_image_to_rokka( $image_id );
+
+					if ( $upload_success ) {
+						wp_send_json_success( $image_id );
+					} else {
+						wp_send_json_error( $image_id, 400 );
+					}
+				} else {
+					wp_send_json_error( __( 'This image is already on Rokka. No need to upload it another time.', 'rokka-image-cdn' ), 400 );
+				}
+			} else {
+				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-image-cdn' ), 400 );
+			}
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage(), 400 );
+		}
+
+		wp_die();
+	}
+
+	/**
+	 * Deletes image from rokka (rokka_delete_image ajax endpoint)
+	 */
+	public function ajax_rokka_delete_image() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		try {
+			if ( isset( $_POST['image_id'] ) ) {
+				$image_id = intval( $_POST['image_id'] );
+
+				if ( $this->rokka_helper->is_on_rokka( $image_id ) ) {
+					$delete_success = $this->rokka_helper->delete_image_from_rokka( $image_id );
+
+					if ( $delete_success ) {
+						wp_send_json_success( $image_id );
+					} else {
+						wp_send_json_error( $image_id, 400 );
+					}
+				} else {
+					wp_send_json_error( __( 'This image is not yet on rokka. No need to delete it.', 'rokka-image-cdn' ), 400 );
+				}
+			} else {
+				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-image-cdn' ), 400 );
+			}
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage(), 400 );
+		}
+
+		wp_die();
+	}
+
+	/**
+	 * Creates stacks on Rokka.
+	 */
+	public function ajax_rokka_create_stacks() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		$sizes = $this->rokka_helper->rokka_create_stacks();
+
+		if ( $sizes ) {
+			wp_send_json_success( $sizes );
+			wp_die();
+		}
+
+		wp_send_json_error( __( 'Could not process stacks.', 'rokka-image-cdn' ), 400 );
+		wp_die();
 	}
 
 	/**

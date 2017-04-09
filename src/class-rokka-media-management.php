@@ -31,8 +31,16 @@ class Rokka_Media_Management {
 	 * Initializes media management.
 	 */
 	public function init() {
+		// handle changes on attachments
+		add_action( 'add_attachment', array( $this, 'rokka_upload' ), 10, 1 );
+		add_filter( 'update_attached_file', array( $this, 'rokka_update' ), 10, 2 );
+		add_action( 'delete_attachment', array( $this, 'rokka_delete' ), 10, 1 );
+
+		// add custom columns to media admin list
 		add_filter( 'manage_media_columns', array( $this, 'add_custom_media_columns' ), 10, 2 );
 		add_action( 'manage_media_custom_column', array( $this, 'print_custom_media_columns_data' ), 10, 2 );
+
+		// add additional fields to attachment edit
 		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_hash_edit_field' ), 10, 2 );
 		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_subject_area_edit_field' ), 10, 2 );
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_custom_attachment_fields' ), 10, 2 );
@@ -48,6 +56,52 @@ class Rokka_Media_Management {
 
 		// display all notices after executing list actions
 		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
+	}
+
+	/**
+	 * Handle upload of image to Rokka.
+	 *
+	 * @param integer $attachment_id Attachment id.
+	 */
+	public function rokka_upload( $attachment_id ) {
+		$this->rokka_helper->upload_image_to_rokka( $attachment_id );
+	}
+
+	/**
+	 * Updates file on rokka.
+	 *
+	 * @param string $file          Path to the attached file to update.
+	 * @param int    $attachment_id Attachment ID.
+	 *
+	 * @return bool
+	 */
+	public function rokka_update( $file, $attachment_id ) {
+		// This check is also needed that this function is not executed when the attachment is added (add_attachment action)
+		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
+			return $file;
+		}
+
+		// delete old image on rokka before uploading new one
+		$this->rokka_helper->delete_image_from_rokka( $attachment_id );
+
+		// upload new file to rokka
+		$this->rokka_helper->upload_image_to_rokka( $attachment_id, $file );
+		return $file;
+	}
+
+	/**
+	 * Deletes an image on Rokka.
+	 *
+	 * @param int $post_id Attachment id.
+	 *
+	 * @return bool
+	 */
+	public function rokka_delete( $post_id ) {
+		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
+			return false;
+		}
+
+		return $this->rokka_helper->delete_image_from_rokka( $post_id );
 	}
 
 	/**
