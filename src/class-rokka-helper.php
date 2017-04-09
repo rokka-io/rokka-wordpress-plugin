@@ -332,13 +332,12 @@ class Rokka_Helper {
 	 * Returns Rokka url of image
 	 *
 	 * @param string $hash Rokka hash.
-	 * @param string $size Image size.
 	 * @param string $filename Image filename.
-	 * @param string $format File format.
+	 * @param string $size Image size.
 	 *
 	 * @return string
 	 */
-	public function get_rokka_url( $hash, $size = 'thumbnail', $filename = '', $format = '' ) {
+	public function get_rokka_url( $hash, $filename, $size = 'thumbnail' ) {
 		if ( is_array( $size ) ) {
 			$stack = null;
 
@@ -356,11 +355,11 @@ class Rokka_Helper {
 		} else {
 			$stack = $size;
 		}
-		if ( ! empty( $filename ) ) {
-			return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
-		} else {
-			return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '.' . $format;
+		if ( empty( $filename ) ) {
+			// use fallback image name if empty
+			$filename = 'image.jpg';
 		}
+		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
 	}
 
 	/**

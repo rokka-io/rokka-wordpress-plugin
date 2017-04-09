@@ -119,7 +119,7 @@ class Rokka_Filter_Content {
 				if ( $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
 					$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
-					$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $attachment_size, $attachment_file_name );
+					$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $attachment_file_name, $attachment_size );
 					$rewritten_urls[ $match ] = $url;
 				}
 			}

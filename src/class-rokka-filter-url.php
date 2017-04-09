@@ -75,7 +75,7 @@ class Rokka_Filter_Url {
 		$attachment_meta = wp_get_attachment_metadata( $post_id );
 		$filename = wp_basename( $attachment_meta['file'] );
 
-		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $this->rokka_helper->get_rokka_full_size_stack_name(), $filename );
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $this->rokka_helper->get_rokka_full_size_stack_name() );
 
 		return $url;
 	}
@@ -95,9 +95,14 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 		$attachment_meta = wp_get_attachment_metadata( $post_id );
-		$filename = $attachment_meta['sizes']['thumbnail']['file'];
+		if ( in_array( 'thumbnail', $attachment_meta['sizes'], true ) ) {
+			$filename = $attachment_meta['sizes']['thumbnail']['file'];
+		} else {
+			// if size is not available in meta data use original filename
+			$filename = wp_basename( $attachment_meta['file'] );
+		}
 
-		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, 'thumbnail', $filename );
+		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, 'thumbnail' );
 
 		return $url;
 	}
@@ -121,8 +126,13 @@ class Rokka_Filter_Url {
 		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
 		// Regenerate the Rokka urls and replace them.
 		foreach ( $response['sizes'] as $size => $size_details ) {
-			$filename = $meta['sizes'][ $size ]['file'];
-			$response['sizes'][ $size ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $size, $filename );
+			if ( in_array( $size, $meta['sizes'], true ) ) {
+				$filename = $meta['sizes'][ $size ]['file'];
+			} else {
+				// if size is not available in meta data use original filename
+				$filename = wp_basename( $meta['file'] );
+			}
+			$response['sizes'][ $size ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size );
 		}
 
 		return $response;
@@ -163,7 +173,7 @@ class Rokka_Filter_Url {
 			// fall back to the old thumbnail
 			if ( ( $thumb_file = wp_get_attachment_thumb_file( $id ) ) && $info = getimagesize( $thumb_file ) ) {
 				$file_name = $meta['sizes']['thumbnail']['file'];
-				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, 'thumbnail', $file_name );
+				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $file_name, 'thumbnail' );
 				$width = $info[0];
 				$height = $info[1];
 				$is_intermediate = true;
@@ -204,7 +214,7 @@ class Rokka_Filter_Url {
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 
 		$filename = $data['file'];
-		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $size, $filename );
+		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size );
 		return $data;
 	}
 
@@ -279,12 +289,17 @@ class Rokka_Filter_Url {
 			$rewritten_sources[ $source_width ] = $source;
 			if ( array_key_exists( $source_width, $prepared_available_image_sizes ) ) {
 				$size_name = $prepared_available_image_sizes[ $source_width ];
-				$filename = $image_meta['sizes'][ $size_name ]['file'];
-				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $size_name, $filename );
+				if ( in_array( $size_name, $image_meta['sizes'], true ) ) {
+					$filename = $image_meta['sizes'][ $size_name ]['file'];
+				} else {
+					// if size is not available in meta data use original filename
+					$filename = wp_basename( $image_meta['file'] );
+				}
+				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
 			} else {
 				$filename = $image_meta['file'];
 				// if the size doesn't exists it must be the original image
-				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $this->rokka_helper->get_rokka_full_size_stack_name(), $filename );
+				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $this->rokka_helper->get_rokka_full_size_stack_name() );
 			}
 		}
 
