@@ -45,14 +45,14 @@ function rokka_image_cdn() {
 
 	if ( $rokka_helper->is_rokka_enabled() ) {
 		new Rokka_Filter_Url( $rokka_helper );
-		if ( ! is_admin() && get_option( 'rokka_output_parsing' ) ) {
+		if ( ! is_admin() && $rokka_helper->is_output_parsing_enabled() ) {
 			new Rokka_Filter_Content( $rokka_helper );
 		}
 	}
 
 	if ( is_admin() ) {
 		if ( $rokka_helper->is_rokka_enabled() ) {
-			new Rokka_Media_Management($rokka_helper);
+			new Rokka_Media_Management( $rokka_helper );
 		}
 
 		if ( is_null( $instance->settings ) ) {

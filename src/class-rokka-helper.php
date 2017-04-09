@@ -60,6 +60,13 @@ class Rokka_Helper {
 	private $api_secret = '';
 
 	/**
+	 * Output parsing enabled.
+	 *
+	 * @var string
+	 */
+	private $output_parsing_enabled = false;
+
+	/**
 	 * Rokka enabled.
 	 *
 	 * @var bool
@@ -81,7 +88,8 @@ class Rokka_Helper {
 		$this->company_name = get_option( 'rokka_company_name' );
 		$this->api_key = get_option( 'rokka_api_key' );
 		$this->api_secret = get_option( 'rokka_api_secret' );
-		$this->rokka_enabled = get_option( 'rokka_rokka_enabled' );
+		$this->output_parsing_enabled = ( get_option( 'rokka_output_parsing' ) === 'on' ? true : false );
+		$this->rokka_enabled = ( get_option( 'rokka_rokka_enabled' ) === 'on' ? true : false );
 		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
 			$this->rokka_enabled = false;
 		}
@@ -475,6 +483,15 @@ class Rokka_Helper {
 	 */
 	public function is_rokka_enabled() {
 		return $this->rokka_enabled;
+	}
+
+	/**
+	 * Returns if output parsing is enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_output_parsing_enabled() {
+		return $this->output_parsing_enabled;
 	}
 
 }
