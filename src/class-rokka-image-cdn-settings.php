@@ -50,20 +50,20 @@ class Rokka_Image_Cdn_Settings {
 	public $settings_fields = array();
 
 	/**
-	 * Instance of Rokka_Sync.
+	 * Instance of Rokka_Helper.
 	 *
-	 * @var Rokka_Sync
+	 * @var Rokka_Helper
 	 */
-	private $rokka_sync;
+	private $rokka_helper;
 
 	/**
 	 * Rokka_Image_Cdn_Settings constructor.
 	 *
 	 * @param Rokka_Image_Cdn $parent The main plugin object.
-	 * @param Rokka_Sync      $rokka_sync Instance of Rokka_Sync.
+	 * @param Rokka_Helper    $rokka_helper Instance of Rokka_Helper.
 	 */
-	public function __construct( $parent, $rokka_sync ) {
-		$this->rokka_sync = $rokka_sync;
+	public function __construct( $parent, $rokka_helper ) {
+		$this->rokka_helper = $rokka_helper;
 		$this->parent = $parent;
 
 		$this->base = 'rokka_';
@@ -209,8 +209,8 @@ class Rokka_Image_Cdn_Settings {
 
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
 		$rokka_settings = array(
-			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
-			'imagesToDelete' => $this->rokka_sync->get_images_to_delete(),
+			'imagesToUpload' => $this->get_images_for_upload(),
+			'imagesToDelete' => $this->get_images_to_delete(),
 			'nonce' => $ajax_nonce,
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
@@ -401,20 +401,75 @@ class Rokka_Image_Cdn_Settings {
 		// @codingStandardsIgnoreEnd
 	}
 
+
+	/**
+	 * Get all images which are not yet uploaded to Rokka.
+	 *
+	 * @return array Array with ids of images.
+	 */
+	public function get_images_for_upload() {
+		$image_ids = $this->get_all_images();
+
+		$image_ids = array_filter( $image_ids, function ( $image_id ) {
+			return ! $this->rokka_helper->is_on_rokka( $image_id );
+		} );
+		// reset keys to get a proper array to send to javascript (not an associative array)
+		$image_ids = array_values( $image_ids );
+
+		return $image_ids;
+	}
+
+	/**
+	 * Get all images which are already uploaded to Rokka.
+	 *
+	 * @return array Array with ids of images.
+	 */
+	public function get_images_to_delete() {
+		$image_ids = $this->get_all_images();
+
+		$image_ids = array_filter( $image_ids, function ( $image_id ) {
+			return $this->rokka_helper->is_on_rokka( $image_id );
+		} );
+		// reset keys to get a proper array to send to javascript (not an associative array)
+		$image_ids = array_values( $image_ids );
+		return $image_ids;
+	}
+
+	/**
+	 * Get all images from database.
+	 *
+	 * @return array Array with ids of images.
+	 */
+	private function get_all_images() {
+		$query_images_args = array(
+			'post_type'      => 'attachment',
+			'post_mime_type' => Rokka_Helper::ALLOWED_MIME_TYPES,
+			'post_status'    => 'inherit',
+			// @codingStandardsIgnoreStart
+			'posts_per_page' => -1,
+			// @codingStandardsIgnoreEnd
+			'fields'         => 'ids',
+		);
+
+		$query_images = new WP_Query( $query_images_args );
+
+		return $query_images->posts;
+	}
+
 	/**
 	 * Main Rokka_Image_Cdn_Settings Instance
 	 *
 	 * Ensures only one instance of Rokka_Image_Cdn_Settings is loaded or can be loaded.
 	 *
 	 * @param Rokka_Image_Cdn $parent The main plugin object.
-	 * @param Rokka_Sync      $rokka_sync Instance of Rokka_Sync.
+	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
 	 *
 	 * @static
 	 * @return Rokka_Image_Cdn_Settings Rokka_Image_Cdn_Settings instance
 	 */
-	public static function instance( $parent, $rokka_sync ) {
+	public static function instance( $parent, $rokka_helper ) {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent, $rokka_sync );
+			self::$_instance = new self( $parent, $rokka_helper );
 		}
 
 		return self::$_instance;

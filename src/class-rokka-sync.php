@@ -159,60 +159,6 @@ class Rokka_Sync {
 	}
 
 	/**
-	 * Get all images which are not yet uploaded to Rokka.
-	 *
-	 * @return array Array with ids of images.
-	 */
-	public function get_images_for_upload() {
-		$image_ids = $this->get_all_images();
-
-		$image_ids = array_filter( $image_ids, function ( $image_id ) {
-			return ! $this->rokka_helper->is_on_rokka( $image_id );
-		} );
-		// reset keys to get a proper array to send to javascript (not an associative array)
-		$image_ids = array_values( $image_ids );
-
-		return $image_ids;
-	}
-
-	/**
-	 * Get all images which are already uploaded to Rokka.
-	 *
-	 * @return array Array with ids of images.
-	 */
-	public function get_images_to_delete() {
-		$image_ids = $this->get_all_images();
-
-		$image_ids = array_filter( $image_ids, function ( $image_id ) {
-			return $this->rokka_helper->is_on_rokka( $image_id );
-		} );
-		// reset keys to get a proper array to send to javascript (not an associative array)
-		$image_ids = array_values( $image_ids );
-		return $image_ids;
-	}
-
-	/**
-	 * Get all images from database.
-	 *
-	 * @return array Array with ids of images.
-	 */
-	private function get_all_images() {
-		$query_images_args = array(
-			'post_type'      => 'attachment',
-			'post_mime_type' => Rokka_Helper::ALLOWED_MIME_TYPES,
-			'post_status'    => 'inherit',
-			// @codingStandardsIgnoreStart
-			'posts_per_page' => -1,
-			// @codingStandardsIgnoreEnd
-			'fields'         => 'ids',
-		);
-
-		$query_images = new WP_Query( $query_images_args );
-
-		return $query_images->posts;
-	}
-
-	/**
 	 * Creates stacks on Rokka.
 	 */
 	public function ajax_rokka_create_stacks() {
