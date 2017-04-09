@@ -36,6 +36,13 @@ class Rokka_Media_Management {
 		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_hash_edit_field' ), 10, 2 );
 		add_filter( 'attachment_fields_to_edit', array( $this, 'add_attachment_subject_area_edit_field' ), 10, 2 );
 		add_filter( 'attachment_fields_to_save', array( $this, 'save_custom_attachment_fields' ), 10, 2 );
+
+		// handle admin list actions
+		add_action( 'admin_action_rokka_delete_image', array( $this, 'delete_image' ) );
+		add_action( 'admin_action_rokka_upload_image', array( $this, 'upload_image' ) );
+
+		// display all notices after executing list actions
+		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
 	}
 
 	/**
@@ -226,20 +233,110 @@ class Rokka_Media_Management {
 		if ( 'rokka' === $column ) {
 			$output = '';
 			if ( $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
+				$output .= '<form method="POST" action="' . esc_url( admin_url( 'admin.php' ) ) . '" >';
 				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 					$output .= 'synced to rokka!';
-					$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+					$output .= '<input type="hidden" name="action" value="rokka_delete_image" />';
+					$output .= '<input type="hidden" name="rokka_delete_image_id" value="' . esc_attr( $post_id ) . '" />';
+					$output .= wp_nonce_field( 'rokka_delete_image_' . $post_id, '_wpnonce', true, false );
+					$output .= '<input type="submit" value=' . esc_attr__( 'Delete image', 'rokka-image-cdn' ) . '" />';
 				} else {
-					$output .= 'not yet on rokka';
+					$output .= 'not yet no rokka :(';
+					$output .= '<input type="hidden" name="action" value="rokka_upload_image" />';
+					$output .= '<input type="hidden" name="rokka_upload_image_id" value="' . esc_attr( $post_id ) . '" />';
+					$output .= wp_nonce_field( 'rokka_upload_image_' . $post_id, '_wpnonce', true, false );
+					$output .= '<input type="submit" value="' . esc_attr__( 'Upload image', 'rokka-image-cdn' ) . '" />';
 				}
+				$output .= '</form>';
 			} else {
-				$output .= 'This mime type is not supported on rokka';
+				$output .= esc_html__( 'This mime type is not supported on rokka', 'rokka-image-cdn' );
 			}
 
 			// @codingStandardsIgnoreStart
 			echo $output;
 			// @codingStandardsIgnoreEnd
 		}
+	}
+
+	/**
+	 * Deletes image from rokka.
+	 */
+	public function delete_image() {
+		if ( ! isset( $_REQUEST['rokka_delete_image_id'] ) ) {
+			wp_safe_redirect( wp_get_referer() );
+			exit;
+		}
+
+		$post_id = intval( $_REQUEST['rokka_delete_image_id'] );
+		check_admin_referer( 'rokka_delete_image_' . $post_id );
+
+		$this->rokka_helper->delete_image_from_rokka( $post_id );
+
+		$this->store_message_in_notices_option( 'Image ' . $post_id . ' was successfully removed from rokka.' );
+
+		wp_safe_redirect( wp_get_referer() );
+		exit;
+	}
+
+	/**
+	 * Uploads image to rokka.
+	 */
+	public function upload_image() {
+		if ( ! isset( $_REQUEST['rokka_upload_image_id'] ) ) {
+			wp_safe_redirect( wp_get_referer() );
+			exit;
+		}
+
+		$post_id = intval( $_REQUEST['rokka_upload_image_id'] );
+		check_admin_referer( 'rokka_upload_image_' . $post_id );
+
+		$this->rokka_helper->upload_image_to_rokka( $post_id );
+
+		$this->store_message_in_notices_option( 'Image ' . $post_id . ' was successfully uploaded to rokka.' );
+
+		wp_safe_redirect( wp_get_referer() );
+		exit;
+	}
+
+	/**
+	 * Stores message in option to print it out after redirect
+	 *
+	 * @param string $message Message which should be stored.
+	 * @param string $type Message type (error, warning, success, info).
+	 *
+	 * @return bool True if message was stored successfully.
+	 */
+	protected function store_message_in_notices_option( $message, $type = 'success' ) {
+		if ( ! empty( $message ) ) {
+			// store message in option array
+			$notices = get_option( 'rokka_notices' );
+			$notices[ $type ][] = $message;
+
+			return update_option( 'rokka_notices', $notices );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Displays all admin notices
+	 *
+	 * @return bool
+	 */
+	public function show_admin_notices() {
+		$notices = get_option( 'rokka_notices' );
+		if ( empty( $notices ) || ! is_array( $notices ) ) {
+			return '';
+		}
+
+		// print all messages
+		foreach ( $notices as $type => $messages ) {
+			foreach ( $messages as $notice ) {
+				echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $notice ) . '</p></div>';
+			}
+		}
+
+		return delete_option( 'rokka_notices' );
 	}
 
 }
