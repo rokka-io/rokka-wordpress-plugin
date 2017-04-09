@@ -221,7 +221,7 @@ class Rokka_Image_Cdn_Settings {
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
 				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
 				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to Rokka.', 'rokka-image-cdn' ),
-				'deleteSingleImageSuccess' => esc_html__( 'Image successful removed. Image ID:', 'rokka-image-cdn' ),
+				'deleteSingleImageSuccess' => esc_html__( 'Image successfully removed. Image ID:', 'rokka-image-cdn' ),
 				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-image-cdn' ),
 				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-image-cdn' ),
 				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-image-cdn' ),

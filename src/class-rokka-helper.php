@@ -112,14 +112,13 @@ class Rokka_Helper {
 		if ( is_object( $source_image ) ) {
 			$source_images = $source_image->getSourceImages();
 			$source_image = array_pop( $source_images );
-			$rokka_info = array(
-				'hash' => $source_image->hash,
+			$rokka_meta = array(
 				'format' => $source_image->format,
 				'organization' => $source_image->organization,
 				'link' => $source_image->link,
 				'created' => $source_image->created,
 			);
-			update_post_meta( $attachment_id, 'rokka_info', $rokka_info );
+			update_post_meta( $attachment_id, 'rokka_meta', $rokka_meta );
 			update_post_meta( $attachment_id, 'rokka_hash', $source_image->hash );
 
 			return true;
@@ -139,7 +138,7 @@ class Rokka_Helper {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		if ( $hash ) {
-			delete_post_meta( $attachment_id, 'rokka_info' );
+			delete_post_meta( $attachment_id, 'rokka_meta' );
 			delete_post_meta( $attachment_id, 'rokka_hash' );
 			delete_post_meta( $attachment_id, 'rokka_subject_area' );
 			$client = $this->rokka_get_client();
@@ -333,13 +332,13 @@ class Rokka_Helper {
 	 * Returns Rokka url of image
 	 *
 	 * @param string $hash Rokka hash.
-	 * @param string $format File format.
 	 * @param string $size Image size.
 	 * @param string $filename Image filename.
+	 * @param string $format File format.
 	 *
 	 * @return string
 	 */
-	public function get_rokka_url( $hash, $format, $size = 'thumbnail', $filename = '' ) {
+	public function get_rokka_url( $hash, $size = 'thumbnail', $filename = '', $format = '' ) {
 		if ( is_array( $size ) ) {
 			$stack = null;
 
