@@ -246,25 +246,33 @@ class Rokka_Image_Cdn_Settings {
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<p>
-							<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. Before you enable Rokka the first time, please make sure you have executed this command and all images are uploaded to Rokka already. This is nescessary in order to provide the images in the right size from Rokka. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
-						</p>
-						<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
-						<div id="progress-info-stacks"></div>
+						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+							<p>
+								<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. Before you enable Rokka the first time, please make sure you have executed this command and all images are uploaded to Rokka already. This is nescessary in order to provide the images in the right size from Rokka. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
+							</p>
+							<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
+							<div id="progress-info-stacks"></div>
+						<?php else : ?>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-image-cdn' ); ?></p>
+						<?php endif ; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
-						<p>
-							<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
-						</p>
-						<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
-						<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
-						<div id="upload-progress-info"></div>
-						<div id="upload-progressbar"></div>
-						<div id="upload-progress-log-wrapper">
-							<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
-							<textarea id="upload-progress-log" disabled="disabled"></textarea>
-						</div>
+						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+							<p>
+								<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
+							</p>
+							<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
+							<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
+							<div id="upload-progress-info"></div>
+							<div id="upload-progressbar"></div>
+							<div id="upload-progress-log-wrapper">
+								<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
+								<textarea id="upload-progress-log" disabled="disabled"></textarea>
+							</div>
+						<?php else : ?>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-image-cdn' ); ?></p>
+						<?php endif ; ?>
 					</div>
 				<?php else : ?>
 					<div class="tab-content">
@@ -295,8 +303,7 @@ class Rokka_Image_Cdn_Settings {
 					<div id="address-block">
 						<span class="company">Liip AG</span><br />
 						Limmatstrasse 183<br />
-						CH-8005 Zürich<br />
-						Switzerland
+						CH-8005 Zürich
 					</div>
 				</div>
 			</div><!--end #column-right -->
@@ -561,7 +568,7 @@ class Rokka_Image_Cdn_Settings {
 	 * Ensures only one instance of Rokka_Image_Cdn_Settings is loaded or can be loaded.
 	 *
 	 * @param Rokka_Image_Cdn $parent The main plugin object.
-	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
+	 * @param Rokka_Helper    $rokka_helper Instance of Rokka_Helper.
 	 *
 	 * @static
 	 * @return Rokka_Image_Cdn_Settings Rokka_Image_Cdn_Settings instance
