@@ -210,6 +210,7 @@ class Rokka_Image_Cdn_Settings {
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
 		$rokka_settings = array(
 			'imagesToUpload' => $this->rokka_sync->get_images_for_upload(),
+			'imagesToDelete' => $this->rokka_sync->get_images_to_delete(),
 			'nonce' => $ajax_nonce,
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
@@ -220,6 +221,11 @@ class Rokka_Image_Cdn_Settings {
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
 				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
 				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to Rokka.', 'rokka-image-cdn' ),
+				'deleteSingleImageSuccess' => esc_html__( 'Image successful removed. Image ID:', 'rokka-image-cdn' ),
+				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-image-cdn' ),
+				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-image-cdn' ),
+				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-image-cdn' ),
+				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-image-cdn' ),
 			),
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
@@ -246,7 +252,8 @@ class Rokka_Image_Cdn_Settings {
 						<p>
 							<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
 						</p>
-						<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></button>
+						<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
+						<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
 						<div id="upload-progress-info"></div>
 						<div id="upload-progressbar"></div>
 						<div id="upload-progress-log-wrapper">

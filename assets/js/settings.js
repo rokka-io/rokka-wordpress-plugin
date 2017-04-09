@@ -13,20 +13,19 @@ jQuery(document).ready(function ($) {
 		var uploadProgressbar = $('#upload-progressbar'),
 			uploadProgressLogWrapper = $('#upload-progress-log-wrapper'),
 			uploadProgressLog = $('#upload-progress-log'),
-			uploadProgresInfo = $('#upload-progress-info');
-		var imageIdsToUpload = rokkaSettings.imagesToUpload;
-		imageIdsToUpload = Object.keys(imageIdsToUpload).map(function (k) {
-			return imageIdsToUpload[k]
-		});
+			uploadProgresInfo = $('#upload-progress-info'),
+			imageIdsToUpload = rokkaSettings.imagesToUpload;
 
 		uploadProgresInfo.html('');
 		uploadProgressLog.val('');
+		uploadProgressbar.hide();
 		uploadProgressLogWrapper.hide();
 
 		var progressFraction = 100 / imageIdsToUpload.length;
 		var progressStep = 0;
 		if (imageIdsToUpload.length > 0) {
 			// initialize progressbar
+			uploadProgressbar.show();
 			uploadProgressbar.progressbar({
 				value: 0
 			});
@@ -63,6 +62,66 @@ jQuery(document).ready(function ($) {
 			}
 		} else {
 			uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.uploadImagesAlreadyUploaded + '</p></div>');
+		}
+	});
+
+	$('#mass-delete-everything').click(function (e) {
+		var uploadProgressbar = $('#upload-progressbar'),
+			uploadProgressLogWrapper = $('#upload-progress-log-wrapper'),
+			uploadProgressLog = $('#upload-progress-log'),
+			uploadProgresInfo = $('#upload-progress-info'),
+			imageIdsToDelete = rokkaSettings.imagesToDelete;
+
+		if ( confirm( rokkaSettings.labels.deleteImagesConfirm ) !== true) {
+			return;
+		}
+
+		uploadProgresInfo.html('');
+		uploadProgressLog.val('');
+		uploadProgressbar.hide();
+		uploadProgressLogWrapper.hide();
+
+		var progressFraction = 100 / imageIdsToDelete.length;
+		var progressStep = 0;
+		if (imageIdsToDelete.length > 0) {
+			// initialize progressbar
+			uploadProgressbar.show();
+			uploadProgressbar.progressbar({
+				value: 0
+			});
+			uploadProgressLogWrapper.show();
+
+			// delete first image
+			rokkaDeleteImage(imageIdsToDelete);
+
+			function rokkaDeleteImage(imageIdsToDelete) {
+				if (imageIdsToDelete.length > 0) {
+					var imageId = imageIdsToDelete.shift();
+					$.ajax({
+						type: 'POST',
+						url: ajaxurl,
+						dataType: 'json',
+						data: {
+							action: 'rokka_delete_image',
+							image_id: imageId,
+							nonce: rokkaSettings.nonce
+						}
+					}).done(function() {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteSingleImageSuccess + ' ' + imageId + '\n');
+					}).fail(function( res ) {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteSingleImageFail + ' ' + imageId + ' / Error: ' + res.responseJSON.data + '\n');
+					}).always(function() {
+						progressStep += 1;
+						uploadProgressbar.progressbar('value', progressStep * progressFraction);
+						rokkaDeleteImage(imageIdsToDelete);
+					});
+				} else {
+					uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteImagesSuccess);
+					uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.deleteImagesSuccess + '</p></div>')
+				}
+			}
+		} else {
+			uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.deleteImagesNoImage + '</p></div>');
 		}
 	});
 

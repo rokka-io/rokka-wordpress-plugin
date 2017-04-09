@@ -36,6 +36,7 @@ class Rokka_Sync {
 		add_action( 'delete_attachment', array( $this, 'rokka_delete' ), 10, 1 );
 
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
+		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
 		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'ajax_rokka_create_stacks' ) );
 	}
 
@@ -122,6 +123,42 @@ class Rokka_Sync {
 	}
 
 	/**
+	 * Deletes image from rokka (rokka_delete_image ajax endpoint)
+	 */
+	public function ajax_rokka_delete_image() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		try {
+			if ( isset( $_POST['image_id'] ) ) {
+				$image_id = intval( $_POST['image_id'] );
+
+				if ( $this->rokka_helper->is_on_rokka( $image_id ) ) {
+					$delete_success = $this->rokka_helper->delete_image_from_rokka( $image_id );
+
+					if ( $delete_success ) {
+						wp_send_json_success( $image_id );
+					} else {
+						wp_send_json_error( $image_id, 400 );
+					}
+				} else {
+					wp_send_json_error( __( 'This image is not yet on rokka. No need to delete it.', 'rokka-image-cdn' ), 400 );
+				}
+			} else {
+				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-image-cdn' ), 400 );
+			}
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage(), 400 );
+		}
+
+		wp_die();
+	}
+
+	/**
 	 * Get all images which are not yet uploaded to Rokka.
 	 *
 	 * @return array Array with ids of images.
@@ -132,7 +169,25 @@ class Rokka_Sync {
 		$image_ids = array_filter( $image_ids, function ( $image_id ) {
 			return ! $this->rokka_helper->is_on_rokka( $image_id );
 		} );
+		// reset keys to get a proper array to send to javascript (not an associative array)
+		$image_ids = array_values( $image_ids );
 
+		return $image_ids;
+	}
+
+	/**
+	 * Get all images which are already uploaded to Rokka.
+	 *
+	 * @return array Array with ids of images.
+	 */
+	public function get_images_to_delete() {
+		$image_ids = $this->get_all_images();
+
+		$image_ids = array_filter( $image_ids, function ( $image_id ) {
+			return $this->rokka_helper->is_on_rokka( $image_id );
+		} );
+		// reset keys to get a proper array to send to javascript (not an associative array)
+		$image_ids = array_values( $image_ids );
 		return $image_ids;
 	}
 
