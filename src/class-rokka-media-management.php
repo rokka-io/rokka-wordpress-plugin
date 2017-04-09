@@ -41,8 +41,58 @@ class Rokka_Media_Management {
 		add_action( 'admin_action_rokka_delete_image', array( $this, 'delete_image' ) );
 		add_action( 'admin_action_rokka_upload_image', array( $this, 'upload_image' ) );
 
+		// handle bulk actions
+		add_filter( 'bulk_actions-upload', array( $this, 'add_bulk_actions' ), 10, 1 );
+		add_filter( 'handle_bulk_actions-upload', array( $this, 'handle_upload_bulk_action' ), 10, 3 );
+
 		// display all notices after executing list actions
 		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
+	}
+
+	/**
+	 * Adds custom bulk actions.
+	 *
+	 * @param array $bulk_actions An array of the available bulk actions.
+	 *
+	 * @return array
+	 */
+	public function add_bulk_actions( $bulk_actions ) {
+		$bulk_actions['rokka_upload'] = __( 'Upload to rokka', 'rokka-image-cdn' );
+		$bulk_actions['rokka_delete'] = __( 'Delete from rokka', 'rokka-image-cdn' );
+		return $bulk_actions;
+	}
+	/**
+	 * Handles rokka upload bulk action.
+	 *
+	 * @param string $redirect_to The redirect URL.
+	 * @param string $doaction    The action being taken.
+	 * @param array  $post_ids    The items to take the action on.
+	 *
+	 * @return string
+	 */
+	public function handle_upload_bulk_action( $redirect_to, $doaction, $post_ids ) {
+		if ( 'rokka_upload' !== $doaction ) {
+			return $redirect_to;
+		}
+		$image_count = count( $post_ids );
+		foreach ( $post_ids as $post_id ) {
+			if ( ! $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				$image_count--;
+			} elseif ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				$image_count--;
+			} else {
+				$this->rokka_helper->upload_image_to_rokka( $post_id );
+			}
+		}
+		if ( $image_count > 0 ) {
+			/* translators: %s contains image count */
+			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been uploaded to rokka.', '%s images have been uploaded to rokka.', $image_count, '%s contains image count', 'rokka-image-cdn' ), $image_count ) );
+		}
+		return $redirect_to;
 	}
 
 	/**
@@ -233,21 +283,13 @@ class Rokka_Media_Management {
 		if ( 'rokka' === $column ) {
 			$output = '';
 			if ( $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
-				$output .= '<form method="POST" action="' . esc_url( admin_url( 'admin.php' ) ) . '" >';
 				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 					$output .= 'synced to rokka!';
-					$output .= '<input type="hidden" name="action" value="rokka_delete_image" />';
-					$output .= '<input type="hidden" name="rokka_delete_image_id" value="' . esc_attr( $post_id ) . '" />';
-					$output .= wp_nonce_field( 'rokka_delete_image_' . $post_id, '_wpnonce', true, false );
-					$output .= get_submit_button( esc_html__( 'Delete image', 'rokka-image-cdn' ), 'delete', 'submit-delete-' . $post_id );
+					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_delete_image&image_id=' . $post_id ), 'rokka_delete_image_' . $post_id ) ) . '" class="button delete">' . esc_html__( 'Delete image', 'rokka-image-cdn' ) . '</a></p>';
 				} else {
 					$output .= 'not yet no rokka :(';
-					$output .= '<input type="hidden" name="action" value="rokka_upload_image" />';
-					$output .= '<input type="hidden" name="rokka_upload_image_id" value="' . esc_attr( $post_id ) . '" />';
-					$output .= wp_nonce_field( 'rokka_upload_image_' . $post_id, '_wpnonce', true, false );
-					$output .= get_submit_button( esc_html__( 'Upload image', 'rokka-image-cdn' ), 'primary', 'submit-upload-' . $post_id );
+					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button button-primary">' . esc_html__( 'Upload image', 'rokka-image-cdn' ) . '</a></p>';
 				}
-				$output .= '</form>';
 			} else {
 				$output .= esc_html__( 'This mime type is not supported on rokka', 'rokka-image-cdn' );
 			}
@@ -262,17 +304,18 @@ class Rokka_Media_Management {
 	 * Deletes image from rokka.
 	 */
 	public function delete_image() {
-		if ( ! isset( $_REQUEST['rokka_delete_image_id'] ) ) {
+		if ( ! isset( $_REQUEST['image_id'] ) ) {
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 
-		$post_id = intval( $_REQUEST['rokka_delete_image_id'] );
+		$post_id = intval( $_REQUEST['image_id'] );
 		check_admin_referer( 'rokka_delete_image_' . $post_id );
 
 		$this->rokka_helper->delete_image_from_rokka( $post_id );
 
-		$this->store_message_in_notices_option( 'Image ' . $post_id . ' was successfully removed from rokka.' );
+		/* translators: %s contains image id */
+		$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully removed from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
 
 		wp_safe_redirect( wp_get_referer() );
 		exit;
@@ -282,17 +325,18 @@ class Rokka_Media_Management {
 	 * Uploads image to rokka.
 	 */
 	public function upload_image() {
-		if ( ! isset( $_REQUEST['rokka_upload_image_id'] ) ) {
+		if ( ! isset( $_REQUEST['image_id'] ) ) {
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 
-		$post_id = intval( $_REQUEST['rokka_upload_image_id'] );
+		$post_id = intval( $_REQUEST['image_id'] );
 		check_admin_referer( 'rokka_upload_image_' . $post_id );
 
 		$this->rokka_helper->upload_image_to_rokka( $post_id );
 
-		$this->store_message_in_notices_option( 'Image ' . $post_id . ' was successfully uploaded to rokka.' );
+		/* translators: %s contains image id */
+		$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully uploaded to rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
 
 		wp_safe_redirect( wp_get_referer() );
 		exit;
