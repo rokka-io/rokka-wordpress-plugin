@@ -67,6 +67,13 @@ class Rokka_Helper {
 	private $output_parsing_enabled = false;
 
 	/**
+	 * Settings complete.
+	 *
+	 * @var bool
+	 */
+	private $settings_complete = false;
+
+	/**
 	 * Rokka enabled.
 	 *
 	 * @var bool
@@ -92,6 +99,8 @@ class Rokka_Helper {
 		$this->rokka_enabled = ( get_option( 'rokka_rokka_enabled' ) === 'on' ? true : false );
 		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
 			$this->rokka_enabled = false;
+		} else {
+			$this->settings_complete = true;
 		}
 	}
 
@@ -483,6 +492,15 @@ class Rokka_Helper {
 	 */
 	public function is_rokka_enabled() {
 		return $this->rokka_enabled;
+	}
+
+	/**
+	 * Returns if settings are complete.
+	 *
+	 * @return bool
+	 */
+	public function are_settings_complete() {
+		return $this->settings_complete;
 	}
 
 	/**
