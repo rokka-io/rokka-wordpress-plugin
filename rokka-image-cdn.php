@@ -45,7 +45,7 @@ function rokka_image_cdn() {
 	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
 	$rokka_helper = new Rokka_Helper();
 
-	if ( get_option( 'rokka_rokka_enabled' ) ) {
+	if ( $rokka_helper->is_rokka_enabled() ) {
 		new Rokka_Filter_Url( $rokka_helper );
 		if ( ! is_admin() && get_option( 'rokka_output_parsing' ) ) {
 			new Rokka_Filter_Content( $rokka_helper );
@@ -53,12 +53,12 @@ function rokka_image_cdn() {
 	}
 
 	if ( is_admin() ) {
-		$rokka_sync = new Rokka_Sync( $rokka_helper );
+		new Rokka_Sync( $rokka_helper );
 		new Rokka_Media_Management( $rokka_helper );
 		new Rokka_Image_Editor( $rokka_helper );
 
 		if ( is_null( $instance->settings ) ) {
-			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_sync );
+			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_helper );
 		}
 	}
 
