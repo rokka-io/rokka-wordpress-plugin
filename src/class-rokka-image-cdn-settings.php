@@ -142,7 +142,7 @@ class Rokka_Image_Cdn_Settings {
 	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . esc_html__( 'Settings', 'rokka-image-cdn' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings' ) ) . '">' . esc_html__( 'Settings', 'rokka-image-cdn' ) . '</a>';
 		// add settings link as first element
 		array_unshift( $links, $settings_link );
 
@@ -203,7 +203,8 @@ class Rokka_Image_Cdn_Settings {
 
 		$current_tab = 'settings';
 		if ( isset( $_GET['tab'] ) ) {
-			$current_tab = $_GET['tab'];
+			check_admin_referer( 'rokka-settings-tab' );
+			$current_tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) );
 		}
 
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
@@ -228,9 +229,9 @@ class Rokka_Image_Cdn_Settings {
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=settings" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-image-cdn' ); ?></a>
-					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=stacks" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></a>
-					<a href="options-general.php?page=<?php echo $this->parent->_token; ?>_settings&tab=upload" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-image-cdn' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
