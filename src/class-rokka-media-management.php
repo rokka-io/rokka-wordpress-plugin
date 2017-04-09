@@ -239,13 +239,13 @@ class Rokka_Media_Management {
 					$output .= '<input type="hidden" name="action" value="rokka_delete_image" />';
 					$output .= '<input type="hidden" name="rokka_delete_image_id" value="' . esc_attr( $post_id ) . '" />';
 					$output .= wp_nonce_field( 'rokka_delete_image_' . $post_id, '_wpnonce', true, false );
-					$output .= '<input type="submit" value=' . esc_attr__( 'Delete image', 'rokka-image-cdn' ) . '" />';
+					$output .= get_submit_button( esc_html__( 'Delete image', 'rokka-image-cdn' ), 'delete', 'submit-delete-' . $post_id );
 				} else {
 					$output .= 'not yet no rokka :(';
 					$output .= '<input type="hidden" name="action" value="rokka_upload_image" />';
 					$output .= '<input type="hidden" name="rokka_upload_image_id" value="' . esc_attr( $post_id ) . '" />';
 					$output .= wp_nonce_field( 'rokka_upload_image_' . $post_id, '_wpnonce', true, false );
-					$output .= '<input type="submit" value="' . esc_attr__( 'Upload image', 'rokka-image-cdn' ) . '" />';
+					$output .= get_submit_button( esc_html__( 'Upload image', 'rokka-image-cdn' ), 'primary', 'submit-upload-' . $post_id );
 				}
 				$output .= '</form>';
 			} else {
