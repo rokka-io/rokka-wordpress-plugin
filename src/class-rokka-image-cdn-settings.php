@@ -206,9 +206,11 @@ class Rokka_Image_Cdn_Settings {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'rokka-image-cdn' ) );
 		}
 
-		// Show warning if settings are not complete
+		// Show warning if rokka is not enabled
 		if ( ! $this->rokka_helper->are_settings_complete() ) {
 			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Settings need to be filled out completely before rokka support can be enabled.', 'rokka-image-cdn' ) . '</p></div>';
+		} elseif ( $this->rokka_helper->are_settings_complete() && ! $this->rokka_helper->is_rokka_enabled() ) {
+			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Rokka is not enabled yet. Please select the Enable Rokka checkbox in the settings.', 'rokka-image-cdn' ) . '</p></div>';
 		}
 
 		$current_tab = 'settings';
