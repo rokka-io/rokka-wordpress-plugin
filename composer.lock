@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ff89793ee34ba3380b56655a839c9454",
-    "content-hash": "57eb906bd0a7ebf80226260ce8f45b99",
+    "hash": "e2abbaf90635b7c5895faa029ad6d46b",
+    "content-hash": "5141183974277975d96e4d17323ffa1f",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -237,16 +237,16 @@
         },
         {
             "name": "rokka/client",
-            "version": "0.5.1",
+            "version": "0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rokka-io/rokka-client-php.git",
-                "reference": "5b6667549a6d5a07d93dc06df51432b9f7f8c434"
+                "reference": "4b0aed80af0b82f12785019b487cdc86f63f3b5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rokka-io/rokka-client-php/zipball/5b6667549a6d5a07d93dc06df51432b9f7f8c434",
-                "reference": "5b6667549a6d5a07d93dc06df51432b9f7f8c434",
+                "url": "https://api.github.com/repos/rokka-io/rokka-client-php/zipball/4b0aed80af0b82f12785019b487cdc86f63f3b5c",
+                "reference": "4b0aed80af0b82f12785019b487cdc86f63f3b5c",
                 "shasum": ""
             },
             "require": {
@@ -259,7 +259,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5.x-dev"
+                    "dev-master": "0.6.x-dev"
                 }
             },
             "autoload": {
@@ -294,7 +294,7 @@
                 "rokka",
                 "rokka.io"
             ],
-            "time": "2017-03-10 08:36:17"
+            "time": "2017-04-12 07:13:39"
         }
     ],
     "packages-dev": [

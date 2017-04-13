@@ -29,7 +29,7 @@
     "email": "contact@liip.ch"
   },
   "require": {
-    "rokka/client": "^0.5.1"
+    "rokka/client": "^0.6.0"
   },
   "config": {
     "bin-dir": "bin"
