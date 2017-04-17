@@ -81,6 +81,13 @@ class Rokka_Helper {
 	private $rokka_enabled = false;
 
 	/**
+	 * Rokka client library instance.
+	 *
+	 * @var \Rokka\Client\Image
+	 */
+	private $rokka_client = null;
+
+	/**
 	 * Rokka_Helper constructor.
 	 */
 	public function __construct() {
@@ -110,7 +117,11 @@ class Rokka_Helper {
 	 * @return \Rokka\Client\Image
 	 */
 	public function rokka_get_client() {
-		return \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), $this->get_rokka_api_secret() );
+		if ( is_null( $this->rokka_client ) ) {
+			$this->rokka_client = \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), $this->get_rokka_api_secret() );
+		}
+
+		return $this->rokka_client;
 	}
 
 
