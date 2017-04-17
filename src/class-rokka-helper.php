@@ -461,6 +461,22 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Checks rokka credentials.
+	 *
+	 * @return false|string New hash on success. False on failure.
+	 */
+	public function check_rokka_credentials() {
+		$client = $this->rokka_get_client();
+		try {
+			// the list stacks request fails if the credentials are wrong
+			$client->listStacks( 1 );
+			return true;
+		} catch ( GuzzleHttp\Exception\ClientException $e ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Returns Rokka url scheme.
 	 *
 	 * @return string

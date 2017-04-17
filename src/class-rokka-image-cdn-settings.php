@@ -87,6 +87,7 @@ class Rokka_Image_Cdn_Settings {
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
 		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
 		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'ajax_rokka_create_stacks' ) );
+		add_action( 'wp_ajax_rokka_check_credentials', array( $this, 'ajax_rokka_check_credentials' ) );
 	}
 
 	/**
@@ -292,6 +293,10 @@ class Rokka_Image_Cdn_Settings {
 							do_settings_sections( $this->parent->_token . '_settings' );
 							submit_button();
 							?>
+							<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
+								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials' , 'rokka-image-cdn' ); ?></button>
+								<div id="rokka-credentials-status"></div>
+							<?php endif ; ?>
 						</form>
 					</div>
 				<?php endif ; ?>
@@ -550,7 +555,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Creates stacks on Rokka.
+	 * Creates stacks on Rokka (rokka_create_stacks ajax endpoint)
 	 */
 	public function ajax_rokka_create_stacks() {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
@@ -574,6 +579,26 @@ class Rokka_Image_Cdn_Settings {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
+	}
+
+	/**
+	 * Checks rokka credentials (rokka_check_credentials ajax endpoint)
+	 */
+	public function ajax_rokka_check_credentials() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-image-cdn' ), 403 );
+			wp_die();
+		}
+
+		if ( $this->rokka_helper->check_rokka_credentials() ) {
+			wp_send_json_success( __( 'Yay! Rokka credentials are valid.', 'rokka-image-cdn' ) );
+			wp_die();
+		} else {
+			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-image-cdn' ), 400 );
+			wp_die();
+		}
 	}
 
 	/**

@@ -155,4 +155,21 @@ jQuery(document).ready(function ($) {
 			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.createStacksFail + ' ' + res.responseJSON.data + '</p></div>');
 		});
 	});
+
+	$('#check-rokka-credentials').click(function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			type: 'GET',
+			url: ajaxurl,
+			data: {
+				action: 'rokka_check_credentials',
+				nonce: rokkaSettings.nonce
+			}
+		}).done(function(res) {
+			$('#rokka-credentials-status').html('<div class="notice notice-success"><p>' + res.data + '</p></div>');
+		}).fail(function(res) {
+			$('#rokka-credentials-status').html('<div class="notice notice-error"><p>' + res.responseJSON.data + '</p></div>');
+		});
+	});
 });
