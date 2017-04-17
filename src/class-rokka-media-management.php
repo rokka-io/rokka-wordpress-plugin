@@ -294,10 +294,10 @@ class Rokka_Media_Management {
 			if ( $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
 				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 					$output .= 'synced to rokka!';
-					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_delete_image&image_id=' . $post_id ), 'rokka_delete_image_' . $post_id ) ) . '" class="button delete">' . esc_html__( 'Delete image', 'rokka-image-cdn' ) . '</a></p>';
+					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_delete_image&image_id=' . $post_id ), 'rokka_delete_image_' . $post_id ) ) . '" class="button delete">' . esc_html__( 'Remove image from rokka', 'rokka-image-cdn' ) . '</a></p>';
 				} else {
 					$output .= 'not yet no rokka :(';
-					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button button-primary">' . esc_html__( 'Upload image', 'rokka-image-cdn' ) . '</a></p>';
+					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button button-primary">' . esc_html__( 'Upload image to rokka', 'rokka-image-cdn' ) . '</a></p>';
 				}
 			} else {
 				$output .= esc_html__( 'This mime type is not supported on rokka', 'rokka-image-cdn' );
@@ -354,6 +354,8 @@ class Rokka_Media_Management {
 	/**
 	 * Adds custom bulk actions.
 	 *
+	 * @since 4.7.0
+	 *
 	 * @param array $bulk_actions An array of the available bulk actions.
 	 *
 	 * @return array
@@ -366,6 +368,8 @@ class Rokka_Media_Management {
 
 	/**
 	 * Handles rokka upload bulk action.
+	 *
+	 * @since 4.7.0
 	 *
 	 * @param string $redirect_to The redirect URL.
 	 * @param string $doaction    The action being taken.
@@ -400,6 +404,8 @@ class Rokka_Media_Management {
 
 	/**
 	 * Handles rokka delete bulk action.
+	 *
+	 * @since 4.7.0
 	 *
 	 * @param string $redirect_to The redirect URL.
 	 * @param string $doaction    The action being taken.
