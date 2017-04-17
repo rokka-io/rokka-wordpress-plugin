@@ -132,6 +132,8 @@ class Rokka_Helper {
 	 * @param string $file_path Path to file which should be uploaded.
 	 *
 	 * @return bool
+	 *
+	 * @throws Exception
 	 */
 	public function upload_image_to_rokka( $attachment_id, $file_path = '' ) {
 		if ( empty( $file_path ) ) {
@@ -252,6 +254,8 @@ class Rokka_Helper {
 	 * Creates and checks stacks on rokka if they don't already exist.
 	 *
 	 * @return array
+	 *
+	 * @throws Exception
 	 */
 	public function rokka_create_stacks() {
 		$sizes = $this->get_available_image_sizes();
@@ -424,6 +428,8 @@ class Rokka_Helper {
 	 * @param int    $height Height of subject area.
 	 *
 	 * @return false|string New hash on success. False on failure.
+	 *
+	 * @throws Exception
 	 */
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
