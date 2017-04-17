@@ -177,11 +177,14 @@ class Rokka_Helper {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		if ( $hash ) {
-			delete_post_meta( $attachment_id, 'rokka_meta' );
-			delete_post_meta( $attachment_id, 'rokka_hash' );
-			delete_post_meta( $attachment_id, 'rokka_subject_area' );
 			$client = $this->rokka_get_client();
-			return $client->deleteSourceImage( $hash );
+			$success = $client->deleteSourceImage( $hash );
+			if ( $success ) {
+				delete_post_meta( $attachment_id, 'rokka_meta' );
+				delete_post_meta( $attachment_id, 'rokka_hash' );
+				delete_post_meta( $attachment_id, 'rokka_subject_area' );
+			}
+			return $success;
 		}
 
 		return false;
