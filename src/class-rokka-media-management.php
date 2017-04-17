@@ -64,7 +64,17 @@ class Rokka_Media_Management {
 	 * @param integer $attachment_id Attachment id.
 	 */
 	public function rokka_upload( $attachment_id ) {
-		$this->rokka_helper->upload_image_to_rokka( $attachment_id );
+		try {
+			$upload_success = $this->rokka_helper->upload_image_to_rokka( $attachment_id );
+
+			if ( ! $upload_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-image-cdn' ), $attachment_id ), 'error' );
+			}
+		} catch ( Exception $e ) {
+			/* translators: %s contains image id */
+			$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $attachment_id ), 'error' );
+		}
 	}
 
 	/**
@@ -73,7 +83,7 @@ class Rokka_Media_Management {
 	 * @param string $file          Path to the attached file to update.
 	 * @param int    $attachment_id Attachment ID.
 	 *
-	 * @return bool
+	 * @return string
 	 */
 	public function rokka_update( $file, $attachment_id ) {
 		// This check is also needed that this function is not executed when the attachment is added (add_attachment action)
@@ -81,11 +91,27 @@ class Rokka_Media_Management {
 			return $file;
 		}
 
-		// delete old image on rokka before uploading new one
-		$this->rokka_helper->delete_image_from_rokka( $attachment_id );
+		try {
+			// delete old image on rokka before uploading new one
+			$delete_success = $this->rokka_helper->delete_image_from_rokka( $attachment_id );
 
-		// upload new file to rokka
-		$this->rokka_helper->upload_image_to_rokka( $attachment_id, $file );
+			if ( ! $delete_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka.', '%s contains image id', 'rokka-image-cdn' ), $attachment_id ), 'error' );
+			}
+
+			// upload new file to rokka
+			$upload_success = $this->rokka_helper->upload_image_to_rokka( $attachment_id, $file );
+
+			if ( ! $upload_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka.', '%s contains image id', 'rokka-image-cdn' ), $attachment_id ), 'error' );
+			}
+		} catch ( Exception $e ) {
+			/* translators: %s contains image id */
+			$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $attachment_id ), 'error' );
+		}
+
 		return $file;
 	}
 
@@ -101,7 +127,20 @@ class Rokka_Media_Management {
 			return false;
 		}
 
-		return $this->rokka_helper->delete_image_from_rokka( $post_id );
+		try {
+			$delete_success = $this->rokka_helper->delete_image_from_rokka( $post_id );
+
+			if ( ! $delete_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+			}
+			return $delete_success;
+		} catch ( Exception $e ) {
+			/* translators: %s contains image id */
+			$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+		}
+
+		return false;
 	}
 
 	/**
@@ -254,12 +293,16 @@ class Rokka_Media_Management {
 			$height = intval( $attachment['rokka_subject_area']['height'] );
 			$x = intval( $attachment['rokka_subject_area']['x'] );
 			$y = intval( $attachment['rokka_subject_area']['y'] );
-			if ( $width >= 3 && $height >= 3 ) {
-				$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
-			} else {
-				$new_hash = $this->rokka_helper->remove_subject_area( $hash );
+			try {
+				if ( $width >= 3 && $height >= 3 ) {
+					$new_hash = $this->rokka_helper->save_subject_area( $hash, $x, $y, $width, $height );
+				} else {
+					$new_hash = $this->rokka_helper->remove_subject_area( $hash );
+				}
+				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
+			} catch ( Exception $e ) {
+				$this->store_message_in_notices_option( __( 'There was an error saving the subject area. Message: ' . $e->getMessage() , 'rokka-image-cdn' ), 'error' );
 			}
-			update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
 		}
 
 		return $post;
@@ -321,10 +364,20 @@ class Rokka_Media_Management {
 		$post_id = intval( $_REQUEST['image_id'] );
 		check_admin_referer( 'rokka_delete_image_' . $post_id );
 
-		$this->rokka_helper->delete_image_from_rokka( $post_id );
+		try {
+			$delete_success = $this->rokka_helper->delete_image_from_rokka( $post_id );
 
-		/* translators: %s contains image id */
-		$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully removed from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
+			if ( $delete_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully deleted from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
+			} else {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+			}
+		} catch ( Exception $e ) {
+			/* translators: %s contains image id */
+			$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+		}
 
 		wp_safe_redirect( wp_get_referer() );
 		exit;
@@ -342,10 +395,20 @@ class Rokka_Media_Management {
 		$post_id = intval( $_REQUEST['image_id'] );
 		check_admin_referer( 'rokka_upload_image_' . $post_id );
 
-		$this->rokka_helper->upload_image_to_rokka( $post_id );
+		try {
+			$upload_success = $this->rokka_helper->upload_image_to_rokka( $post_id );
 
-		/* translators: %s contains image id */
-		$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully uploaded to rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
+			if ( $upload_success ) {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully uploaded to rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ) );
+			} else {
+				/* translators: %s contains image id */
+				$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+			}
+		} catch ( Exception $e ) {
+			/* translators: %s contains image id */
+			$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+		}
 
 		wp_safe_redirect( wp_get_referer() );
 		exit;
@@ -392,7 +455,17 @@ class Rokka_Media_Management {
 				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
 				$image_count--;
 			} else {
-				$this->rokka_helper->upload_image_to_rokka( $post_id );
+				try {
+					$upload_success = $this->rokka_helper->upload_image_to_rokka( $post_id );
+
+					if ( ! $upload_success ) {
+						/* translators: %s contains image id */
+						$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+					}
+				} catch ( Exception $e ) {
+					/* translators: %s contains image id */
+					$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				}
 			}
 		}
 		if ( $image_count > 0 ) {
@@ -424,7 +497,17 @@ class Rokka_Media_Management {
 				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is not yet on rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
 				$image_count--;
 			} else {
-				$this->rokka_helper->delete_image_from_rokka( $post_id );
+				try {
+					$delete_success = $this->rokka_helper->delete_image_from_rokka( $post_id );
+
+					if ( ! $delete_success ) {
+						/* translators: %s contains image id */
+						$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+					}
+				} catch ( Exception $e ) {
+					/* translators: %s contains image id */
+					$this->store_message_in_notices_option( sprintf( _x( 'There was an error deletiong image %s from rokka. Message: ' . $e->getMessage() , '%s contains image id', 'rokka-image-cdn' ), $post_id ), 'error' );
+				}
 			}
 		}
 		if ( $image_count > 0 ) {
