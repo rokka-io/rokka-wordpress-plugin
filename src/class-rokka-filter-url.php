@@ -164,7 +164,9 @@ class Rokka_Filter_Url {
 		// try for a new style intermediate size
 		// @codingStandardsIgnoreStart
 		if ( $intermediate = image_get_intermediate_size( $id, $size ) ) {
-			$img_url = $intermediate['url'];
+			// this is needed to overwrite the url before the image_get_intermediate_size filter was introduced in WP 4.4
+			// TODO do not call get_rokka_url twice
+			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $intermediate['file'], $size );
 			$width = $intermediate['width'];
 			$height = $intermediate['height'];
 			$is_intermediate = true;
@@ -198,6 +200,8 @@ class Rokka_Filter_Url {
 	/**
 	 * Rewrites urls of intermediate size output.
 	 *
+	 * @since 4.4.0
+	 *
 	 * @param array        $data    Array of file relative path, width, and height on success. May also include
 	 *                              file absolute path and URL.
 	 * @param int          $post_id The post_id of the image attachment.
@@ -220,6 +224,8 @@ class Rokka_Filter_Url {
 
 	/**
 	 * Rewrite image srcset meta
+	 *
+	 * @since 4.4.0
 	 *
 	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
 	 * @param array  $size_array    Array of width and height values in pixels (in that order).
