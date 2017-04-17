@@ -232,11 +232,13 @@ class Rokka_Image_Cdn_Settings {
 				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-image-cdn' ),
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
 				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
+				'uploadImagesFail' => esc_html__( 'There was an error during the upload of the images!', 'rokka-image-cdn' ),
 				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to Rokka.', 'rokka-image-cdn' ),
 				'deleteSingleImageSuccess' => esc_html__( 'Image successfully removed. Image ID:', 'rokka-image-cdn' ),
 				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-image-cdn' ),
 				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-image-cdn' ),
 				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-image-cdn' ),
+				'deleteImagesFail' => esc_html__( 'There was an error during the removal of the images!', 'rokka-image-cdn' ),
 				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-image-cdn' ),
 			),
 		);
@@ -558,15 +560,20 @@ class Rokka_Image_Cdn_Settings {
 			wp_die();
 		}
 
-		$sizes = $this->rokka_helper->rokka_create_stacks();
+		try {
+			$sizes = $this->rokka_helper->rokka_create_stacks();
 
-		if ( $sizes ) {
-			wp_send_json_success( $sizes );
+			if ( $sizes ) {
+				wp_send_json_success( $sizes );
+				wp_die();
+			}
+
+			wp_send_json_error( __( 'Could not process stacks.', 'rokka-image-cdn' ), 400 );
 			wp_die();
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
-		wp_send_json_error( __( 'Could not process stacks.', 'rokka-image-cdn' ), 400 );
-		wp_die();
 	}
 
 	/**

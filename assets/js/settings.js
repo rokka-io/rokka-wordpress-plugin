@@ -14,7 +14,8 @@ jQuery(document).ready(function ($) {
 			uploadProgressLogWrapper = $('#upload-progress-log-wrapper'),
 			uploadProgressLog = $('#upload-progress-log'),
 			uploadProgresInfo = $('#upload-progress-info'),
-			imageIdsToUpload = rokkaSettings.imagesToUpload;
+			imageIdsToUpload = rokkaSettings.imagesToUpload,
+			hasError = false;
 
 		uploadProgresInfo.html('');
 		uploadProgressLog.val('');
@@ -50,14 +51,20 @@ jQuery(document).ready(function ($) {
 						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadSingleImageSuccess + ' ' + imageId + '\n');
 					}).fail(function( res ) {
 						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadSingleImageFail + ' ' + imageId + ' / Error: ' + res.responseJSON.data + '\n');
+						hasError = true;
 					}).always(function() {
 						progressStep += 1;
 						uploadProgressbar.progressbar('value', progressStep * progressFraction);
 						rokkaUploadImage(imageIdsToUpload);
 					});
 				} else {
-					uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadImagesSuccess);
-					uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.uploadImagesSuccess + '</p></div>')
+					if ( ! hasError ) {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadImagesSuccess);
+						uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.uploadImagesSuccess + '</p></div>')
+					} else {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.uploadImagesFail);
+						uploadProgresInfo.html('<div class="notice notice-error"><p>' + rokkaSettings.labels.uploadImagesFail + '</p></div>')
+					}
 				}
 			}
 		} else {
@@ -70,7 +77,8 @@ jQuery(document).ready(function ($) {
 			uploadProgressLogWrapper = $('#upload-progress-log-wrapper'),
 			uploadProgressLog = $('#upload-progress-log'),
 			uploadProgresInfo = $('#upload-progress-info'),
-			imageIdsToDelete = rokkaSettings.imagesToDelete;
+			imageIdsToDelete = rokkaSettings.imagesToDelete,
+			hasError = false;
 
 		if ( confirm( rokkaSettings.labels.deleteImagesConfirm ) !== true) {
 			return;
@@ -110,14 +118,20 @@ jQuery(document).ready(function ($) {
 						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteSingleImageSuccess + ' ' + imageId + '\n');
 					}).fail(function( res ) {
 						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteSingleImageFail + ' ' + imageId + ' / Error: ' + res.responseJSON.data + '\n');
+						hasError = true;
 					}).always(function() {
 						progressStep += 1;
 						uploadProgressbar.progressbar('value', progressStep * progressFraction);
 						rokkaDeleteImage(imageIdsToDelete);
 					});
 				} else {
-					uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteImagesSuccess);
-					uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.deleteImagesSuccess + '</p></div>')
+					if ( ! hasError ) {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteImagesSuccess);
+						uploadProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.deleteImagesSuccess + '</p></div>')
+					} else {
+						uploadProgressLog.val(uploadProgressLog.val() + getCurrentDateTime() + ' ' + rokkaSettings.labels.deleteImagesFail);
+						uploadProgresInfo.html('<div class="notice notice-error"><p>' + rokkaSettings.labels.deleteImagesFail + '</p></div>')
+					}
 				}
 			}
 		} else {
