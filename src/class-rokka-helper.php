@@ -133,7 +133,7 @@ class Rokka_Helper {
 	 *
 	 * @return bool
 	 *
-	 * @throws Exception
+	 * @throws Exception Throws exception if there was something wrong with uploading image to rokka.
 	 */
 	public function upload_image_to_rokka( $attachment_id, $file_path = '' ) {
 		if ( empty( $file_path ) ) {
@@ -255,7 +255,7 @@ class Rokka_Helper {
 	 *
 	 * @return array
 	 *
-	 * @throws Exception
+	 * @throws Exception Throws exception if there was something wrong with creating the stacks on rokka.
 	 */
 	public function rokka_create_stacks() {
 		$sizes = $this->get_available_image_sizes();
@@ -429,7 +429,7 @@ class Rokka_Helper {
 	 *
 	 * @return false|string New hash on success. False on failure.
 	 *
-	 * @throws Exception
+	 * @throws Exception Throws exception if there was something wrong with saving the subject area on rokka.
 	 */
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
