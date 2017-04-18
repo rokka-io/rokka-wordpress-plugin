@@ -46,6 +46,34 @@ class Rokka_Helper {
 	const STACK_PREFIX_DEFAULT = 'wp-';
 
 	/**
+	 * Name of stack sync operation create
+	 *
+	 * @var string
+	 */
+	const STACK_SYNC_OPERATION_CREATE = 'create';
+
+	/**
+	 * Name of stack sync operation keep
+	 *
+	 * @var string
+	 */
+	const STACK_SYNC_OPERATION_KEEP = 'keep';
+
+	/**
+	 * Name of stack sync operation update
+	 *
+	 * @var string
+	 */
+	const STACK_SYNC_OPERATION_UPDATE = 'update';
+
+	/**
+	 * Name of stack sync operation delete
+	 *
+	 * @var string
+	 */
+	const STACK_SYNC_OPERATION_DELETE = 'delete';
+
+	/**
 	 * Company name.
 	 *
 	 * @var string
@@ -267,52 +295,176 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Creates and checks stacks on rokka if they don't already exist.
+	 * Creates stack on rokka.
+	 *
+	 * @param string $name Stack name.
+	 * @param int    $width Width of resize operation.
+	 * @param int    $height Height of resize operation.
+	 * @param bool   $crop If crop stack operation should be added. Default false.
+	 */
+	private function create_stack( $name, $width, $height, $crop = false ) {
+		$client = $this->rokka_get_client();
+		$operations = array();
+		$mode = $crop ? 'fill' : 'box';
+		$operations[] = new \Rokka\Client\Core\StackOperation( 'resize', array(
+			'width' => $width,
+			'height' => $height,
+			'mode' => $mode,
+			'upscale' => false,
+		) );
+		if ( $crop ) {
+			$operations[] = new \Rokka\Client\Core\StackOperation( 'crop', array(
+				'width' => $width,
+				'height' => $height,
+			) );
+		}
+
+		$client->createStack( $name, $operations );
+	}
+
+	/**
+	 * Updates stack on rokka.
+	 *
+	 * @param string $name Stack name.
+	 * @param int    $width Width of resize operation.
+	 * @param int    $height Height of resize operation.
+	 * @param bool   $crop If crop stack operation should be added. Default false.
+	 */
+	private function update_stack( $name, $width, $height, $crop = false ) {
+		$this->delete_stack( $name );
+		$this->create_stack( $name, $width, $height, $crop );
+	}
+
+	/**
+	 * Deletes stack on rokka.
+	 *
+	 * @param string $name Stack name.
+	 */
+	private function delete_stack( $name ) {
+		$client = $this->rokka_get_client();
+		$client->deleteStack( $name );
+	}
+
+	/**
+	 * Syncs stacks with rokka.
 	 *
 	 * @return array
 	 *
-	 * @throws Exception Throws exception if there was something wrong with creating the stacks on rokka.
+	 * @throws Exception Throws exception if there was something wrong with syncing the stacks with rokka.
 	 */
-	public function rokka_create_stacks() {
+	public function rokka_sync_stacks() {
+		$stacks_to_sync = $this->get_stacks_to_sync();
+
+		foreach ( $stacks_to_sync as $stack ) {
+			// handle full size stack specially
+			if ( $stack['name'] === $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() ) {
+				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
+					$client = $this->rokka_get_client();
+					$resize_noop = new \Rokka\Client\Core\StackOperation( 'noop' );
+					$client->createStack( $stack['name'], [ $resize_noop ] );
+				}
+				continue;
+			}
+
+			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
+				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
+			} elseif ( self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
+				$this->update_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
+			} elseif ( self::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) {
+				$this->delete_stack( $stack['name'] );
+			}
+		}
+
+		return $stacks_to_sync;
+	}
+
+	/**
+	 * Prepares stacks which should be synced with rokka.
+	 *
+	 * Stacks will be returned in the following format:
+	 *
+	 * array(
+	 *     array(
+	 *         'name' => 'stackname',
+	 *         'width' => 900,
+	 *         'height' => 300,
+	 *         'crop' => true,
+	 *         'operation' => create|keep|update|delete,
+	 *     ),
+	 *     ...
+	 * )
+	 *
+	 * @return array Array with prepared stacks.
+	 */
+	public function get_stacks_to_sync() {
 		$sizes = $this->get_available_image_sizes();
 		$client = $this->rokka_get_client();
-		$stacks = $client->listStacks();
+		$stack_collection = $client->listStacks();
+		$stacks_on_rokka = array_filter( $stack_collection->getStacks(), function ( $stack ) {
+			return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
+		} );
+
+		$stacks_to_sync = array();
 
 		// Create a noop stack (full size stack) if it not exists already
 		try {
 			$client->getStack( $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() );
+			$stacks_to_sync[] = array(
+				'name' => $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(),
+				'width' => '0',
+				'height' => '0',
+				'crop' => false,
+				'operation' => self::STACK_SYNC_OPERATION_KEEP,
+			);
 		} catch ( Exception $e ) {
-			$resize_noop = new \Rokka\Client\Core\StackOperation( 'noop' );
-			$client->createStack( $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(), [ $resize_noop ] );
+			$stacks_to_sync[] = array(
+				'name' => $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(),
+				'width' => '0',
+				'height' => '0',
+				'crop' => false,
+				'operation' => self::STACK_SYNC_OPERATION_CREATE,
+			);
 		}
 		if ( ! empty( $sizes ) ) {
 			foreach ( $sizes as $name => $size ) {
-				$continue = true;
-				$delete = false;
 				$width = $size[0];
 				$height = $size[1];
 				$crop = $size[2];
 				$prefixed_name = $this->get_stack_prefix() . $name;
+				$stack_already_on_rokka = false;
 
 				// loop through all stacks which are already on Rokka
-				foreach ( $stacks->getStacks() as $stack ) {
+				foreach ( $stacks_on_rokka as $stack ) {
+					// if stack is already on rokka
 					if ( $stack->name === $prefixed_name ) {
-						$continue = false;
-
+						$stack_already_on_rokka = true;
 						// check if width, height or mode was changed in the meantime (in WordPress config)
 						// @codingStandardsIgnoreStart
 						$stack_operations = $stack->stackOperations;
 						// @codingStandardsIgnoreEnd
 						foreach ( $stack_operations as $operation ) {
 							$operation = $operation->toArray();
-
 							if ( 'resize' === $operation['name'] ) {
 								$stack_width = intval( $operation['options']['width'] );
 								$stack_height = intval( $operation['options']['height'] );
 								$stack_crop = ( 'fill' === $operation['options']['mode'] ) ? true : false;
+								// if stack has changed
 								if ( $stack_width !== $width || $stack_height !== $height || $stack_crop !== $crop ) {
-									$continue = true;
-									$delete = true;
+									$stacks_to_sync[] = array(
+										'name' => $prefixed_name,
+										'width' => $width,
+										'height' => $height,
+										'crop' => $crop,
+										'operation' => self::STACK_SYNC_OPERATION_UPDATE,
+									);
+								} else {
+									$stacks_to_sync[] = array(
+										'name' => $prefixed_name,
+										'width' => $width,
+										'height' => $height,
+										'crop' => $crop,
+										'operation' => self::STACK_SYNC_OPERATION_KEEP,
+									);
 								}
 							}
 						}
@@ -320,32 +472,46 @@ class Rokka_Helper {
 					}
 				}
 
-				if ( $continue && $width > 0 ) {
-					if ( $delete ) {
-						$client->deleteStack( $prefixed_name );
-					}
-
-					$operations = array();
-					$mode = $crop  ? 'fill' : 'box';
-					$operations[] = new \Rokka\Client\Core\StackOperation( 'resize', array(
+				if ( ! $stack_already_on_rokka ) {
+					$stacks_to_sync[] = array(
+						'name' => $prefixed_name,
 						'width' => $width,
 						'height' => $height,
-						'mode' => $mode,
-						'upscale' => false,
-					) );
-					if ( $crop ) {
-						$operations[] = new \Rokka\Client\Core\StackOperation( 'crop', array(
-							'width' => $width,
-							'height' => $height,
-						) );
-					}
-
-					$client->createStack( $prefixed_name, $operations );
+						'crop' => $crop,
+						'operation' => self::STACK_SYNC_OPERATION_CREATE,
+					);
 				}
 			}
 		}
 
-		return $sizes;
+		// find deleted stacks in wordpress
+		if ( ! empty( $stacks_on_rokka ) && ! empty( $sizes ) ) {
+			foreach ( $stacks_on_rokka as $stack ) {
+				// full size stack should never be deleted
+				if ( $stack->name === $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() ) {
+					continue;
+				}
+				$stack_still_exists_in_wp = false;
+				foreach ( $sizes as $name => $size ) {
+					$prefixed_name = $this->get_stack_prefix() . $name;
+					if ( $stack->name === $prefixed_name ) {
+						$stack_still_exists_in_wp = true;
+						break;
+					}
+				}
+				if ( ! $stack_still_exists_in_wp ) {
+					$stacks_to_sync[] = array(
+						'name' => $stack->name,
+						'width' => 0,
+						'height' => 0,
+						'crop' => false,
+						'operation' => self::STACK_SYNC_OPERATION_DELETE,
+					);
+				}
+			}
+		}
+
+		return $stacks_to_sync;
 	}
 
 	/**
