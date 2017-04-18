@@ -121,7 +121,7 @@ class Rokka_Image_Cdn_Settings {
 				'description' => sprintf( _x( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default %s", '%s contains default stack prefix', 'rokka-image-cdn' ), Rokka_Helper::STACK_PREFIX_DEFAULT ),
 				'type'        => 'text',
 				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
-				'sanitize_callback' => 'sanitize_title', // use same function wordpress uses for slug generation to sanitize stack prefix
+				'sanitize_callback' => array( $this, 'sanitize_stack_prefix' ),
 			),
 			array(
 				'id'          => 'rokka_enabled',
@@ -437,6 +437,24 @@ class Rokka_Image_Cdn_Settings {
 		// @codingStandardsIgnoreStart
 		echo $html;
 		// @codingStandardsIgnoreEnd
+	}
+
+	/**
+	 * Sanitizes stack prefix before saving it to database
+	 *
+	 * @param string $value Value to sanitize.
+	 * @return string
+	 */
+	public function sanitize_stack_prefix( $value ) {
+		$value = sanitize_title( $value );
+
+		if ( empty( $value ) ) {
+			return $value;
+		}
+
+		// since sanitize_title removes all dashes around the string we add one dash after the prefix
+		$value .= '-';
+		return $value;
 	}
 
 	/**
