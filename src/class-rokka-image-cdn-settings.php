@@ -240,7 +240,7 @@ class Rokka_Image_Cdn_Settings {
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
 				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-image-cdn' ),
-				'syncStacksSuccess' => esc_html__( 'Stack sync successful!', 'rokka-image-cdn' ),
+				'syncStacksSuccess' => esc_html__( 'Stack sync successful! Please reload this page to update status.', 'rokka-image-cdn' ),
 				'syncStacksFail' => esc_html__( 'Stack sync failed! Error:', 'rokka-image-cdn' ),
 				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-image-cdn' ),
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
