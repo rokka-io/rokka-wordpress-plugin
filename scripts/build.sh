@@ -7,9 +7,16 @@ DIR=`dirname $0`
 HERE=`dirname $0`
 ROOT="$HERE/.."
 
+export WP_TESTS_DIR="/tmp/wordpress-tests-lib"
+export WP_CORE_DIR="/tmp/wordpress/"
+
 # Installation
 # Unit tests setup
-$HERE/install-wp-test.sh wordpress_test root '' 127.0.0.1 latest
+$HERE/install-wp-tests.sh wordpress_test rokkavm '123' 127.0.0.1 latest
+
+$HERE/wp-init.sh
+
+exit 1
 
 # PHP code sniffer setup
 composer install
