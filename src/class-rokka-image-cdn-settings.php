@@ -263,8 +263,8 @@ class Rokka_Image_Cdn_Settings {
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
 					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-image-cdn' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Upload images to Rokka' , 'rokka-image-cdn' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-image-cdn' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-image-cdn' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
@@ -334,10 +334,7 @@ class Rokka_Image_Cdn_Settings {
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-image-cdn' ); ?></h2>
-							<p>
-								<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
-							</p>
+							<h2><?php esc_html_e( 'Mass upload images to Rokka' , 'rokka-image-cdn' ); ?></h2>
 							<?php if ( ! empty( $images_to_upload ) ) : ?>
 								<?php
 								echo '<p>' . esc_html__( 'The following images will be uploaded to Rokka:' , 'rokka-image-cdn' ) . '</p>';
@@ -363,9 +360,6 @@ class Rokka_Image_Cdn_Settings {
 							<?php endif ; ?>
 
 							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-image-cdn' ); ?></h2>
-							<p>
-								<?php esc_html_e( 'This command will delete all images from Rokka.' , 'rokka-image-cdn' ); ?>
-							</p>
 							<?php if ( ! empty( $images_to_delete ) ) : ?>
 								<?php
 								echo '<p>' . esc_html__( 'The following images will be deleted from Rokka:' , 'rokka-image-cdn' ) . '</p>';
@@ -386,7 +380,7 @@ class Rokka_Image_Cdn_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-image-cdn' ); ?>
+									<?php esc_html_e( 'There are no images on Rokka yet. Please upload them first.' , 'rokka-image-cdn' ); ?>
 								</p>
 							<?php endif ; ?>
 						<?php else : ?>
