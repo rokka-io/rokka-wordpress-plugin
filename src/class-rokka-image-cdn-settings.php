@@ -231,9 +231,11 @@ class Rokka_Image_Cdn_Settings {
 		}
 
 		$ajax_nonce = wp_create_nonce( 'rokka-settings' );
+		$images_to_upload = $this->get_images_to_upload();
+		$images_to_delete = $this->get_images_to_delete();
 		$rokka_settings = array(
-			'imagesToUpload' => $this->get_images_for_upload(),
-			'imagesToDelete' => $this->get_images_to_delete(),
+			'imagesToUpload' => $images_to_upload,
+			'imagesToDelete' => $images_to_delete,
 			'nonce' => $ajax_nonce,
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
@@ -280,26 +282,59 @@ class Rokka_Image_Cdn_Settings {
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload/delete' , 'rokka-image-cdn' ); ?></h2>
+							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-image-cdn' ); ?></h2>
 							<p>
 								<?php esc_html_e( 'This command will upload all images of the media library to Rokka. Images that are already on Rokka will be skipped.' , 'rokka-image-cdn' ); ?>
 							</p>
-							<h3><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-image-cdn' ); ?></h3>
-							<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
-							<div id="upload-progress-info"></div>
-							<div id="upload-progressbar"></div>
-							<div id="upload-progress-log-wrapper">
-								<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
-								<textarea id="upload-progress-log" disabled="disabled"></textarea>
-							</div>
-							<h3><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-image-cdn' ); ?></h3>
-							<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
-							<div id="delete-progress-info"></div>
-							<div id="delete-progressbar"></div>
-							<div id="delete-progress-log-wrapper">
-								<label for="delete-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
-								<textarea id="delete-progress-log" disabled="disabled"></textarea>
-							</div>
+							<?php if ( ! empty( $images_to_upload ) ) : ?>
+								<?php
+								echo '<p>' . esc_html__( 'The following images will be uploaded to Rokka:' , 'rokka-image-cdn' ) . '</p>';
+								echo '<ul class="image-list">';
+								foreach ( $images_to_upload as $image_id ) {
+									$image_name = get_attached_file( $image_id );
+									echo '<li>' . esc_html( $image_name ) . '</li>';
+								}
+								echo '</ul>'
+								?>
+								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
+								<div id="upload-progress-info"></div>
+								<div id="upload-progressbar"></div>
+								<div id="upload-progress-log-wrapper">
+									<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
+									<textarea id="upload-progress-log" disabled="disabled"></textarea>
+								</div>
+							<?php else : ?>
+								<p>
+									<?php esc_html_e( 'All images are already uploaded to Rokka. Nothing to do here.' , 'rokka-image-cdn' ); ?>
+								</p>
+							<?php endif ; ?>
+
+							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-image-cdn' ); ?></h2>
+							<p>
+								<?php esc_html_e( 'This command will delete all images from Rokka.' , 'rokka-image-cdn' ); ?>
+							</p>
+							<?php if ( ! empty( $images_to_delete ) ) : ?>
+								<?php
+								echo '<p>' . esc_html__( 'The following images will be deleted from Rokka:' , 'rokka-image-cdn' ) . '</p>';
+								echo '<ul class="image-list">';
+								foreach ( $images_to_delete as $image_id ) {
+									$image_name = get_attached_file( $image_id );
+									echo '<li>' . esc_html( $image_name ) . '</li>';
+								}
+								echo '</ul>';
+								?>
+								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
+								<div id="delete-progress-info"></div>
+								<div id="delete-progressbar"></div>
+								<div id="delete-progress-log-wrapper">
+									<label for="delete-progress-log"><?php esc_html_e( 'Log:', 'rokka-image-cdn' ); ?></label>
+									<textarea id="delete-progress-log" disabled="disabled"></textarea>
+								</div>
+							<?php else : ?>
+								<p>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-image-cdn' ); ?>
+								</p>
+							<?php endif ; ?>
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-image-cdn' ); ?></p>
 						<?php endif ; ?>
@@ -472,7 +507,7 @@ class Rokka_Image_Cdn_Settings {
 	 *
 	 * @return array Array with ids of images.
 	 */
-	public function get_images_for_upload() {
+	public function get_images_to_upload() {
 		$image_ids = $this->get_all_images();
 
 		$image_ids = array_filter( $image_ids, function ( $image_id ) {
@@ -497,6 +532,7 @@ class Rokka_Image_Cdn_Settings {
 		} );
 		// reset keys to get a proper array to send to javascript (not an associative array)
 		$image_ids = array_values( $image_ids );
+
 		return $image_ids;
 	}
 
@@ -516,9 +552,7 @@ class Rokka_Image_Cdn_Settings {
 			'fields'         => 'ids',
 		);
 
-		$query_images = new WP_Query( $query_images_args );
-
-		return $query_images->posts;
+		return get_posts( $query_images_args );
 	}
 
 	/**
