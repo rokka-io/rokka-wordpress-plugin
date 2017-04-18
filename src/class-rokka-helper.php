@@ -39,6 +39,13 @@ class Rokka_Helper {
 	const FULL_SIZE_STACK_NAME = 'full';
 
 	/**
+	 * Default stack prefix.
+	 *
+	 * @var string
+	 */
+	const STACK_PREFIX_DEFAULT = 'wp-';
+
+	/**
 	 * Company name.
 	 *
 	 * @var string
@@ -81,6 +88,13 @@ class Rokka_Helper {
 	private $rokka_enabled = false;
 
 	/**
+	 * Stack prefix.
+	 *
+	 * @var string
+	 */
+	private $stack_prefix = '';
+
+	/**
 	 * Rokka client library instance.
 	 *
 	 * @var \Rokka\Client\Image
@@ -104,6 +118,8 @@ class Rokka_Helper {
 		$this->api_secret = get_option( 'rokka_api_secret' );
 		$this->output_parsing_enabled = ( get_option( 'rokka_output_parsing' ) === 'on' ? true : false );
 		$this->rokka_enabled = ( get_option( 'rokka_rokka_enabled' ) === 'on' ? true : false );
+		$stack_prefix = get_option( 'rokka_stack_prefix' );
+		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
 		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
 			$this->rokka_enabled = false;
 		} else {
@@ -264,10 +280,10 @@ class Rokka_Helper {
 
 		// Create a noop stack (full size stack) if it not exists already
 		try {
-			$client->getStack( $this->get_rokka_full_size_stack_name() );
+			$client->getStack( $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() );
 		} catch ( Exception $e ) {
 			$resize_noop = new \Rokka\Client\Core\StackOperation( 'noop' );
-			$client->createStack( $this->get_rokka_full_size_stack_name(), [ $resize_noop ] );
+			$client->createStack( $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(), [ $resize_noop ] );
 		}
 		if ( ! empty( $sizes ) ) {
 			foreach ( $sizes as $name => $size ) {
@@ -276,10 +292,11 @@ class Rokka_Helper {
 				$width = $size[0];
 				$height = $size[1];
 				$crop = $size[2];
+				$prefixed_name = $this->get_stack_prefix() . $name;
 
 				// loop through all stacks which are already on Rokka
 				foreach ( $stacks->getStacks() as $stack ) {
-					if ( $stack->name === $name ) {
+					if ( $stack->name === $prefixed_name ) {
 						$continue = false;
 
 						// check if width, height or mode was changed in the meantime (in WordPress config)
@@ -305,7 +322,7 @@ class Rokka_Helper {
 
 				if ( $continue && $width > 0 ) {
 					if ( $delete ) {
-						$client->deleteStack( $name );
+						$client->deleteStack( $prefixed_name );
 					}
 
 					$operations = array();
@@ -323,7 +340,7 @@ class Rokka_Helper {
 						) );
 					}
 
-					$client->createStack( $name, $operations );
+					$client->createStack( $prefixed_name, $operations );
 				}
 			}
 		}
@@ -405,7 +422,7 @@ class Rokka_Helper {
 			// use fallback image name if empty
 			$filename = 'image.jpg';
 		}
-		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
+		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $this->get_stack_prefix() . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
 	}
 
 	/**
@@ -528,6 +545,15 @@ class Rokka_Helper {
 	 */
 	public function is_rokka_enabled() {
 		return $this->rokka_enabled;
+	}
+
+	/**
+	 * Returns stack prefix.
+	 *
+	 * @return string
+	 */
+	public function get_stack_prefix() {
+		return $this->stack_prefix;
 	}
 
 	/**
