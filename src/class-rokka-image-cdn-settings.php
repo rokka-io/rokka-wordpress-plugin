@@ -86,7 +86,7 @@ class Rokka_Image_Cdn_Settings {
 		// Add endpoints for AJAX actions
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
 		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
-		add_action( 'wp_ajax_rokka_create_stacks', array( $this, 'ajax_rokka_create_stacks' ) );
+		add_action( 'wp_ajax_rokka_sync_stacks', array( $this, 'ajax_rokka_sync_stacks' ) );
 		add_action( 'wp_ajax_rokka_check_credentials', array( $this, 'ajax_rokka_check_credentials' ) );
 	}
 
@@ -126,7 +126,7 @@ class Rokka_Image_Cdn_Settings {
 			array(
 				'id'          => 'rokka_enabled',
 				'label'       => __( 'Enable Rokka', 'rokka-image-cdn' ),
-				'description' => __( 'This will enable the Rokka.io functionality.', 'rokka-image-cdn' ),
+				'description' => __( 'This will enable the Rokka.io functionality. Please make sure that you already have synced the stacks to Rokka before enabling this.', 'rokka-image-cdn' ),
 				'type'        => 'checkbox',
 			),
 			array(
@@ -240,8 +240,8 @@ class Rokka_Image_Cdn_Settings {
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
 				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-image-cdn' ),
-				'createStacksSuccess' => esc_html__( 'Stack creation successful!', 'rokka-image-cdn' ),
-				'createStacksFail' => esc_html__( 'Stack creation failed! Error:', 'rokka-image-cdn' ),
+				'syncStacksSuccess' => esc_html__( 'Stack sync successful! Please reload this page to update status.', 'rokka-image-cdn' ),
+				'syncStacksFail' => esc_html__( 'Stack sync failed! Error:', 'rokka-image-cdn' ),
 				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-image-cdn' ),
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
 				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
@@ -268,15 +268,67 @@ class Rokka_Image_Cdn_Settings {
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-image-cdn' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. Before you enable Rokka the first time, please make sure you have executed this command and all images are uploaded to Rokka already. This is nescessary in order to provide the images in the right size from Rokka. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
 							</p>
-							<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
-							<div id="progress-info-stacks"></div>
+							<?php $stacks_to_sync = $this->rokka_helper->get_stacks_to_sync(); ?>
+							<?php if ( ! empty( $stacks_to_sync ) ) : ?>
+								<table class="stack-sync">
+									<thead>
+									<tr>
+										<th class="name"><?php esc_html_e( 'Stack name', 'rokka-image-cdn' ); ?></th>
+										<th class="width"><?php esc_html_e( 'Width', 'rokka-image-cdn' ); ?></th>
+										<th class="height"><?php esc_html_e( 'Height', 'rokka-image-cdn' ); ?></th>
+										<th class="crop"><?php esc_html_e( 'Crop', 'rokka-image-cdn' ); ?></th>
+										<th class="status"><?php esc_html_e( 'Sync status', 'rokka-image-cdn' ); ?></th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php foreach ( $stacks_to_sync as $stack ) : ?>
+										<?php
+										$stack_operation_name = __( 'All good!', 'rokka-image-cdn' );
+										switch ( $stack['operation'] ) {
+											case Rokka_Helper::STACK_SYNC_OPERATION_CREATE:
+												$stack_operation_name = __( 'Stack will be created', 'rokka-image-cdn' );
+												break;
+											case Rokka_Helper::STACK_SYNC_OPERATION_UPDATE:
+												$stack_operation_name = __( 'Stack will be updated', 'rokka-image-cdn' );
+												break;
+											case Rokka_Helper::STACK_SYNC_OPERATION_DELETE:
+												$stack_operation_name = __( 'Stack will be deleted', 'rokka-image-cdn' );
+												break;
+										}
+										?>
+										<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
+											<?php if (
+												$this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] ||
+												Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation']
+											) : ?>
+												<td><?php echo esc_html( $stack['name'] ); ?></td>
+												<td>-</td>
+												<td>-</td>
+												<td>-</td>
+												<td><?php echo esc_html( $stack_operation_name ); ?></td>
+											<?php else : ?>
+												<td><?php echo esc_html( $stack['name'] ); ?></td>
+												<td><?php echo esc_html( $stack['width'] ); ?></td>
+												<td><?php echo esc_html( $stack['height'] ); ?></td>
+												<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-image-cdn' ) : esc_html_e( 'No', 'rokka-image-cdn' ); ?></td>
+												<td><?php echo esc_html( $stack_operation_name ); ?></td>
+											<?php endif ; ?>
+										</tr>
+									<?php endforeach ; ?>
+									</tbody>
+								</table>
+								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with Rokka' , 'rokka-image-cdn' ); ?></button>
+								<div id="progress-info-stacks"></div>
+							<?php else : ?>
+								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-image-cdn' ); ?></p>
+							<?php endif ; ?>
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-image-cdn' ); ?></p>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-image-cdn' ); ?></p>
 						<?php endif ; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
@@ -630,9 +682,9 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Creates stacks on Rokka (rokka_create_stacks ajax endpoint)
+	 * Creates stacks on Rokka (rokka_sync_stacks ajax endpoint)
 	 */
-	public function ajax_rokka_create_stacks() {
+	public function ajax_rokka_sync_stacks() {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
@@ -641,10 +693,10 @@ class Rokka_Image_Cdn_Settings {
 		}
 
 		try {
-			$sizes = $this->rokka_helper->rokka_create_stacks();
+			$synced_stacks = $this->rokka_helper->rokka_sync_stacks();
 
-			if ( $sizes ) {
-				wp_send_json_success( $sizes );
+			if ( ! empty( $synced_stacks ) ) {
+				wp_send_json_success( $synced_stacks );
 				wp_die();
 			}
 

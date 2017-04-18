@@ -139,20 +139,20 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	$('#create-rokka-stacks').click(function (e) {
+	$('#sync-rokka-stacks').click(function (e) {
 		$('#progress-info-stacks').html('<div class="notice notice-info"><p class="loading-indicator"><img src="' + rokkaSettings.loadingSpinnerUrl + '" alt="" width="16" height="16" /><span> ' + rokkaSettings.labels.createStacksStart + '</span></p></div>');
 
 		$.ajax({
 			type: 'GET',
 			url: ajaxurl,
 			data: {
-				action: 'rokka_create_stacks',
+				action: 'rokka_sync_stacks',
 				nonce: rokkaSettings.nonce
 			}
 		}).done(function() {
-			$('#progress-info-stacks').html('<div class="notice notice-success"><p>' + rokkaSettings.labels.createStacksSuccess + '</p></div>');
+			$('#progress-info-stacks').html('<div class="notice notice-success"><p>' + rokkaSettings.labels.syncStacksSuccess + '</p></div>');
 		}).fail(function( res ) {
-			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.createStacksFail + ' ' + res.responseJSON.data + '</p></div>');
+			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.syncStacksFail + ' ' + res.responseJSON.data + '</p></div>');
 		});
 	});
 
