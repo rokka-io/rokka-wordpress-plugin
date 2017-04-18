@@ -105,16 +105,22 @@ class Rokka_Image_Cdn_Settings {
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-image-cdn' ),
-				'description' => __( 'Rokka API key', 'rokka-image-cdn' ),
 				'type'        => 'text',
 				'placeholder' => __( 'Key' ),
 			),
 			array(
 				'id'          => 'api_secret',
 				'label'       => __( 'API Secret', 'rokka-image-cdn' ),
-				'description' => __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'rokka-image-cdn' ),
 				'type'        => 'text',
 				'placeholder' => __( 'Secret' ),
+			),
+			array(
+				'id'          => 'stack_prefix',
+				'label'       => __( 'Stack Prefix', 'rokka-image-cdn' ),
+				'description' => __( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default " . Rokka_Helper::STACK_PREFIX_DEFAULT, 'rokka-image-cdn' ),
+				'type'        => 'text',
+				'placeholder' => __( Rokka_Helper::STACK_PREFIX_DEFAULT ),
+				'sanitize_callback' => 'sanitize_title', // use same function wordpress uses for slug generation to sanitize stack prefix
 			),
 			array(
 				'id'          => 'rokka_enabled',
@@ -127,7 +133,6 @@ class Rokka_Image_Cdn_Settings {
 				'label'       => __( 'Enable output parsing', 'rokka-image-cdn' ),
 				'description' => __( 'This feature will parse the output and try to find Rokka images for hardcoded image links pointing to local images. Relative links will be ignored.', 'rokka-image-cdn' ),
 				'type'        => 'checkbox',
-				'default'     => '',
 			),
 		);
 	}
@@ -170,7 +175,11 @@ class Rokka_Image_Cdn_Settings {
 		foreach ( $this->settings_fields as $field ) {
 			// Register field
 			$option_name = $this->base . $field['id'];
-			register_setting( $this->parent->_token . '_settings', $option_name );
+			if ( array_key_exists( 'sanitize_callback', $field ) ) {
+				register_setting( $this->parent->_token . '_settings', $option_name, $field['sanitize_callback'] );
+			} else {
+				register_setting( $this->parent->_token . '_settings', $option_name );
+			}
 
 			// Add field to page
 			add_settings_field(
@@ -408,25 +417,26 @@ class Rokka_Image_Cdn_Settings {
 				break;
 		}
 
-		switch ( $field['type'] ) {
-			case 'radio':
-				$html .= '<br/><span class="description">' . $field['description'] . '</span>';
-				break;
+		if ( array_key_exists( 'description', $field ) ) {
+			switch ( $field['type'] ) {
+				case 'radio':
+					$html .= '<br/><span class="description">' . $field['description'] . '</span>';
+					break;
 
-			case 'checkbox':
-				$html .= '<span class="description">' . $field['description'] . '</span>';
-				break;
+				case 'checkbox':
+					$html .= '<span class="description">' . $field['description'] . '</span>';
+					break;
 
-			default:
-				$html .= '<div><span class="description">' . $field['description'] . '</span></div>' . "\n";
-				break;
+				default:
+					$html .= '<div><span class="description">' . $field['description'] . '</span></div>' . "\n";
+					break;
+			}
 		}
 
 		// @codingStandardsIgnoreStart
 		echo $html;
 		// @codingStandardsIgnoreEnd
 	}
-
 
 	/**
 	 * Get all images which are not yet uploaded to Rokka.
