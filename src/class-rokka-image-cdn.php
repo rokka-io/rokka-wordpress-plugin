@@ -107,6 +107,13 @@ class Rokka_Image_Cdn {
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.min.js', array( 'jquery' ), $this->_version, true );
 		wp_enqueue_script( $this->_token . '-admin' );
 
+		$rokka_admin = array(
+			'labels' => array(
+				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from Rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-image-cdn' ),
+			),
+		);
+		wp_localize_script( $this->_token . '-admin', 'rokkaAdmin', $rokka_admin );
+
 		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'js/rokka-subject-area.min.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-subject-area' );
 
