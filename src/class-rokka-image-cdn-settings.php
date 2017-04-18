@@ -117,9 +117,10 @@ class Rokka_Image_Cdn_Settings {
 			array(
 				'id'          => 'stack_prefix',
 				'label'       => __( 'Stack Prefix', 'rokka-image-cdn' ),
-				'description' => __( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default " . Rokka_Helper::STACK_PREFIX_DEFAULT, 'rokka-image-cdn' ),
+				/* translators: %s contains default stack prefix */
+				'description' => sprintf( _x( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default %s", '%s contains default stack prefix', 'rokka-image-cdn' ), Rokka_Helper::STACK_PREFIX_DEFAULT ),
 				'type'        => 'text',
-				'placeholder' => __( Rokka_Helper::STACK_PREFIX_DEFAULT ),
+				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
 				'sanitize_callback' => 'sanitize_title', // use same function wordpress uses for slug generation to sanitize stack prefix
 			),
 			array(
