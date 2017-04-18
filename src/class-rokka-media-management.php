@@ -337,14 +337,12 @@ class Rokka_Media_Management {
 			$output = '';
 			if ( $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
 				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
-					$output .= 'synced to rokka!';
 					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_delete_image&image_id=' . $post_id ), 'rokka_delete_image_' . $post_id ) ) . '" class="button delete" id="rokka-delete-image">' . esc_html__( 'Remove image from rokka', 'rokka-image-cdn' ) . '</a></p>';
 				} else {
-					$output .= 'not yet no rokka :(';
 					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button button-primary">' . esc_html__( 'Upload image to rokka', 'rokka-image-cdn' ) . '</a></p>';
 				}
 			} else {
-				$output .= esc_html__( 'This mime type is not supported on rokka', 'rokka-image-cdn' );
+				$output .= esc_html__( 'MIME type not supported', 'rokka-image-cdn' );
 			}
 
 			// @codingStandardsIgnoreStart
