@@ -103,7 +103,7 @@
     text-align: right;
   }
 
-  button#create-rokka-stacks,
+  button#sync-rokka-stacks,
   button#mass-upload-everything,
   button#mass-delete-everything {
     margin-bottom: 15px;
@@ -112,6 +112,34 @@
     .loading-indicator {
       img, span {
         vertical-align: middle;
+      }
+    }
+  }
+  table.stack-sync {
+    width: 100%;
+    margin-bottom: 15px;
+
+    th {
+      text-align: left;
+
+      &.width,
+      &.height,
+      &.crop {
+        width: 50px;
+      }
+      &.status {
+        width: 200px;
+      }
+    }
+    tr {
+      &.create {
+        color: #09940c;
+      }
+      &.update {
+        color: #225cc2;
+      }
+      &.delete {
+        color: #c20b3f;
       }
     }
   }

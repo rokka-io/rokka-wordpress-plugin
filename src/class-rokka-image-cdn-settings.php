@@ -273,10 +273,62 @@ class Rokka_Image_Cdn_Settings {
 							<p>
 								<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
 							</p>
-							<button class="button button-primary" id="create-rokka-stacks" ><?php esc_html_e( 'Create stacks on Rokka' , 'rokka-image-cdn' ); ?></button>
-							<div id="progress-info-stacks"></div>
+							<?php $stacks_to_sync = $this->rokka_helper->get_stacks_to_sync(); ?>
+							<?php if ( ! empty( $stacks_to_sync ) ) : ?>
+								<table class="stack-sync">
+									<thead>
+									<tr>
+										<th class="name"><?php esc_html_e( 'Stack name', 'rokka-image-cdn' ); ?></th>
+										<th class="width"><?php esc_html_e( 'Width', 'rokka-image-cdn' ); ?></th>
+										<th class="height"><?php esc_html_e( 'Height', 'rokka-image-cdn' ); ?></th>
+										<th class="crop"><?php esc_html_e( 'Crop', 'rokka-image-cdn' ); ?></th>
+										<th class="status"><?php esc_html_e( 'Sync status', 'rokka-image-cdn' ); ?></th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php foreach ( $stacks_to_sync as $stack ) : ?>
+										<?php
+										$stack_operation_name = __( 'All good!', 'rokka-image-cdn' );
+										switch ( $stack['operation'] ) {
+											case Rokka_Helper::STACK_SYNC_OPERATION_CREATE:
+												$stack_operation_name = __( 'Stack will be created', 'rokka-image-cdn' );
+												break;
+											case Rokka_Helper::STACK_SYNC_OPERATION_UPDATE:
+												$stack_operation_name = __( 'Stack will be updated', 'rokka-image-cdn' );
+												break;
+											case Rokka_Helper::STACK_SYNC_OPERATION_DELETE:
+												$stack_operation_name = __( 'Stack will be deleted', 'rokka-image-cdn' );
+												break;
+										}
+										?>
+										<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
+											<?php if (
+												$this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] ||
+												Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation']
+											) : ?>
+												<td><?php echo esc_html( $stack['name'] ); ?></td>
+												<td>-</td>
+												<td>-</td>
+												<td>-</td>
+												<td><?php echo esc_html( $stack_operation_name ); ?></td>
+											<?php else : ?>
+												<td><?php echo esc_html( $stack['name'] ); ?></td>
+												<td><?php echo esc_html( $stack['width'] ); ?></td>
+												<td><?php echo esc_html( $stack['height'] ); ?></td>
+												<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-image-cdn' ) : esc_html_e( 'No', 'rokka-image-cdn' ); ?></td>
+												<td><?php echo esc_html( $stack_operation_name ); ?></td>
+											<?php endif ; ?>
+										</tr>
+									<?php endforeach ; ?>
+									</tbody>
+								</table>
+								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with Rokka' , 'rokka-image-cdn' ); ?></button>
+								<div id="progress-info-stacks"></div>
+							<?php else : ?>
+								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-image-cdn' ); ?></p>
+							<?php endif ; ?>
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-image-cdn' ); ?></p>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-image-cdn' ); ?></p>
 						<?php endif ; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
