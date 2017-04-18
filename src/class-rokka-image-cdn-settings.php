@@ -292,7 +292,8 @@ class Rokka_Image_Cdn_Settings {
 								echo '<ul class="image-list">';
 								foreach ( $images_to_upload as $image_id ) {
 									$image_name = get_attached_file( $image_id );
-									echo '<li>' . esc_html( $image_name ) . '</li>';
+									/* translators: %1$s contains image id. %2$s contains image path. */
+									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-image-cdn' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
 								}
 								echo '</ul>'
 								?>
@@ -319,7 +320,8 @@ class Rokka_Image_Cdn_Settings {
 								echo '<ul class="image-list">';
 								foreach ( $images_to_delete as $image_id ) {
 									$image_name = get_attached_file( $image_id );
-									echo '<li>' . esc_html( $image_name ) . '</li>';
+									/* translators: %1$s contains image id. %2$s contains image path. */
+									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-image-cdn' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
 								}
 								echo '</ul>';
 								?>
