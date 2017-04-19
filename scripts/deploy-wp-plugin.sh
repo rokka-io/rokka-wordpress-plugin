@@ -8,7 +8,7 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
-PLUGINSLUG="rokka-image-cdn"
+PLUGINSLUG="rokka-wordpress-plugin"
 GITPATH="/tmp/$PLUGINSLUG-git"
 SVNPATH="/tmp/$PLUGINSLUG-svn"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
@@ -88,7 +88,7 @@ for file in `find "$GITPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.
 echo "Copying required plugin files to SVN trunk"
 cp $GITPATH/index.php $SVNPATH/trunk/
 cp $GITPATH/readme.txt $SVNPATH/trunk/
-cp $GITPATH/rokka-image-cdn.php $SVNPATH/trunk/
+cp $GITPATH/rokka-wordpress-plugin.php $SVNPATH/trunk/
 cp $GITPATH/screenshot* $SVNPATH/trunk/
 cp $GITPATH/uninstall.php $SVNPATH/trunk/
 cp -R $GITPATH/assets $SVNPATH/trunk/
