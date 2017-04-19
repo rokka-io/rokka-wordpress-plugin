@@ -25,7 +25,7 @@ msgstr ""
 
 #: src/class-rokka-image-cdn-settings.php:100
 msgid "Company name"
-msgstr "Firmen name"
+msgstr ""
 
 #: src/class-rokka-image-cdn-settings.php:101
 msgid "Your Company name you have registered on Rokka with"
