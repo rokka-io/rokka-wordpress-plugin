@@ -89,6 +89,7 @@ echo "Copying required plugin files to SVN trunk"
 cp $GITPATH/index.php $SVNPATH/trunk/
 cp $GITPATH/readme.txt $SVNPATH/trunk/
 cp $GITPATH/rokka-image-cdn.php $SVNPATH/trunk/
+cp $GITPATH/screenshot* $SVNPATH/trunk/
 cp $GITPATH/uninstall.php $SVNPATH/trunk/
 cp -R $GITPATH/assets $SVNPATH/trunk/
 cp -R $GITPATH/languages $SVNPATH/trunk/
