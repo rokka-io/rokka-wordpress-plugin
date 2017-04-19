@@ -98,21 +98,20 @@ class Rokka_Image_Cdn_Settings {
 			array(
 				'id'          => 'company_name',
 				'label'       => __( 'Company name', 'rokka-image-cdn' ),
-				'description' => __( 'Your Company name you have registered on Rokka with', 'rokka-image-cdn' ),
 				'type'        => 'text',
-				'placeholder' => __( 'Company' ),
+				'placeholder' => __( 'my-company' ),
 			),
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-image-cdn' ),
 				'type'        => 'text',
-				'placeholder' => __( 'Key' ),
+				'placeholder' => __( 'My API Key' ),
 			),
 			array(
 				'id'          => 'api_secret',
 				'label'       => __( 'API Secret', 'rokka-image-cdn' ),
 				'type'        => 'text',
-				'placeholder' => __( 'Secret' ),
+				'placeholder' => __( 'My API Secret' ),
 			),
 			array(
 				'id'          => 'stack_prefix',
@@ -125,14 +124,14 @@ class Rokka_Image_Cdn_Settings {
 			),
 			array(
 				'id'          => 'rokka_enabled',
-				'label'       => __( 'Enable Rokka', 'rokka-image-cdn' ),
-				'description' => __( 'This will enable the Rokka.io functionality. Please make sure that you already have synced the stacks to Rokka before enabling this.', 'rokka-image-cdn' ),
+				'label'       => __( 'Enable rokka integration', 'rokka-image-cdn' ),
+				'description' => __( 'This will enable the rokka integration. Please make sure that you already have synced the stacks to rokka before enabling this.', 'rokka-image-cdn' ),
 				'type'        => 'checkbox',
 			),
 			array(
 				'id'          => 'output_parsing',
 				'label'       => __( 'Enable output parsing', 'rokka-image-cdn' ),
-				'description' => __( 'This feature will parse the output and try to find Rokka images for hardcoded image links pointing to local images. Relative links will be ignored.', 'rokka-image-cdn' ),
+				'description' => __( 'This feature will parse the output and replaces urls to local images with rokka image urls. Relative links will not be replaced.', 'rokka-image-cdn' ),
 				'type'        => 'checkbox',
 			),
 		);
@@ -221,7 +220,7 @@ class Rokka_Image_Cdn_Settings {
 		if ( ! $this->rokka_helper->are_settings_complete() ) {
 			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Settings need to be filled out completely before rokka support can be enabled.', 'rokka-image-cdn' ) . '</p></div>';
 		} elseif ( $this->rokka_helper->are_settings_complete() && ! $this->rokka_helper->is_rokka_enabled() ) {
-			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Rokka is not enabled yet. Please select the Enable Rokka checkbox in the settings.', 'rokka-image-cdn' ) . '</p></div>';
+			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Rokka integration is not enabled yet. Please select the \'Enable rokka\' checkbox in the settings.', 'rokka-image-cdn' ) . '</p></div>';
 		}
 
 		$current_tab = 'settings';
@@ -246,7 +245,7 @@ class Rokka_Image_Cdn_Settings {
 				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-image-cdn' ),
 				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-image-cdn' ),
 				'uploadImagesFail' => esc_html__( 'There was an error during the upload of the images!', 'rokka-image-cdn' ),
-				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to Rokka.', 'rokka-image-cdn' ),
+				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to rokka.', 'rokka-image-cdn' ),
 				'deleteSingleImageSuccess' => esc_html__( 'Image successfully removed. Image ID:', 'rokka-image-cdn' ),
 				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-image-cdn' ),
 				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-image-cdn' ),
@@ -271,7 +270,7 @@ class Rokka_Image_Cdn_Settings {
 						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-image-cdn' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on Rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on Rokka.' , 'rokka-image-cdn' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-image-cdn' ); ?>
 							</p>
 							<?php $stacks_to_sync = $this->rokka_helper->get_stacks_to_sync(); ?>
 							<?php if ( ! empty( $stacks_to_sync ) ) : ?>
@@ -322,7 +321,7 @@ class Rokka_Image_Cdn_Settings {
 									<?php endforeach ; ?>
 									</tbody>
 								</table>
-								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with Rokka' , 'rokka-image-cdn' ); ?></button>
+								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-image-cdn' ); ?></button>
 								<div id="progress-info-stacks"></div>
 							<?php else : ?>
 								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-image-cdn' ); ?></p>
@@ -334,10 +333,10 @@ class Rokka_Image_Cdn_Settings {
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload images to Rokka' , 'rokka-image-cdn' ); ?></h2>
+							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-image-cdn' ); ?></h2>
 							<?php if ( ! empty( $images_to_upload ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be uploaded to Rokka:' , 'rokka-image-cdn' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:' , 'rokka-image-cdn' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_upload as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -346,7 +345,7 @@ class Rokka_Image_Cdn_Settings {
 								}
 								echo '</ul>'
 								?>
-								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to Rokka' , 'rokka-image-cdn' ); ?></button>
+								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka' , 'rokka-image-cdn' ); ?></button>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
@@ -355,14 +354,14 @@ class Rokka_Image_Cdn_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'All images are already uploaded to Rokka. Nothing to do here.' , 'rokka-image-cdn' ); ?>
+									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.' , 'rokka-image-cdn' ); ?>
 								</p>
 							<?php endif ; ?>
 
 							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-image-cdn' ); ?></h2>
 							<?php if ( ! empty( $images_to_delete ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be deleted from Rokka:' , 'rokka-image-cdn' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:' , 'rokka-image-cdn' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_delete as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -371,7 +370,7 @@ class Rokka_Image_Cdn_Settings {
 								}
 								echo '</ul>';
 								?>
-								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from Rokka' , 'rokka-image-cdn' ); ?></button>
+								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka' , 'rokka-image-cdn' ); ?></button>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">
@@ -380,7 +379,7 @@ class Rokka_Image_Cdn_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'There are no images on Rokka yet. Please upload them first.' , 'rokka-image-cdn' ); ?>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-image-cdn' ); ?>
 								</p>
 							<?php endif ; ?>
 						<?php else : ?>
@@ -551,7 +550,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Get all images which are not yet uploaded to Rokka.
+	 * Get all images which are not yet uploaded to rokka.
 	 *
 	 * @return array Array with ids of images.
 	 */
@@ -568,7 +567,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Get all images which are already uploaded to Rokka.
+	 * Get all images which are already uploaded to rokka.
 	 *
 	 * @return array Array with ids of images.
 	 */
@@ -604,7 +603,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Upload image to Rokka (rokka_upload_image ajax endpoint)
+	 * Upload image to rokka (rokka_upload_image ajax endpoint)
 	 */
 	public function ajax_rokka_upload_image() {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
@@ -627,7 +626,7 @@ class Rokka_Image_Cdn_Settings {
 						wp_send_json_error( $image_id, 400 );
 					}
 				} else {
-					wp_send_json_error( __( 'This image is already on Rokka. No need to upload it another time.', 'rokka-image-cdn' ), 400 );
+					wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-image-cdn' ), 400 );
 				}
 			} else {
 				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-image-cdn' ), 400 );
@@ -676,7 +675,7 @@ class Rokka_Image_Cdn_Settings {
 	}
 
 	/**
-	 * Creates stacks on Rokka (rokka_sync_stacks ajax endpoint)
+	 * Sync stacks to rokka (rokka_sync_stacks ajax endpoint)
 	 */
 	public function ajax_rokka_sync_stacks() {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
@@ -714,7 +713,7 @@ class Rokka_Image_Cdn_Settings {
 		}
 
 		if ( $this->rokka_helper->check_rokka_credentials() ) {
-			wp_send_json_success( __( 'Yay! Rokka credentials are valid.', 'rokka-image-cdn' ) );
+			wp_send_json_success( __( 'Yay! Your rokka credentials are valid.', 'rokka-image-cdn' ) );
 			wp_die();
 		} else {
 			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-image-cdn' ), 400 );

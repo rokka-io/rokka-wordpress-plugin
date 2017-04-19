@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Rokka.io
+ * Plugin Name: Rokka Integration
  * Version: 1.0.0
  * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.

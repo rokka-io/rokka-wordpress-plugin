@@ -109,7 +109,7 @@ class Rokka_Image_Cdn {
 
 		$rokka_admin = array(
 			'labels' => array(
-				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from Rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-image-cdn' ),
+				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-image-cdn' ),
 			),
 		);
 		wp_localize_script( $this->_token . '-admin', 'rokkaAdmin', $rokka_admin );

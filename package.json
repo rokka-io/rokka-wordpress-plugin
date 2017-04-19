@@ -1,7 +1,7 @@
 {
   "name": "rokka-wordpress-plugin",
   "version": "1.0.0",
-  "description": "Rokka.io plugin for WordPress",
+  "description": "Rokka integration plugin for WordPress",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

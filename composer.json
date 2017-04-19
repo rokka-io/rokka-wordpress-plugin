@@ -1,6 +1,6 @@
 {
   "name": "rokka/rokka-wordpress-plugin",
-  "description": "Rokka.io plugin for WordPress",
+  "description": "Rokka integration plugin for WordPress",
   "type": "wordpress-plugin",
   "license": "GPL-2.0",
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin/",

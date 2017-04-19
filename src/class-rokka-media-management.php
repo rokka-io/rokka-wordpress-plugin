@@ -59,7 +59,7 @@ class Rokka_Media_Management {
 	}
 
 	/**
-	 * Handle upload of image to Rokka.
+	 * Handle upload of image to rokka.
 	 *
 	 * @param integer $attachment_id Attachment id.
 	 */
@@ -116,7 +116,7 @@ class Rokka_Media_Management {
 	}
 
 	/**
-	 * Deletes an image on Rokka.
+	 * Deletes an image on rokka.
 	 *
 	 * @param int $post_id Attachment id.
 	 *

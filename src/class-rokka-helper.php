@@ -237,7 +237,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Checks if attachment is valid before it gets uploaded to Rokka.
+	 * Checks if attachment is valid before it gets uploaded to rokka.
 	 *
 	 * @param int    $attachment_id Attachment id.
 	 * @param string $file_path Path to file which should be uploaded.
@@ -281,7 +281,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Checks if given attachement is already on Rokka.
+	 * Checks if given attachement is already on rokka.
 	 *
 	 * @param int $attachment_id Attachment id.
 	 * @return bool
@@ -433,7 +433,7 @@ class Rokka_Helper {
 				$prefixed_name = $this->get_stack_prefix() . $name;
 				$stack_already_on_rokka = false;
 
-				// loop through all stacks which are already on Rokka
+				// loop through all stacks which are already on rokka
 				foreach ( $stacks_on_rokka as $stack ) {
 					// if stack is already on rokka
 					if ( $stack->name === $prefixed_name ) {
@@ -538,7 +538,7 @@ class Rokka_Helper {
 					$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
 				}
 			}
-			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (Rokka maximum)
+			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (rokka maximum)
 			$width = ( $width > 0 && $width < 10000 ) ? $width : 10000;
 			$height = ( $height > 0 && $height < 10000 ) ? $height : 10000;
 			$sizes[ $_size ] = array( $width, $height, $crop );
@@ -558,7 +558,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Returns Rokka url of image
+	 * Returns rokka url of image
 	 *
 	 * @param string $hash Rokka hash.
 	 * @param string $filename Image filename.
@@ -570,7 +570,7 @@ class Rokka_Helper {
 		if ( is_array( $size ) ) {
 			$stack = null;
 
-			// if size is requested as width / height array -> find matching or nearest Rokka size
+			// if size is requested as width / height array -> find matching or nearest rokka size
 			$rokka_sizes = $this->get_available_image_sizes();
 			foreach ( $rokka_sizes as $size_name => $size_values ) {
 				if ( $size[0] <= $size_values[0] ) {
@@ -592,7 +592,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Sanitizes filename before sending it to Rokka.
+	 * Sanitizes filename before sending it to rokka.
 	 *
 	 * @param string $filename Filename to sanitize.
 	 * @return string
@@ -602,7 +602,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Saves subject area on Rokka.
+	 * Saves subject area on rokka.
 	 *
 	 * @param string $hash Rokka hash.
 	 * @param int    $x X value of subject area.
@@ -623,7 +623,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Deletes subject area on Rokka.
+	 * Deletes subject area on rokka.
 	 *
 	 * @param string $hash Rokka hash.
 	 *

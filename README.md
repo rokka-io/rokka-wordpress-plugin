@@ -1,8 +1,8 @@
-# rokka-wordpress-plugin
+# Rokka WordPress Plugin
 
 [![Build Status](https://travis-ci.org/rokka-io/rokka-wordpress-plugin.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-wordpress-plugin)
 
-WordPress plugin to integrate Rokka.io image service
+WordPress plugin to integrate the [rokka image service](https://rokka.io).
 
 ## Development
 
@@ -56,4 +56,4 @@ Execute the code sniffer by executing the following command from the plugin root
 
     $ scripts/phpcodesniffer.sh
 
-Correct the errors the sniffer has found prior to commiting. Commit when fixed, so the build will pass on Github.
+Fix the errors in prior to commit. Commit when fixed, so the build will pass on Github.

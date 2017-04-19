@@ -42,7 +42,7 @@ class Rokka_Filter_Url {
 	}
 
 	/**
-	 * Keep url scheme in Rokka urls.
+	 * Keep url scheme in rokka urls.
 	 *
 	 * @param string      $url         The complete URL including scheme and path.
 	 * @param string      $scheme      Scheme applied to the URL. One of 'http', 'https', or 'relative'.
@@ -59,7 +59,7 @@ class Rokka_Filter_Url {
 	}
 
 	/**
-	 * Rewrite url to Rokka.
+	 * Rewrite url to rokka.
 	 *
 	 * @param string $url     URL for the given attachment.
 	 * @param int    $post_id Attachment ID.
@@ -81,7 +81,7 @@ class Rokka_Filter_Url {
 	}
 
 	/**
-	 * Rewrite thumb url to Rokka.
+	 * Rewrite thumb url to rokka.
 	 *
 	 * @param string $url     URL for the given attachment.
 	 * @param int    $post_id Attachment ID.
@@ -124,7 +124,7 @@ class Rokka_Filter_Url {
 		$rokka_hash = get_post_meta( $attachment->ID, 'rokka_hash', true );
 		// The $response array which is sent to JS holds all urls for the available sizes in the following format:
 		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
-		// Regenerate the Rokka urls and replace them.
+		// Regenerate the rokka urls and replace them.
 		foreach ( $response['sizes'] as $size => $size_details ) {
 			if ( in_array( $size, $meta['sizes'], true ) ) {
 				$filename = $meta['sizes'][ $size ]['file'];
@@ -139,7 +139,7 @@ class Rokka_Filter_Url {
 	}
 
 	/**
-	 * Own implementation to downsize images with Rokka urls.
+	 * Own implementation to downsize images with rokka urls.
 	 *
 	 * @param bool         $downsize Whether to short-circuit the image downsize. Default false.
 	 * @param int          $id       Attachment ID for image.
@@ -241,7 +241,7 @@ class Rokka_Filter_Url {
 
 		// copy original image meta data
 		$rewritten_image_meta = $image_meta;
-		// rewrite attachment meta data to Rokka filenames
+		// rewrite attachment meta data to rokka filenames
 		// this is a pretty nasty hack to get the $src_matched boolean in media.php to be true (and srcset gets printed)
 		$rewritten_image_meta['file'] = $this->rokka_helper->sanitize_rokka_filename( wp_basename( $image_meta['file'] ) );
 		foreach ( $image_meta['sizes'] as $size_name => $size ) {
