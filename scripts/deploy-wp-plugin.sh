@@ -59,7 +59,7 @@ echo "Clearing SVN repo trunk so we can overwrite it"
 rm -rf $SVNPATH/trunk/*
 
 
-#echo "Ignoring development specific files"
+echo "Ignoring os specific files"
 svn propset svn:ignore ".DS_Store
 Thumbs.db" "$SVNPATH/trunk/"
 
@@ -109,7 +109,7 @@ svn propset svn:mime-type image/jpeg *.jpg
 # Commit all changes
 #svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
 
-# Support for the /assets folder on the .org repo.
+# Update WordPress plugin assets
 # Make the directory if it doesn't already exist
 mkdir -p $SVNPATH/assets/
 svn update --quiet $SVNPATH/assets --set-depth infinity
@@ -118,7 +118,7 @@ rm -rf $SVNPATH/assets/*
 echo "Copying assets fiels to SVN assets"
 cp -R $GITPATH/wp-assets/* $SVNPATH/assets/
 
-echo "Updating WordPress plugin repo assets and committing"
+echo "Updating WordPress plugin assets and committing"
 cd $SVNPATH/assets/
 # Delete all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
