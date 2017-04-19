@@ -2,7 +2,7 @@
 /**
  * Main class
  *
- * @package rokka-image-cdn
+ * @package rokka-wordpress-plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,21 +10,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Rokka_Image_Cdn
+ * Class Rokka_WordPress_Plugin
  */
-class Rokka_Image_Cdn {
+class Rokka_WordPress_Plugin {
 
 	/**
-	 * Rokka_Image_Cdn instance.
+	 * Rokka_WordPress_Plugin instance.
 	 *
-	 * @var Rokka_Image_Cdn
+	 * @var Rokka_WordPress_Plugin
 	 */
 	private static $_instance = null;
 
 	/**
-	 * Rokka_Image_Cdn_Settings instance.
+	 * Rokka_WordPress_Plugin_Settings instance.
 	 *
-	 * @var Rokka_Image_Cdn_Settings
+	 * @var Rokka_WordPress_Plugin_Settings
 	 */
 	public $settings = null;
 
@@ -71,14 +71,14 @@ class Rokka_Image_Cdn {
 	public $assets_url;
 
 	/**
-	 * Rokka_Image_Cdn constructor.
+	 * Rokka_WordPress_Plugin constructor.
 	 *
 	 * @param string $file Main plugin file path.
 	 * @param string $version Version number.
 	 */
 	public function __construct( $file = '', $version = '1.0.0' ) {
 		$this->_version = $version;
-		$this->_token   = 'rokka-image-cdn';
+		$this->_token   = 'rokka-wordpress-plugin';
 
 		// Load plugin environment variables
 		$this->file       = $file;
@@ -109,7 +109,7 @@ class Rokka_Image_Cdn {
 
 		$rokka_admin = array(
 			'labels' => array(
-				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-image-cdn' ),
+				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-wordpress-plugin' ),
 			),
 		);
 		wp_localize_script( $this->_token . '-admin', 'rokkaAdmin', $rokka_admin );
@@ -133,18 +133,18 @@ class Rokka_Image_Cdn {
 	 * Load plugin textdomain
 	 */
 	public function load_plugin_textdomain() {
-		$domain = 'rokka-image-cdn'; // textdomain can't be stored in class variable since it must be a single string literal
+		$domain = 'rokka-wordpress-plugin'; // textdomain can't be stored in class variable since it must be a single string literal
 		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
 	/**
-	 * Main rokka-image-cdn Instance
-	 * Ensures only one instance of rokka-image-cdn is loaded or can be loaded.
+	 * Main rokka-wordpress-plugin Instance
+	 * Ensures only one instance of rokka-wordpress-plugin is loaded or can be loaded.
 	 *
 	 * @param string $file Main plugin file path.
 	 * @param string $version Plugin version.
 	 *
-	 * @return Rokka_Image_Cdn rokka-image-cdn instance
+	 * @return Rokka_WordPress_Plugin Rokka_WordPress_Plugin instance
 	 */
 	public static function instance( $file = '', $version = '1.0.0' ) {
 		if ( is_null( self::$_instance ) ) {

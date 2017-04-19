@@ -11,10 +11,10 @@
  * Requires at least: 4.0
  * Tested up to: 4.7
  *
- * Text Domain: rokka-image-cdn
+ * Text Domain: rokka-wordpress-plugin
  * Domain Path: /languages/
  *
- * @package rokka-image-cdn
+ * @package rokka-wordpress-plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,8 +24,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'ROKKA_PLUGIN_PATH', plugins_url( '', __FILE__ ) );
 
 // Load plugin class files
-require_once( 'src/class-rokka-image-cdn.php' );
-require_once( 'src/class-rokka-image-cdn-settings.php' );
+require_once( 'src/class-rokka-wordpress-plugin.php' );
+require_once( 'src/class-rokka-wordpress-plugin-settings.php' );
 require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
 require_once( 'src/class-rokka-filter-url.php' );
@@ -35,12 +35,12 @@ require_once( 'src/class-rokka-filter-content.php' );
 require_once( 'vendor/autoload.php' );
 
 /**
- * Returns the main instance of Rokka_Image_Cdn to prevent the need to use globals.
+ * Returns the main instance of Rokka_WordPress_Plugin to prevent the need to use globals.
  *
- * @return Rokka_Image_Cdn Rokka_Image_Cdn instance
+ * @return Rokka_WordPress_Plugin Rokka_WordPress_Plugin instance
  */
-function rokka_image_cdn() {
-	$instance = Rokka_Image_Cdn::instance( __FILE__, '1.0.0' );
+function rokka_wordpress_plugin() {
+	$instance = Rokka_WordPress_Plugin::instance( __FILE__, '1.0.0' );
 	$rokka_helper = new Rokka_Helper();
 
 	if ( $rokka_helper->is_rokka_enabled() ) {
@@ -56,11 +56,11 @@ function rokka_image_cdn() {
 		}
 
 		if ( is_null( $instance->settings ) ) {
-			$instance->settings = Rokka_Image_Cdn_Settings::instance( $instance, $rokka_helper );
+			$instance->settings = Rokka_WordPress_Plugin_Settings::instance( $instance, $rokka_helper );
 		}
 	}
 
 	return $instance;
 }
 
-rokka_image_cdn();
+rokka_wordpress_plugin();

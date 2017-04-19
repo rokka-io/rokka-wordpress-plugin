@@ -29,5 +29,5 @@ find "." \
      --keyword=esc_html__ \
      --keyword=esc_html_e \
      --keyword=esc_html_x:1,2c \
-     -o "languages/rokka-image-cdn.pot" -
+     -o "languages/rokka-wordpress-plugin.pot" -
 )

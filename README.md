@@ -38,7 +38,7 @@ WordPress plugin to integrate the [rokka image service](https://rokka.io).
 
 ### Extract messages / Compile translation files
 
-Run the following script to extract messages from PHP-files and generate a new rokka-image-cdn.pot file:
+Run the following script to extract messages from PHP-files and generate a new rokka-wordpress-plugin.pot file:
 
     $ scripts/translations/extract_messages.sh
 

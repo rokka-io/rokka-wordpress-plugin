@@ -2,7 +2,7 @@
 /**
  * Rokka url filter
  *
- * @package rokka-image-cdn
+ * @package rokka-wordpress-plugin
  */
 
 /**
