@@ -2,7 +2,7 @@
 /**
  * Rokka helper class.
  *
- * @package rokka-wordpress-plugin
+ * @package rokka-integration
  */
 
 /**
@@ -259,7 +259,7 @@ class Rokka_Helper {
 		// Check file exists locally before attempting upload
 		if ( ! file_exists( $file_path ) ) {
 			/* translators: %s contains file path */
-			$error_msg = sprintf( esc_html_x( 'File %s does not exist', '%s contains file path','rokka-wordpress-plugin' ), $file_path );
+			$error_msg = sprintf( esc_html_x( 'File %s does not exist', '%s contains file path', 'rokka-integration' ), $file_path );
 			throw new Exception( $error_msg );
 		}
 

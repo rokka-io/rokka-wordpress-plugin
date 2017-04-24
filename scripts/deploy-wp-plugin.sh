@@ -8,7 +8,7 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
-PLUGINSLUG="rokka-wordpress-plugin"
+PLUGINSLUG="rokka-integration"
 GITPATH="/tmp/$PLUGINSLUG-git"
 SVNPATH="/tmp/$PLUGINSLUG-svn"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
@@ -58,7 +58,6 @@ svn update --quiet $SVNPATH/trunk --set-depth infinity
 echo "Clearing SVN repo trunk so we can overwrite it"
 rm -rf $SVNPATH/trunk/*
 
-
 echo "Ignoring os specific files"
 svn propset svn:ignore ".DS_Store
 Thumbs.db" "$SVNPATH/trunk/"
@@ -88,7 +87,7 @@ for file in `find "$GITPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.
 echo "Copying required plugin files to SVN trunk"
 cp $GITPATH/index.php $SVNPATH/trunk/
 cp $GITPATH/readme.txt $SVNPATH/trunk/
-cp $GITPATH/rokka-wordpress-plugin.php $SVNPATH/trunk/
+cp $GITPATH/rokka-integration.php $SVNPATH/trunk/
 cp $GITPATH/screenshot* $SVNPATH/trunk/
 cp $GITPATH/uninstall.php $SVNPATH/trunk/
 cp -R $GITPATH/assets $SVNPATH/trunk/

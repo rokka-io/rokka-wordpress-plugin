@@ -1,4 +1,4 @@
-# Rokka WordPress Plugin
+# Rokka integration plugin for WordPress
 
 [![Build Status](https://travis-ci.org/rokka-io/rokka-wordpress-plugin.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-wordpress-plugin)
 

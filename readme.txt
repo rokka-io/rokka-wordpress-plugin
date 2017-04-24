@@ -16,7 +16,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 == Installation ==
 
-1. Upload the `rokka-wordpress-plugin` directory into the `/wp-content/plugins/` directory
+1. Upload the `rokka-integration` directory into the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Add your rokka credentials in the rokka settings (`Settings > Rokka Settings`)
 1. Synchronize your image sizes to rokka (`Settings > Rokka Settings > Sync stacks`)

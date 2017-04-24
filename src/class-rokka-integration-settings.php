@@ -2,7 +2,7 @@
 /**
  * Rokka settings page
  *
- * @package rokka-wordpress-plugin
+ * @package rokka-integration
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,21 +10,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Rokka_WordPress_Plugin_Settings
+ * Class Rokka_Integration_Settings
  */
-class Rokka_WordPress_Plugin_Settings {
+class Rokka_Integration_Settings {
 
 	/**
-	 * The single instance of Rokka_WordPress_Plugin_Settings.
+	 * The single instance of Rokka_Integration_Settings.
 	 *
-	 * @var Rokka_WordPress_Plugin_Settings
+	 * @var Rokka_Integration_Settings
 	 */
 	private static $_instance = null;
 
 	/**
 	 * The main plugin object.
 	 *
-	 * @var Rokka_WordPress_Plugin
+	 * @var Rokka_Integration
 	 */
 	public $parent = null;
 
@@ -57,10 +57,10 @@ class Rokka_WordPress_Plugin_Settings {
 	private $rokka_helper;
 
 	/**
-	 * Rokka_WordPress_Plugin_Settings constructor.
+	 * Rokka_Integration_Settings constructor.
 	 *
-	 * @param Rokka_WordPress_Plugin $parent The main plugin object.
-	 * @param Rokka_Helper           $rokka_helper Instance of Rokka_Helper.
+	 * @param Rokka_Integration $parent The main plugin object.
+	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
 	 */
 	public function __construct( $parent, $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
@@ -97,41 +97,41 @@ class Rokka_WordPress_Plugin_Settings {
 		$this->settings_fields = array(
 			array(
 				'id'          => 'company_name',
-				'label'       => __( 'Company name', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'Company name', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'my-company' ),
 			),
 			array(
 				'id'          => 'api_key',
-				'label'       => __( 'API Key', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'API Key', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'My API Key' ),
 			),
 			array(
 				'id'          => 'api_secret',
-				'label'       => __( 'API Secret', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'API Secret', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'My API Secret' ),
 			),
 			array(
 				'id'          => 'stack_prefix',
-				'label'       => __( 'Stack Prefix', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'Stack Prefix', 'rokka-integration' ),
 				/* translators: %s contains default stack prefix */
-				'description' => sprintf( _x( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default %s", '%s contains default stack prefix', 'rokka-wordpress-plugin' ), Rokka_Helper::STACK_PREFIX_DEFAULT ),
+				'description' => sprintf( _x( "You can use this prefix to create unique stacknames on rokka. So that your already existing stacks won't be overwritten. Since the stack name is used in the URL only a-z (lower case a-z), 0-9, - (dashes) and _ (underscores) are allowed. Default %s", '%s contains default stack prefix', 'rokka-integration' ), Rokka_Helper::STACK_PREFIX_DEFAULT ),
 				'type'        => 'text',
 				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
 				'sanitize_callback' => array( $this, 'sanitize_stack_prefix' ),
 			),
 			array(
 				'id'          => 'rokka_enabled',
-				'label'       => __( 'Enable rokka integration', 'rokka-wordpress-plugin' ),
-				'description' => __( 'This will enable the rokka integration. Please make sure that you already have synced the stacks to rokka before enabling this.', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'Enable rokka integration', 'rokka-integration' ),
+				'description' => __( 'This will enable the rokka integration. Please make sure that you already have synced the stacks to rokka before enabling this.', 'rokka-integration' ),
 				'type'        => 'checkbox',
 			),
 			array(
 				'id'          => 'output_parsing',
-				'label'       => __( 'Enable output parsing', 'rokka-wordpress-plugin' ),
-				'description' => __( 'This feature will parse the output and replaces urls to local images with rokka image urls. Relative links will not be replaced.', 'rokka-wordpress-plugin' ),
+				'label'       => __( 'Enable output parsing', 'rokka-integration' ),
+				'description' => __( 'This feature will parse the output and replaces urls to local images with rokka image urls. Relative links will not be replaced.', 'rokka-integration' ),
 				'type'        => 'checkbox',
 			),
 		);
@@ -142,7 +142,7 @@ class Rokka_WordPress_Plugin_Settings {
 	 */
 	public function add_menu_item() {
 		$this->menu_slug = $this->parent->_token . '_settings';
-		add_options_page( __( 'Rokka Settings', 'rokka-wordpress-plugin' ), __( 'Rokka Settings', 'rokka-wordpress-plugin' ), 'manage_options', $this->menu_slug, array( $this, 'settings_page' ) );
+		add_options_page( __( 'Rokka Settings', 'rokka-integration' ), __( 'Rokka Settings', 'rokka-integration' ), 'manage_options', $this->menu_slug, array( $this, 'settings_page' ) );
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Rokka_WordPress_Plugin_Settings {
 	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings' ) ) . '">' . esc_html__( 'Settings', 'rokka-wordpress-plugin' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings' ) ) . '">' . esc_html__( 'Settings', 'rokka-integration' ) . '</a>';
 		// add settings link as first element
 		array_unshift( $links, $settings_link );
 
@@ -167,7 +167,7 @@ class Rokka_WordPress_Plugin_Settings {
 		$section = 'default';
 
 		// Add section to page
-		add_settings_section( $section, __( 'Main settings', 'rokka-wordpress-plugin' ), array(
+		add_settings_section( $section, __( 'Main settings', 'rokka-integration' ), array(
 			$this,
 			'settings_section',
 		), $this->parent->_token . '_settings' );
@@ -213,14 +213,14 @@ class Rokka_WordPress_Plugin_Settings {
 	 */
 	public function settings_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'rokka-wordpress-plugin' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'rokka-integration' ) );
 		}
 
 		// Show warning if rokka is not enabled
 		if ( ! $this->rokka_helper->are_settings_complete() ) {
-			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Settings need to be filled out completely before rokka support can be enabled.', 'rokka-wordpress-plugin' ) . '</p></div>';
+			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Settings need to be filled out completely before rokka support can be enabled.', 'rokka-integration' ) . '</p></div>';
 		} elseif ( $this->rokka_helper->are_settings_complete() && ! $this->rokka_helper->is_rokka_enabled() ) {
-			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Rokka integration is not enabled yet. Please select the \'Enable rokka\' checkbox in the settings.', 'rokka-wordpress-plugin' ) . '</p></div>';
+			echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Rokka integration is not enabled yet. Please select the \'Enable rokka\' checkbox in the settings.', 'rokka-integration' ) . '</p></div>';
 		}
 
 		$current_tab = 'settings';
@@ -238,65 +238,65 @@ class Rokka_WordPress_Plugin_Settings {
 			'nonce' => $ajax_nonce,
 			'loadingSpinnerUrl' => esc_url( admin_url( 'images/spinner-2x.gif' ) ),
 			'labels' => array(
-				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-wordpress-plugin' ),
-				'syncStacksSuccess' => esc_html__( 'Stack sync successful! Please reload this page to update status.', 'rokka-wordpress-plugin' ),
-				'syncStacksFail' => esc_html__( 'Stack sync failed! Error:', 'rokka-wordpress-plugin' ),
-				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-wordpress-plugin' ),
-				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-wordpress-plugin' ),
-				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-wordpress-plugin' ),
-				'uploadImagesFail' => esc_html__( 'There was an error during the upload of the images!', 'rokka-wordpress-plugin' ),
-				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to rokka.', 'rokka-wordpress-plugin' ),
-				'deleteSingleImageSuccess' => esc_html__( 'Image successfully removed. Image ID:', 'rokka-wordpress-plugin' ),
-				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-wordpress-plugin' ),
-				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-wordpress-plugin' ),
-				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-wordpress-plugin' ),
-				'deleteImagesFail' => esc_html__( 'There was an error during the removal of the images!', 'rokka-wordpress-plugin' ),
-				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-wordpress-plugin' ),
+				'createStacksStart' => esc_html__( 'Creating stacks...', 'rokka-integration' ),
+				'syncStacksSuccess' => esc_html__( 'Stack sync successful! Please reload this page to update status.', 'rokka-integration' ),
+				'syncStacksFail' => esc_html__( 'Stack sync failed! Error:', 'rokka-integration' ),
+				'uploadSingleImageSuccess' => esc_html__( 'Upload of image successful. Image ID:', 'rokka-integration' ),
+				'uploadSingleImageFail' => esc_html__( 'Upload of image failed! Image ID:', 'rokka-integration' ),
+				'uploadImagesSuccess' => esc_html__( 'Image upload finished!', 'rokka-integration' ),
+				'uploadImagesFail' => esc_html__( 'There was an error during the upload of the images!', 'rokka-integration' ),
+				'uploadImagesAlreadyUploaded' => esc_html__( 'Nothing to process here, all images are already uploaded to rokka.', 'rokka-integration' ),
+				'deleteSingleImageSuccess' => esc_html__( 'Image successfully removed. Image ID:', 'rokka-integration' ),
+				'deleteSingleImageFail' => esc_html__( 'Removing of image failed! Image ID:', 'rokka-integration' ),
+				'deleteImagesConfirm' => esc_html__( 'Do you really want to delete all images from rokka?', 'rokka-integration' ),
+				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-integration' ),
+				'deleteImagesFail' => esc_html__( 'There was an error during the removal of the images!', 'rokka-integration' ),
+				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-integration' ),
 			),
 		);
 		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
 		<div class="wrap" id="<?php echo esc_attr( $this->parent->_token ); ?>_settings">
-			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-wordpress-plugin' ); ?></h1>
+			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-integration' ); ?></h1>
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-wordpress-plugin' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-wordpress-plugin' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-wordpress-plugin' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-integration' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
-							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-wordpress-plugin' ); ?></h2>
+							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-wordpress-plugin' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
 							</p>
 							<?php $stacks_to_sync = $this->rokka_helper->get_stacks_to_sync(); ?>
 							<?php if ( ! empty( $stacks_to_sync ) ) : ?>
 								<table class="stack-sync">
 									<thead>
 									<tr>
-										<th class="name"><?php esc_html_e( 'Stack name', 'rokka-wordpress-plugin' ); ?></th>
-										<th class="width"><?php esc_html_e( 'Width', 'rokka-wordpress-plugin' ); ?></th>
-										<th class="height"><?php esc_html_e( 'Height', 'rokka-wordpress-plugin' ); ?></th>
-										<th class="crop"><?php esc_html_e( 'Crop', 'rokka-wordpress-plugin' ); ?></th>
-										<th class="status"><?php esc_html_e( 'Sync status', 'rokka-wordpress-plugin' ); ?></th>
+										<th class="name"><?php esc_html_e( 'Stack name', 'rokka-integration' ); ?></th>
+										<th class="width"><?php esc_html_e( 'Width', 'rokka-integration' ); ?></th>
+										<th class="height"><?php esc_html_e( 'Height', 'rokka-integration' ); ?></th>
+										<th class="crop"><?php esc_html_e( 'Crop', 'rokka-integration' ); ?></th>
+										<th class="status"><?php esc_html_e( 'Sync status', 'rokka-integration' ); ?></th>
 									</tr>
 									</thead>
 									<tbody>
 									<?php foreach ( $stacks_to_sync as $stack ) : ?>
 										<?php
-										$stack_operation_name = __( 'All good!', 'rokka-wordpress-plugin' );
+										$stack_operation_name = __( 'All good!', 'rokka-integration' );
 										switch ( $stack['operation'] ) {
 											case Rokka_Helper::STACK_SYNC_OPERATION_CREATE:
-												$stack_operation_name = __( 'Stack will be created', 'rokka-wordpress-plugin' );
+												$stack_operation_name = __( 'Stack will be created', 'rokka-integration' );
 												break;
 											case Rokka_Helper::STACK_SYNC_OPERATION_UPDATE:
-												$stack_operation_name = __( 'Stack will be updated', 'rokka-wordpress-plugin' );
+												$stack_operation_name = __( 'Stack will be updated', 'rokka-integration' );
 												break;
 											case Rokka_Helper::STACK_SYNC_OPERATION_DELETE:
-												$stack_operation_name = __( 'Stack will be deleted', 'rokka-wordpress-plugin' );
+												$stack_operation_name = __( 'Stack will be deleted', 'rokka-integration' );
 												break;
 										}
 										?>
@@ -314,76 +314,76 @@ class Rokka_WordPress_Plugin_Settings {
 												<td><?php echo esc_html( $stack['name'] ); ?></td>
 												<td><?php echo esc_html( $stack['width'] ); ?></td>
 												<td><?php echo esc_html( $stack['height'] ); ?></td>
-												<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-wordpress-plugin' ) : esc_html_e( 'No', 'rokka-wordpress-plugin' ); ?></td>
+												<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-integration' ) : esc_html_e( 'No', 'rokka-integration' ); ?></td>
 												<td><?php echo esc_html( $stack_operation_name ); ?></td>
 											<?php endif ; ?>
 										</tr>
 									<?php endforeach ; ?>
 									</tbody>
 								</table>
-								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-wordpress-plugin' ); ?></button>
+								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-integration' ); ?></button>
 								<div id="progress-info-stacks"></div>
 							<?php else : ?>
-								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-wordpress-plugin' ); ?></p>
+								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
 							<?php endif ; ?>
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-wordpress-plugin' ); ?></p>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
 						<?php endif ; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-wordpress-plugin' ); ?></h2>
+							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_upload ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:' , 'rokka-wordpress-plugin' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:' , 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_upload as $image_id ) {
 									$image_name = get_attached_file( $image_id );
 									/* translators: %1$s contains image id. %2$s contains image path. */
-									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-wordpress-plugin' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
+									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-integration' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
 								}
 								echo '</ul>'
 								?>
-								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka' , 'rokka-wordpress-plugin' ); ?></button>
+								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka' , 'rokka-integration' ); ?></button>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
-									<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-wordpress-plugin' ); ?></label>
+									<label for="upload-progress-log"><?php esc_html_e( 'Log:', 'rokka-integration' ); ?></label>
 									<textarea id="upload-progress-log" disabled="disabled"></textarea>
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.' , 'rokka-wordpress-plugin' ); ?>
+									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.' , 'rokka-integration' ); ?>
 								</p>
 							<?php endif ; ?>
 
-							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-wordpress-plugin' ); ?></h2>
+							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_delete ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:' , 'rokka-wordpress-plugin' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:' , 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_delete as $image_id ) {
 									$image_name = get_attached_file( $image_id );
 									/* translators: %1$s contains image id. %2$s contains image path. */
-									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-wordpress-plugin' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
+									echo '<li>' . sprintf( esc_html_x( 'ID: %1$s / Path: %2$s', '%1$s contains image id. %2$s contains image path.', 'rokka-integration' ), esc_html( $image_id ), esc_html( $image_name ) ) . '</li>';
 								}
 								echo '</ul>';
 								?>
-								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka' , 'rokka-wordpress-plugin' ); ?></button>
+								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka' , 'rokka-integration' ); ?></button>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">
-									<label for="delete-progress-log"><?php esc_html_e( 'Log:', 'rokka-wordpress-plugin' ); ?></label>
+									<label for="delete-progress-log"><?php esc_html_e( 'Log:', 'rokka-integration' ); ?></label>
 									<textarea id="delete-progress-log" disabled="disabled"></textarea>
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-wordpress-plugin' ); ?>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-integration' ); ?>
 								</p>
 							<?php endif ; ?>
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-wordpress-plugin' ); ?></p>
+							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-integration' ); ?></p>
 						<?php endif ; ?>
 					</div>
 				<?php else : ?>
@@ -396,7 +396,7 @@ class Rokka_WordPress_Plugin_Settings {
 							submit_button();
 							?>
 							<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
-								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials' , 'rokka-wordpress-plugin' ); ?></button>
+								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials' , 'rokka-integration' ); ?></button>
 								<div id="rokka-credentials-status"></div>
 							<?php endif ; ?>
 						</form>
@@ -413,7 +413,7 @@ class Rokka_WordPress_Plugin_Settings {
 					</div>
 					<div id="logo-liip" class="logo">
 						<a href="https://liip.ch">
-							<img src="<?php echo esc_url( $this->parent->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-wordpress-plugin' ); ?>" />
+							<img src="<?php echo esc_url( $this->parent->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-integration' ); ?>" />
 						</a>
 					</div>
 					<div id="address-block">
@@ -609,7 +609,7 @@ class Rokka_WordPress_Plugin_Settings {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
-			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-wordpress-plugin' ), 403 );
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-integration' ), 403 );
 			wp_die();
 		}
 
@@ -626,10 +626,10 @@ class Rokka_WordPress_Plugin_Settings {
 						wp_send_json_error( $image_id, 400 );
 					}
 				} else {
-					wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-wordpress-plugin' ), 400 );
+					wp_send_json_error( __( 'This image is already on rokka. No need to upload it another time.', 'rokka-integration' ), 400 );
 				}
 			} else {
-				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-wordpress-plugin' ), 400 );
+				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
@@ -645,7 +645,7 @@ class Rokka_WordPress_Plugin_Settings {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
-			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-wordpress-plugin' ), 403 );
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-integration' ), 403 );
 			wp_die();
 		}
 
@@ -662,10 +662,10 @@ class Rokka_WordPress_Plugin_Settings {
 						wp_send_json_error( $image_id, 400 );
 					}
 				} else {
-					wp_send_json_error( __( 'This image is not yet on rokka. No need to delete it.', 'rokka-wordpress-plugin' ), 400 );
+					wp_send_json_error( __( 'This image is not yet on rokka. No need to delete it.', 'rokka-integration' ), 400 );
 				}
 			} else {
-				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-wordpress-plugin' ), 400 );
+				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
@@ -681,7 +681,7 @@ class Rokka_WordPress_Plugin_Settings {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
-			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-wordpress-plugin' ), 403 );
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-integration' ), 403 );
 			wp_die();
 		}
 
@@ -693,7 +693,7 @@ class Rokka_WordPress_Plugin_Settings {
 				wp_die();
 			}
 
-			wp_send_json_error( __( 'Could not process stacks.', 'rokka-wordpress-plugin' ), 400 );
+			wp_send_json_error( __( 'Could not process stacks.', 'rokka-integration' ), 400 );
 			wp_die();
 		} catch ( Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
@@ -708,29 +708,29 @@ class Rokka_WordPress_Plugin_Settings {
 		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
 
 		if ( ! $nonce_valid ) {
-			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-wordpress-plugin' ), 403 );
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-integration' ), 403 );
 			wp_die();
 		}
 
 		if ( $this->rokka_helper->check_rokka_credentials() ) {
-			wp_send_json_success( __( 'Yay! Your rokka credentials are valid.', 'rokka-wordpress-plugin' ) );
+			wp_send_json_success( __( 'Yay! Your rokka credentials are valid.', 'rokka-integration' ) );
 			wp_die();
 		} else {
-			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-wordpress-plugin' ), 400 );
+			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-integration' ), 400 );
 			wp_die();
 		}
 	}
 
 	/**
-	 * Main Rokka_WordPress_Plugin_Settings Instance
+	 * Main Rokka_Integration_Settings Instance
 	 *
-	 * Ensures only one instance of Rokka_WordPress_Plugin_Settings is loaded or can be loaded.
+	 * Ensures only one instance of Rokka_Integration_Settings is loaded or can be loaded.
 	 *
-	 * @param Rokka_WordPress_Plugin $parent The main plugin object.
-	 * @param Rokka_Helper           $rokka_helper Instance of Rokka_Helper.
+	 * @param Rokka_Integration $parent The main plugin object.
+	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
 	 *
 	 * @static
-	 * @return Rokka_WordPress_Plugin_Settings Rokka_WordPress_Plugin_Settings instance
+	 * @return Rokka_Integration_Settings Rokka_Integration_Settings instance
 	 */
 	public static function instance( $parent, $rokka_helper ) {
 		if ( is_null( self::$_instance ) ) {

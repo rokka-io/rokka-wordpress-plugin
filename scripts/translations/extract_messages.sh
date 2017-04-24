@@ -10,7 +10,7 @@ find "." \
      -not -path "tests/*" \
      -not -path "vendor/*" \
      -type f \( -name "*.php" \) \
-     | xargs xgettext --language=PHP --add-comments=TRANSLATORS: --force-po --from-code=UTF-8 --no-wrap --foreign-user --package-name="rokka-wordpress-plugin" --package-version=1.0.0 --msgid-bugs-address=contact@liip.ch \
+     | xargs xgettext --language=PHP --add-comments=TRANSLATORS: --force-po --from-code=UTF-8 --no-wrap --foreign-user --package-name="rokka-integration" --package-version=1.0.0 --msgid-bugs-address=contact@liip.ch \
      --keyword=__ \
      --keyword=_e \
      --keyword=__ngettext:1,2 \
@@ -29,5 +29,5 @@ find "." \
      --keyword=esc_html__ \
      --keyword=esc_html_e \
      --keyword=esc_html_x:1,2c \
-     -o "languages/rokka-wordpress-plugin.pot" -
+     -o "languages/rokka-integration.pot" -
 )
