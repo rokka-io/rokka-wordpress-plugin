@@ -8,12 +8,12 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
+# Set SVNPASSWORD environment variable to not promt password during deployment
 PLUGINSLUG="rokka-integration"
 GITPATH="/tmp/$PLUGINSLUG-git"
 SVNPATH="/tmp/$PLUGINSLUG-svn"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
-SVNURL="https://plugins.svn.wordpress.org/timber-library"
-SVNUSER=user
+SVNUSER=liip
 SOURCEPATH="$HERE/.." # this file should be in the base of your git repository
 MAINFILE="$PLUGINSLUG.php"
 
@@ -95,19 +95,21 @@ cp -R $GITPATH/languages $SVNPATH/trunk/
 cp -R $GITPATH/src $SVNPATH/trunk/
 cp -R $GITPATH/vendor $SVNPATH/trunk/
 
-exit 1;
-
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
 # Delete all files that should not now be added.
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-# Fix image mime-types
+# Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
-svn propset svn:mime-type image/jpeg *.jpg
 # Commit all changes
-#svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+if [ ! -z "$SVNPASSWORD" ]; then
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release"
+else
+	svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
+fi
 
 # Update WordPress plugin assets
 # Make the directory if it doesn't already exist
@@ -125,21 +127,28 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs s
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
 #svn update --accept mine-full $SVNPATH/assets/*
-# Fix image mime-types
+# Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
-svn propset svn:mime-type image/jpeg *.jpg
 # Commit all changes
-#svn commit --username=$SVNUSER -m "Updating assets"
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+if [ ! -z "$SVNPASSWORD" ]; then
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets"
+else
+	svn commit --username=$SVNUSER -m "Updating assets"
+fi
 
 echo "Creating new SVN tag and committing it"
 cd $SVNPATH
 svn update --quiet $SVNPATH/tags/$PLUGINVERSION
 svn copy --quiet $SVNPATH/trunk/ $SVNPATH/tags/$PLUGINVERSION/
-# Remove assets and trunk directories from tag directory
-svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
-svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 cd $SVNPATH/tags/$PLUGINVERSION
-#svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
+# Commit plugin version
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+if [ ! -z "$SVNPASSWORD" ]; then
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION"
+else
+	svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
+fi
 
 echo "Removing temporary directories $SVNPATH and $GITPATH"
 cd $SVNPATH
