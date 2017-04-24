@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="rokka-wordpress-plugin">
-	<description>Coding standards for rokka-wordpress-plugin</description>
+<ruleset name="rokka-integration">
+	<description>Coding standards for rokka-integration</description>
 
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
