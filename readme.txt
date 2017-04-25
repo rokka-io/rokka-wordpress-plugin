@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress plugin to integrate the rokka image service (https://rokka.io).
+WordPress plugin to integrate the [rokka image service](https://rokka.io).
 
 == Description ==
 The [rokka image converter](https://rokka.io) supports you in storing your digital images – easy and neat. Whether for handling image formats, SEO attributes or the lightning fast delivery, rokka is just the right tool for your digital images.
@@ -16,10 +16,10 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 = Further Information =
 
-* WordPress Plugin: https://wordpress.org/plugins/rokka-integration/
-* Website: https://rokka.io
-* GitHub Repository: https://github.com/rokka-io/rokka-wordpress-plugin
-* Issue tracker: https://github.com/rokka-io/rokka-wordpress-plugin/issues
+* WordPress Plugin: [https://wordpress.org/plugins/rokka-integration/](https://wordpress.org/plugins/rokka-integration/)
+* Website: [https://rokka.io](https://rokka.io)
+* GitHub Repository: [https://github.com/rokka-io/rokka-wordpress-plugin](https://github.com/rokka-io/rokka-wordpress-plugin)
+* Issue tracker: [https://github.com/rokka-io/rokka-wordpress-plugin/issues](https://github.com/rokka-io/rokka-wordpress-plugin/issues)
 
 == Installation ==
 
@@ -38,7 +38,7 @@ You can synchronize all defined image sizes as so called stacks to rokka.
 
 = An image from rokka can't be loaded anymore. What should I do? =
 
-If an image which was previously uploaded to rokka can't be loaded anymore try comparing the rokka hash in the WordPress attachment edit screen with the hash of the image on rokka.io (https://rokka.io/dashboard/) itself.
+If an image which was previously uploaded to rokka can't be loaded anymore try comparing the rokka hash in the WordPress attachment edit screen with the hash of the image on rokka.io ([https://rokka.io/dashboard/](https://rokka.io/dashboard/)) itself.
 If it doesn't match anymore just copy & paste the hash from rokka.io to the WordPress attachment edit screen and save the image.
 
 = What is the stack prefix used for? =
@@ -54,7 +54,7 @@ You can do this in the rokka settings (`Settings > Rokka Settings > Sync stacks`
 
 = Have you found a bug or do you have a feature request? =
 
-Please create a new GitHub issue and let us know: https://github.com/rokka-io/rokka-wordpress-plugin/issues
+Please create a new GitHub issue and let us know: [https://github.com/rokka-io/rokka-wordpress-plugin/issues](https://github.com/rokka-io/rokka-wordpress-plugin/issues)
 
 == Screenshots ==
 
