@@ -3,7 +3,7 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 4.7.3
+Tested up to: 4.7.4
 Stable tag: 1.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -11,13 +11,20 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WordPress plugin to integrate the rokka image service (https://rokka.io).
 
 == Description ==
-The rokka image converter supports you in storing your digital images – easy and neat. Whether for handling image formats, SEO attributes or the lightning fast delivery, rokka is just the right tool for your digital images.
+The [rokka image converter](https://rokka.io) supports you in storing your digital images – easy and neat. Whether for handling image formats, SEO attributes or the lightning fast delivery, rokka is just the right tool for your digital images.
 This WordPress plugin integrates the rokka image service. All images from your image libary will be synchronized to your rokka account and be served directly through rokka.
+
+= Further Information =
+
+* WordPress Plugin: https://wordpress.org/plugins/rokka-integration/
+* Website: https://rokka.io
+* GitHub Repository: https://github.com/rokka-io/rokka-wordpress-plugin
+* Issue tracker: https://github.com/rokka-io/rokka-wordpress-plugin/issues
 
 == Installation ==
 
 1. Upload the `rokka-integration` directory into the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Activate the plugin through the `Plugins` menu in WordPress
 1. Add your rokka credentials in the rokka settings (`Settings > Rokka Settings`)
 1. Synchronize your image sizes to rokka (`Settings > Rokka Settings > Sync stacks`)
 1. Enable rokka support (`Settings > Rokka Settings > Enable rokka integration`)
@@ -45,6 +52,10 @@ Additionally we are able to identify deleted image sizes on WordPress and delete
 Everytime you change something on your size configuration in WordPress you need to re-synchronize the sizes with the rokka stacks.
 You can do this in the rokka settings (`Settings > Rokka Settings > Sync stacks`).
 
+= Have you found a bug or do you have a feature request? =
+
+Please create a new GitHub issue and let us know: https://github.com/rokka-io/rokka-wordpress-plugin/issues
+
 == Screenshots ==
 
 1. Media management with rokka integration
@@ -56,4 +67,4 @@ You can do this in the rokka settings (`Settings > Rokka Settings > Sync stacks`
 
 = 1.0.0 =
 
-* Initial release of the plugin
+* Initial release of this plugin
