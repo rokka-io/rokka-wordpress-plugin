@@ -129,6 +129,12 @@ class Rokka_Integration_Settings {
 				'type'        => 'checkbox',
 			),
 			array(
+				'id'          => 'delete_previous',
+				'label'       => __( 'Delete previous images if metadata changes', 'rokka-integration' ),
+				'description' => __( "Enable this if you don't need to keep the previous image on rokka if you change something on the metadata of an image (eg. subject area).", 'rokka-integration' ),
+				'type'        => 'checkbox',
+			),
+			array(
 				'id'          => 'output_parsing',
 				'label'       => __( 'Enable output parsing', 'rokka-integration' ),
 				'description' => __( 'This feature will parse the output and replaces urls to local images with rokka image urls. Relative links will not be replaced.', 'rokka-integration' ),
