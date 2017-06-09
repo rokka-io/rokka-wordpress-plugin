@@ -408,7 +408,11 @@ class Rokka_Helper {
 		$sizes = $this->get_available_image_sizes();
 		$client = $this->rokka_get_client();
 		$stack_collection = $client->listStacks();
-		/** @var \Rokka\Client\Core\Stack[] $stacks_on_rokka */
+		/**
+		 * Stacks from rokka.
+		 *
+		 * @var \Rokka\Client\Core\Stack[] $stacks_on_rokka
+		 */
 		$stacks_on_rokka = array_filter( $stack_collection->getStacks(), function ( $stack ) {
 			return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
 		} );
@@ -626,7 +630,14 @@ class Rokka_Helper {
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
 		$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $x, $y, $width, $height );
-		$new_hash = $client->setDynamicMetadata( $subject_area, $hash, '', array( 'deletePrevious' => $this->get_delete_previous() ) );
+		$new_hash = $client->setDynamicMetadata(
+			$subject_area,
+			$hash,
+			'',
+			array(
+				'deletePrevious' => $this->get_delete_previous(),
+			)
+		);
 
 		return $new_hash;
 	}
@@ -641,7 +652,14 @@ class Rokka_Helper {
 	public function remove_subject_area( $hash ) {
 		$client = $this->rokka_get_client();
 		try {
-			$new_hash = $client->deleteDynamicMetadata( Rokka\Client\Core\DynamicMetadata\SubjectArea::getName(), $hash, '', array( 'deletePrevious' => $this->get_delete_previous() ) );
+			$new_hash = $client->deleteDynamicMetadata(
+				Rokka\Client\Core\DynamicMetadata\SubjectArea::getName(),
+				$hash,
+				'',
+				array(
+					'deletePrevious' => $this->get_delete_previous(),
+				)
+			);
 		} catch ( GuzzleHttp\Exception\ClientException $e ) {
 			// the deleteDynamicMetadata will throw a ClientException if the SubjectArea doesn't exist
 			// ignore this exception and continue
