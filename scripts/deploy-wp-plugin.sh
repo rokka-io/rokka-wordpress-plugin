@@ -1,8 +1,11 @@
 #! /bin/bash
+# Author: Juerg Hunziker <juerg.hunziker@liip.ch>
+#
+# This script has been created based on the wordpress-plugin-git-flow-svn-deploy script from Gary Jones (Thx!).
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
 echo
-echo "WordPress Plugin Git-Flow SVN Deploy v2.0.0-dev"
+echo "WordPress Plugin Git to SVN release script - v1.0.0"
 echo
 
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
