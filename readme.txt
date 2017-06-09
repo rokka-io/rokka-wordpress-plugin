@@ -67,7 +67,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 = 1.1.0 =
 
-* Add option to define if previous image should be deleted on rokka if metadata changes.
+* Added option to define if previous image should be deleted on rokka if metadata changes.
 
 = 1.0.0 =
 
