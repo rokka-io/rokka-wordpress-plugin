@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Rokka Integration
- * Version: 1.0.0
+ * Version: 1.1.0
  * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.
  * Author: Liip AG
@@ -9,7 +9,7 @@
  * License: GPL2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 4.0
- * Tested up to: 4.7
+ * Tested up to: 4.8
  *
  * Text Domain: rokka-integration
  * Domain Path: /languages/
