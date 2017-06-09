@@ -159,4 +159,6 @@ cd ..
 rm -rf $SVNPATH/
 rm -rf $GITPATH/
 
+echo "Successfully released v$PLUGINVERSION of the $PLUGINSLUG plugin!"
+echo
 echo "*** FIN ***"
