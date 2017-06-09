@@ -191,11 +191,11 @@ class Rokka_Helper {
 		$file_name = wp_basename( $file_path );
 		$client = $this->rokka_get_client();
 		// @codingStandardsIgnoreStart
-		$source_image = $client->uploadSourceImage( file_get_contents( $file_path ), $file_name );
+		$source_images_collection = $client->uploadSourceImage( file_get_contents( $file_path ), $file_name );
 		// @codingStandardsIgnoreEnd
 
-		if ( is_object( $source_image ) ) {
-			$source_images = $source_image->getSourceImages();
+		if ( is_object( $source_images_collection ) ) {
+			$source_images = $source_images_collection->getSourceImages();
 			$source_image = array_pop( $source_images );
 			$rokka_meta = array(
 				'format' => $source_image->format,
