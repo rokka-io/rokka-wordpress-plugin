@@ -77,10 +77,25 @@ cd $GITPATH
 curl -s https://getcomposer.org/installer | php
 php composer.phar install --no-dev
 
+# Check if composer install was successfull
+composer_exitcode=$?
+if [ $composer_exitcode -ne 0 ]; then
+	echo "ERROR: There was an error installing composer packages. Aborting deployment..."
+	exit $composer_exitcode
+fi
+
 echo "Installing node modules"
 echo "Changing to $GITPATH to install node modules"
 cd $GITPATH
 npm install --loglevel error
+
+# Check if npm install was successfull
+npm_exitcode=$?
+if [ $npm_exitcode -ne 0 ]; then
+	echo "ERROR: There was an error installing node modules. Aborting deployment..."
+	exit $npm_exitcode
+fi
+
 echo "Running gulp deploy task"
 $GITPATH/node_modules/.bin/gulp deploy
 
@@ -143,8 +158,22 @@ fi
 echo "Creating new SVN tag and committing it"
 cd $SVNPATH
 svn update --quiet $SVNPATH/tags/$PLUGINVERSION
-svn copy --quiet $SVNPATH/trunk/ $SVNPATH/tags/$PLUGINVERSION/
-cd $SVNPATH/tags/$PLUGINVERSION
+
+# if tag already exists update sources otherwise create new
+if [ -d "$SVNPATH/tags/$PLUGINVERSION/" ]; then
+	cd $SVNPATH/tags/$PLUGINVERSION
+	cp -R $SVNPATH/trunk/* $SVNPATH/tags/$PLUGINVERSION/
+	# Delete all files that should not now be added.
+	svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
+	# Add all new files that are not set to be ignored
+	svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
+	# Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
+	svn propset svn:mime-type image/png *.png
+else
+	svn copy --quiet $SVNPATH/trunk/ $SVNPATH/tags/$PLUGINVERSION/
+	cd $SVNPATH/tags/$PLUGINVERSION
+fi
+
 # Commit plugin version
 # If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
 if [ ! -z "$SVNPASSWORD" ]; then
