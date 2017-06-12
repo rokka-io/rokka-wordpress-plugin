@@ -629,7 +629,10 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function sanitize_rokka_filename( $filename ) {
-		return preg_replace( '/[^a-z0-9\-\.]/', '-', strtolower( $filename ) );
+		$filename = preg_replace( '/[^a-z0-9\-\.]/', '-', strtolower( $filename ) );
+		// remove all dots expect of last one
+		$filename = preg_replace( '/\.(?=.*\.)/', '-', $filename );
+		return $filename;
 	}
 
 	/**

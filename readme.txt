@@ -68,6 +68,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 = 1.1.1 =
 
 * Change: Save plugin options as booleans
+* Fix: Fix a problem with allowed filenames (slugs) on rokka
 
 = 1.1.0 =
 
