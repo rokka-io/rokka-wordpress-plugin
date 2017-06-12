@@ -18,7 +18,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ### Requirements
 
-* Node.js >=0.12.x (https://nodejs.org/)
+* Node.js >=8.1.0 (https://nodejs.org/)
 
     ```
     $ npm install -g gulp
@@ -44,7 +44,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ### Compile assets
 
-    $ gulp deploy
+    $ node_modules/.bin/gulp deploy
 
 ### Extract messages / Compile translation files
 
