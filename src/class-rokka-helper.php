@@ -151,9 +151,27 @@ class Rokka_Helper {
 		$this->company_name = get_option( 'rokka_company_name' );
 		$this->api_key = get_option( 'rokka_api_key' );
 		$this->api_secret = get_option( 'rokka_api_secret' );
-		$this->delete_previous = ( get_option( 'rokka_delete_previous' ) === 'on' ? true : false );
-		$this->output_parsing_enabled = ( get_option( 'rokka_output_parsing' ) === 'on' ? true : false );
-		$this->rokka_enabled = ( get_option( 'rokka_rokka_enabled' ) === 'on' ? true : false );
+		$this->delete_previous = get_option( 'rokka_delete_previous' );
+		// Backwards compatibility to plugin v1.1.0
+		if ( 'on' === $this->delete_previous ) {
+			update_option( 'rokka_delete_previous', true );
+			$this->delete_previous = true;
+		}
+		$this->delete_previous = (bool) $this->delete_previous;
+		$this->output_parsing_enabled = get_option( 'rokka_output_parsing' );
+		// Backwards compatibility to plugin v1.1.0
+		if ( 'on' === $this->output_parsing_enabled ) {
+			update_option( 'rokka_output_parsing', true );
+			$this->output_parsing_enabled = true;
+		}
+		$this->output_parsing_enabled = (bool) $this->output_parsing_enabled;
+		$this->rokka_enabled = get_option( 'rokka_rokka_enabled' );
+		// Backwards compatibility to plugin v1.1.0
+		if ( 'on' === $this->rokka_enabled ) {
+			update_option( 'rokka_rokka_enabled', true );
+			$this->rokka_enabled = true;
+		}
+		$this->rokka_enabled = (bool) $this->rokka_enabled;
 		$stack_prefix = get_option( 'rokka_stack_prefix' );
 		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
 		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
