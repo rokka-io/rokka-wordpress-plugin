@@ -249,8 +249,14 @@ class Rokka_Helper {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
 		if ( $hash ) {
-			$client = $this->rokka_get_client();
-			$success = $client->deleteSourceImage( $hash );
+			$success = true;
+
+			// remove image from rokka only if there doesn't exist an image with the same hash
+			if ( ! $this->image_with_same_hash_exists( $hash ) ) {
+				$client = $this->rokka_get_client();
+				$success = $client->deleteSourceImage( $hash );
+			}
+
 			if ( $success ) {
 				delete_post_meta( $attachment_id, 'rokka_meta' );
 				delete_post_meta( $attachment_id, 'rokka_hash' );
@@ -260,6 +266,34 @@ class Rokka_Helper {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if there are more than one images with the same rokka hash saved in the database.
+	 *
+	 * @param string $hash Rokka hash.
+	 *
+	 * @return bool
+	 */
+	public function image_with_same_hash_exists( $hash ) {
+		$hash_meta_query_args = array(
+			'post_type' => 'attachment',
+			'post_status' => 'any',
+			'post_parent' => null,
+			// @codingStandardsIgnoreStart
+			'posts_per_page' => -1,
+			'meta_query' => array(
+				array(
+					'key'     => 'rokka_hash',
+					'value'   => $hash,
+					'compare' => '='
+				),
+			),
+			// @codingStandardsIgnoreEnd
+		);
+		$images = get_posts( $hash_meta_query_args );
+
+		return count( $images ) > 1;
 	}
 
 	/**
