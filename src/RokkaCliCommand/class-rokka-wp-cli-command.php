@@ -15,7 +15,7 @@ if ( ! class_exists( 'WP_CLI_Command' ) ) {
 class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 
 	/**
-	 * Create Stacks at Rokka via API.
+	 * Creates stack on rokka.
 	 *
 	 * ## EXAMPLE
 	 * 		wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop
@@ -42,10 +42,10 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	}
 
 	/**
-	 * Create Stacks at Rokka via API without operations.
+	 * Creates noop stack (full size stack) on rokka.
 	 *
 	 * ## EXAMPLE
-	 * 		wp rokka create_noop_stack --name=banner-large
+	 * 		wp rokka create_noop_stack --name=full
 	 *
 	 * @param array $args Arguments from cli-command.
 	 * @param array $assoc_args Associative arguments from cli-command.
