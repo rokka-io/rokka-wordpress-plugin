@@ -361,8 +361,9 @@ class Rokka_Helper {
 	 * @param int    $width Width of resize operation.
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
+	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
 	 */
-	private function create_stack( $name, $width, $height, $crop = false ) {
+	private function create_stack( $name, $width, $height, $crop = false, $overwrite = true ) {
 		$client = $this->rokka_get_client();
 		$operations = array();
 		$mode = $crop ? 'fill' : 'box';
@@ -379,7 +380,7 @@ class Rokka_Helper {
 			) );
 		}
 
-		$client->createStack( $name, $operations );
+		$client->createStack( $name, $operations, '', [], $overwrite );
 	}
 
 	/**
@@ -391,8 +392,7 @@ class Rokka_Helper {
 	 * @param bool   $crop If crop stack operation should be added. Default false.
 	 */
 	private function update_stack( $name, $width, $height, $crop = false ) {
-		$this->delete_stack( $name );
-		$this->create_stack( $name, $width, $height, $crop );
+		$this->create_stack( $name, $width, $height, $crop, true );
 	}
 
 	/**
