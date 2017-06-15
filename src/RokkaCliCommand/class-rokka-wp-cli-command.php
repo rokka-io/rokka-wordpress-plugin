@@ -32,12 +32,15 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 			$height = $assoc_args['height'];
 			$crop = $assoc_args['crop'];
 
-			$rokka_helper = new Rokka_Helper();
-			$rokka_helper->create_stack( $name, $width, $height, $crop );
-
-			WP_CLI::success( __( 'Stack successfully created or updated.' ) );
+			try {
+				$rokka_helper = new Rokka_Helper();
+				$rokka_helper->create_stack( $name, $width, $height, $crop );
+				WP_CLI::success( 'Stack successfully created or updated.' );
+			} catch ( Exception $e ) {
+				WP_CLI::error( 'rokka-API threw an exception: ' . $e );
+			}
 		} else {
-			WP_CLI::error( __( 'Please provide all required parameters.' ) );
+			WP_CLI::error( 'Please provide all required parameters.' );
 		}
 	}
 
@@ -52,11 +55,15 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	 */
 	public function create_noop_stack( $args, $assoc_args ) {
 		if ( isset( $assoc_args['name'] ) && '' !== $assoc_args['name'] ) {
-			$rokka_helper = new Rokka_Helper();
-			$rokka_helper->create_noop_stack( $assoc_args['name'] );
-			WP_CLI::success( __( 'Stack successfully created or updated.' ) );
+			try {
+				$rokka_helper = new Rokka_Helper();
+				$rokka_helper->create_noop_stack( $assoc_args['name'] );
+				WP_CLI::success( 'Stack successfully created or updated.' );
+			} catch ( Exception $e ) {
+				WP_CLI::error( 'rokka-API threw an exception: ' . $e );
+			}
 		} else {
-			WP_CLI::error( __( 'Please provide all required parameters.' ) );
+			WP_CLI::error( 'Please provide all required parameters.' );
 		}
 	}
 }
