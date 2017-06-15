@@ -64,7 +64,7 @@ function rokka_integration() {
 	if ( class_exists( 'WP_CLI_Command' ) ) {
 		\WP_CLI::add_command(
 			'rokka',
-			'class-rokka-wp-cli-command'
+			'Rokka_Wp_Cli_Command'
 		);
 	}
 
