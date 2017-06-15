@@ -30,6 +30,7 @@ require_once( 'src/class-rokka-helper.php' );
 require_once( 'src/class-rokka-media-management.php' );
 require_once( 'src/class-rokka-filter-url.php' );
 require_once( 'src/class-rokka-filter-content.php' );
+require_once( 'src/RokkaCliCommand/class-rokka-wp-cli-command.php' );
 
 //add vendor library
 require_once( 'vendor/autoload.php' );
@@ -58,6 +59,13 @@ function rokka_integration() {
 		if ( is_null( $instance->settings ) ) {
 			$instance->settings = Rokka_Integration_Settings::instance( $instance, $rokka_helper );
 		}
+	}
+
+	if ( class_exists( 'WP_CLI_Command' ) ) {
+		\WP_CLI::add_command(
+			'rokka',
+			'class-rokka-wp-cli-command'
+		);
 	}
 
 	return $instance;
