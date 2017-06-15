@@ -17,6 +17,27 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	/**
 	 * Creates stack on rokka.
 	 *
+	 * ## OPTIONS
+	 *
+	 * --name=<stack-name>
+	 * : The name of the stack to create.
+	 *
+	 * --width=<stack-width>
+	 * : The width of the stack to create.
+	 *
+	 * --height=<stack-height>
+	 * : The height of the stack to create.
+	 *
+	 * [--crop]
+	 * : Whether or not the stack should be cropped.
+	 *
+	 * ---
+	 * default: success
+	 * options:
+	 *   - success
+	 *   - error
+	 * ---
+	 *
 	 * ## EXAMPLE
 	 * 		wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop
 	 *
@@ -37,7 +58,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 				$rokka_helper->create_stack( $name, $width, $height, $crop );
 				WP_CLI::success( 'Stack successfully created or updated.' );
 			} catch ( Exception $e ) {
-				WP_CLI::error( 'rokka-API threw an exception: ' . $e );
+				WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
 			}
 		} else {
 			WP_CLI::error( 'Please provide all required parameters.' );
@@ -46,6 +67,18 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 
 	/**
 	 * Creates noop stack (full size stack) on rokka.
+	 *
+	 * ## OPTIONS
+	 *
+	 * --name=<stack-name>
+	 * : The name of the stack to create.
+	 *
+	 * ---
+	 * default: success
+	 * options:
+	 *   - success
+	 *   - error
+	 * ---
 	 *
 	 * ## EXAMPLE
 	 * 		wp rokka create_noop_stack --name=full
@@ -60,7 +93,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 				$rokka_helper->create_noop_stack( $assoc_args['name'] );
 				WP_CLI::success( 'Stack successfully created or updated.' );
 			} catch ( Exception $e ) {
-				WP_CLI::error( 'rokka-API threw an exception: ' . $e );
+				WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
 			}
 		} else {
 			WP_CLI::error( 'Please provide all required parameters.' );
