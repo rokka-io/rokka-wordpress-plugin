@@ -386,7 +386,7 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Ceates noop stack (full size stack) on rokka.
+	 * Creates noop stack (full size stack) on rokka.
 	 *
 	 * @param string $name Stack name.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
