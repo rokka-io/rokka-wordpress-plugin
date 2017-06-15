@@ -31,7 +31,7 @@ require_once( dirname( __FILE__ ) . '/src/class-rokka-media-management.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-filter-url.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-filter-content.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( dirname( __FILE__ ) . '/src/RokkaCliCommand/class-rokka-wp-cli-command.php' );
+	require_once( dirname( __FILE__ ) . '/src/cli-command/class-rokka-wp-cli-command.php' );
 }
 
 //add vendor library
