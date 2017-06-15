@@ -361,8 +361,11 @@ class Rokka_Helper {
 	 * @param int    $width Width of resize operation.
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
+	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
+	 *
+	 * @throws Exception Throws exception if there was something wrong with the request.
 	 */
-	private function create_stack( $name, $width, $height, $crop = false ) {
+	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true ) {
 		$client = $this->rokka_get_client();
 		$operations = array();
 		$mode = $crop ? 'fill' : 'box';
@@ -379,7 +382,22 @@ class Rokka_Helper {
 			) );
 		}
 
-		$client->createStack( $name, $operations );
+		$client->createStack( $name, $operations, '', [], $overwrite );
+	}
+
+	/**
+	 * Creates noop stack (full size stack) on rokka.
+	 *
+	 * @param string $name Stack name.
+	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
+	 *
+	 * @throws Exception Throws exception if there was something wrong with the request.
+	 */
+	public function create_noop_stack( $name, $overwrite = true ) {
+		$client = $this->rokka_get_client();
+		$operations = array();
+		$operations[] = new \Rokka\Client\Core\StackOperation( 'noop' );
+		$client->createStack( $name, $operations, '', [], $overwrite );
 	}
 
 	/**
@@ -389,10 +407,11 @@ class Rokka_Helper {
 	 * @param int    $width Width of resize operation.
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
+	 *
+	 * @throws Exception Throws exception if there was something wrong with the request.
 	 */
-	private function update_stack( $name, $width, $height, $crop = false ) {
-		$this->delete_stack( $name );
-		$this->create_stack( $name, $width, $height, $crop );
+	public function update_stack( $name, $width, $height, $crop = false ) {
+		$this->create_stack( $name, $width, $height, $crop, true );
 	}
 
 	/**
@@ -400,7 +419,7 @@ class Rokka_Helper {
 	 *
 	 * @param string $name Stack name.
 	 */
-	private function delete_stack( $name ) {
+	public function delete_stack( $name ) {
 		$client = $this->rokka_get_client();
 		$client->deleteStack( $name );
 	}
@@ -419,9 +438,7 @@ class Rokka_Helper {
 			// handle full size stack specially
 			if ( $stack['name'] === $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() ) {
 				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
-					$client = $this->rokka_get_client();
-					$resize_noop = new \Rokka\Client\Core\StackOperation( 'noop' );
-					$client->createStack( $stack['name'], [ $resize_noop ] );
+					$this->create_noop_stack( $stack['name'] );
 				}
 				continue;
 			}
