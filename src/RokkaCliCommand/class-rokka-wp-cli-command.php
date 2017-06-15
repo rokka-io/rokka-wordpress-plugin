@@ -50,7 +50,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 			$crop = $assoc_args['crop'];
 
 			try {
-				WP_CLI::line( sprintf('Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s]...', $name, $width, $height, $crop ) );
+				WP_CLI::line( sprintf( 'Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s]...', $name, $width, $height, $crop ) );
 
 				$rokka_helper = new Rokka_Helper();
 				$rokka_helper->create_stack( $name, $width, $height, $crop );
@@ -83,7 +83,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	public function create_noop_stack( $args, $assoc_args ) {
 		if ( isset( $assoc_args['name'] ) && '' !== $assoc_args['name'] ) {
 			try {
-				WP_CLI::line( sprintf('Creating noop stack %1$s...', $assoc_args['name'] ) );
+				WP_CLI::line( sprintf( 'Creating noop stack %1$s...', $assoc_args['name'] ) );
 				$rokka_helper = new Rokka_Helper();
 				$rokka_helper->create_noop_stack( $assoc_args['name'] );
 				WP_CLI::success( 'Stack successfully created or updated.' );
