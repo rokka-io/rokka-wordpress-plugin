@@ -66,7 +66,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 == Changelog ==
 
-= 1.1.3 [WIP] =
+= 1.1.3 =
 
 * [FEATURE] Add Cli-Commands to create stacks and noop-stacks on rokka
 * [CHANGE] Use overwrite option to update existsing stack
