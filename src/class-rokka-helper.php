@@ -11,25 +11,25 @@
 class Rokka_Helper {
 
 	/**
-	 * Rokka baseurl.
-	 *
-	 * @var string
-	 */
-	const ROKKA_SCHEME = 'https';
-
-	/**
-	 * Rokka baseurl.
-	 *
-	 * @var string
-	 */
-	const ROKKA_DOMAIN = 'rokka.io';
-
-	/**
 	 * List of allowed mime types.
 	 *
 	 * @var array
 	 */
 	const ALLOWED_MIME_TYPES = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
+
+	/**
+	 * Constant name of rokka domain.
+	 *
+	 * @var string
+	 */
+	const ROKKA_DOMAIN_CONSTANT_NAME = 'ROKKA_DOMAIN';
+
+	/**
+	 * Constant name of rokka scheme.
+	 *
+	 * @var string
+	 */
+	const ROKKA_SCHEME_CONSTANT_NAME = 'ROKKA_SCHEME';
 
 	/**
 	 * Constant name of rokka company name option.
@@ -95,6 +95,20 @@ class Rokka_Helper {
 	const STACK_SYNC_OPERATION_DELETE = 'delete';
 
 	/**
+	 * Rokka domain
+	 *
+	 * @var string
+	 */
+	private $rokka_domain = 'rokka.io';
+
+	/**
+	 * Rokka scheme
+	 *
+	 * @var string
+	 */
+	private $rokka_scheme = 'https';
+
+	/**
 	 * Company name.
 	 *
 	 * @var string
@@ -154,6 +168,14 @@ class Rokka_Helper {
 	 * Rokka_Helper constructor.
 	 */
 	public function __construct() {
+		// load base settings from constants if defined
+		if ( defined( self::ROKKA_DOMAIN_CONSTANT_NAME ) ) {
+			$this->rokka_domain = constant( self::ROKKA_DOMAIN_CONSTANT_NAME );
+		}
+		if ( defined( self::ROKKA_SCHEME_CONSTANT_NAME ) ) {
+			$this->rokka_scheme = constant( self::ROKKA_SCHEME_CONSTANT_NAME );
+		}
+		
 		$this->load_options();
 	}
 
@@ -199,6 +221,8 @@ class Rokka_Helper {
 			$stack_prefix = get_option( 'rokka_stack_prefix' );
 		}
 		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
+
+		// check if settings are complete
 		if ( ! empty( $this->company_name ) && ! empty( $this->api_key ) ) {
 			$this->settings_complete = true;
 		}
@@ -787,7 +811,7 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_rokka_scheme() {
-		return self::ROKKA_SCHEME;
+		return $this->rokka_scheme;
 	}
 
 	/**
@@ -796,7 +820,7 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_rokka_domain() {
-		return self::ROKKA_DOMAIN;
+		return $this->rokka_domain;
 	}
 
 	/**
