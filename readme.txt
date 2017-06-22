@@ -20,6 +20,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 * WordPress Plugin: [https://wordpress.org/plugins/rokka-integration/](https://wordpress.org/plugins/rokka-integration/)
 * Website: [https://rokka.io](https://rokka.io)
 * GitHub Repository: [https://github.com/rokka-io/rokka-wordpress-plugin](https://github.com/rokka-io/rokka-wordpress-plugin)
+* Changelog: [https://github.com/rokka-io/rokka-wordpress-plugin/releases](https://github.com/rokka-io/rokka-wordpress-plugin/releases)
 * Issue tracker: [https://github.com/rokka-io/rokka-wordpress-plugin/issues](https://github.com/rokka-io/rokka-wordpress-plugin/issues)
 
 == Installation ==
