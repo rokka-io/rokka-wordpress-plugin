@@ -100,14 +100,14 @@ class Rokka_Integration_Settings {
 				'label'       => __( 'Company name', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'my-company' ),
-				'constant_name' => 'ROKKA_COMPANY_NAME',
+				'constant_name' => Rokka_Helper::OPTION_COMPANY_NAME_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'My API Key' ),
-				'constant_name' => 'ROKKA_API_KEY',
+				'constant_name' => Rokka_Helper::OPTION_API_KEY_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'stack_prefix',
@@ -117,7 +117,7 @@ class Rokka_Integration_Settings {
 				'type'        => 'text',
 				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
 				'sanitize_callback' => array( $this, 'sanitize_stack_prefix' ),
-				'constant_name' => 'ROKKA_STACK_PREFIX',
+				'constant_name' => Rokka_Helper::OPTION_STACK_PREFIX_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'rokka_enabled',

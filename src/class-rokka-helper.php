@@ -32,6 +32,27 @@ class Rokka_Helper {
 	const ALLOWED_MIME_TYPES = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
 
 	/**
+	 * Constant name of rokka company name option.
+	 *
+	 * @var string
+	 */
+	const OPTION_COMPANY_NAME_CONSTANT_NAME = 'ROKKA_COMPANY_NAME';
+
+	/**
+	 * Constant name of rokka api key option.
+	 *
+	 * @var string
+	 */
+	const OPTION_API_KEY_CONSTANT_NAME = 'ROKKA_API_KEY';
+
+	/**
+	 * Constant name of rokka stack prefix option.
+	 *
+	 * @var string
+	 */
+	const OPTION_STACK_PREFIX_CONSTANT_NAME = 'ROKKA_STACK_PREFIX';
+
+	/**
 	 * Stack name of original image.
 	 *
 	 * @var string
@@ -141,8 +162,16 @@ class Rokka_Helper {
 	 */
 	protected function load_options() {
 		// loading options is expensive so we just do it once
-		$this->company_name = get_option( 'rokka_company_name' );
-		$this->api_key = get_option( 'rokka_api_key' );
+		if ( defined( self::OPTION_COMPANY_NAME_CONSTANT_NAME ) ) {
+			$this->company_name = constant( self::OPTION_COMPANY_NAME_CONSTANT_NAME );
+		} else {
+			$this->company_name = get_option( 'rokka_company_name' );
+		}
+		if ( defined( self::OPTION_API_KEY_CONSTANT_NAME ) ) {
+			$this->api_key = constant( self::OPTION_API_KEY_CONSTANT_NAME );
+		} else {
+			$this->api_key = get_option( 'rokka_api_key' );
+		}
 		$this->delete_previous = get_option( 'rokka_delete_previous' );
 		// Backwards compatibility to plugin v1.1.0
 		if ( 'on' === $this->delete_previous ) {
@@ -164,11 +193,13 @@ class Rokka_Helper {
 			$this->rokka_enabled = true;
 		}
 		$this->rokka_enabled = (bool) $this->rokka_enabled;
-		$stack_prefix = get_option( 'rokka_stack_prefix' );
-		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
-		if ( ! $this->company_name || ! $this->api_key ) {
-			$this->rokka_enabled = false;
+		if ( defined( self::OPTION_STACK_PREFIX_CONSTANT_NAME ) ) {
+			$stack_prefix = constant( self::OPTION_STACK_PREFIX_CONSTANT_NAME );
 		} else {
+			$stack_prefix = get_option( 'rokka_stack_prefix' );
+		}
+		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
+		if ( ! empty( $this->company_name ) && ! empty( $this->api_key ) ) {
 			$this->settings_complete = true;
 		}
 	}
