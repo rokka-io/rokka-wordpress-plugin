@@ -100,12 +100,14 @@ class Rokka_Integration_Settings {
 				'label'       => __( 'Company name', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'my-company' ),
+				'constant_name' => 'ROKKA_COMPANY_NAME',
 			),
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'My API Key' ),
+				'constant_name' => 'ROKKA_API_KEY',
 			),
 			array(
 				'id'          => 'stack_prefix',
@@ -115,6 +117,7 @@ class Rokka_Integration_Settings {
 				'type'        => 'text',
 				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
 				'sanitize_callback' => array( $this, 'sanitize_stack_prefix' ),
+				'constant_name' => 'ROKKA_STACK_PREFIX',
 			),
 			array(
 				'id'          => 'rokka_enabled',
@@ -195,8 +198,18 @@ class Rokka_Integration_Settings {
 					'field' => $field,
 					'prefix' => $this->base,
 					'label_for' => $field['id'],
+					'constant_name' => array_key_exists( 'constant_name', $field ) ? $field['constant_name'] : '',
 				)
 			);
+
+			// disable saving of options which are stored in constants
+			if ( array_key_exists( 'constant_name', $field ) && ! empty( $field['constant_name'] ) && defined( $field['constant_name'] ) ) {
+				global $new_whitelist_options;
+				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ] );
+				if ( $option_key !== false ) {
+					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][$option_key] );
+				}
+			}
 		}
 	}
 
@@ -447,21 +460,25 @@ class Rokka_Integration_Settings {
 		}
 
 		// Get saved data
-		$data = '';
+		$option_value = '';
 
 		$option_name .= $field['id'];
-		$option = get_option( $option_name );
+		if ( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ) ) {
+			$option = constant( $data['constant_name'] );
+		} else {
+			$option = get_option( $option_name );
+		}
 
 		// Get data to display in field
 		if ( isset( $option ) ) {
-			$data = $option;
+			$option_value = $option;
 		}
 
 		// Show default data if no option saved and default is supplied
-		if ( false === $data && isset( $field['default'] ) ) {
-			$data = $field['default'];
-		} elseif ( false === $data ) {
-			$data = '';
+		if ( false === $option_value && isset( $field['default'] ) ) {
+			$option_value = $field['default'];
+		} elseif ( false === $option_value ) {
+			$option_value = '';
 		}
 
 		$html = '';
@@ -471,21 +488,21 @@ class Rokka_Integration_Settings {
 			case 'url':
 			case 'email':
 				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $option_value ) . '" ' . disabled( defined( $data['constant_name'] ), true, false ) . '/>' . "\n";
 				break;
 
 			case 'textarea':
 				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
-				$html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . $data . '</textarea><br/>' . "\n";
+				$html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . $option_value . '</textarea><br/>' . "\n";
 				break;
 
 			case 'checkbox':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $data, false ) . '/>' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $option_value, false ) . '/>' . "\n";
 				break;
 
 			case 'radio':
 				foreach ( $field['options'] as $k => $v ) {
-					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $k, $data, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
+					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $k, $option_value, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
 				}
 				break;
 
@@ -493,7 +510,7 @@ class Rokka_Integration_Settings {
 				$html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( $k === $data ) {
+					if ( $k === $option_value ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
