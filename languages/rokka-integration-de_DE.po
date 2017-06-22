@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rokka-integration 1.2.0\n"
 "Report-Msgid-Bugs-To: contact@liip.ch\n"
-"POT-Creation-Date: 2017-06-22 09:16+0200\n"
+"POT-Creation-Date: 2017-06-22 11:36+0200\n"
 "PO-Revision-Date: 2017-04-04 11:57+0200\n"
 "Last-Translator: Juerg Hunziker <juerg.hunziker@liip.ch>\n"
 "Language-Team: German\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/class-rokka-helper.php:314
+#: src/class-rokka-helper.php:345
 #, php-format
 msgctxt "%s contains file path"
 msgid "File %s does not exist"
@@ -31,19 +31,19 @@ msgstr ""
 msgid "my-company"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:106
+#: src/class-rokka-integration-settings.php:107
 msgid "API Key"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:108
+#: src/class-rokka-integration-settings.php:109
 msgid "My API Key"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:112
+#: src/class-rokka-integration-settings.php:114
 msgid "Stack Prefix"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:114
+#: src/class-rokka-integration-settings.php:116
 #, php-format
 msgctxt "%s contains default stack prefix"
 msgid ""
@@ -53,132 +53,132 @@ msgid ""
 "are allowed. Default %s"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:121
+#: src/class-rokka-integration-settings.php:124
 msgid "Enable rokka integration"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:122
+#: src/class-rokka-integration-settings.php:125
 msgid ""
 "This will enable the rokka integration. Please make sure that you already "
 "have synced the stacks to rokka before enabling this."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:127
+#: src/class-rokka-integration-settings.php:130
 msgid "Delete previous images if metadata changes"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:128
+#: src/class-rokka-integration-settings.php:131
 msgid ""
 "Enable this if you don't need to keep the previous image on rokka if you "
 "change something on the metadata of an image (eg. subject area)."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:133
+#: src/class-rokka-integration-settings.php:136
 msgid "Enable output parsing"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:134
+#: src/class-rokka-integration-settings.php:137
 msgid ""
 "This feature will parse the output and replaces urls to local images with "
 "rokka image urls. Relative links will not be replaced."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:145
-#: src/class-rokka-integration-settings.php:260
+#: src/class-rokka-integration-settings.php:148
+#: src/class-rokka-integration-settings.php:273
 msgid "Rokka Settings"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:156
-#: src/class-rokka-integration-settings.php:264
+#: src/class-rokka-integration-settings.php:159
+#: src/class-rokka-integration-settings.php:277
 msgid "Settings"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:170
+#: src/class-rokka-integration-settings.php:173
 msgid "Main settings"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:216
+#: src/class-rokka-integration-settings.php:229
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:221
+#: src/class-rokka-integration-settings.php:234
 msgid ""
 "Settings need to be filled out completely before rokka support can be "
 "enabled."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:223
+#: src/class-rokka-integration-settings.php:236
 msgid ""
 "Rokka integration is not enabled yet. Please select the 'Enable rokka' "
 "checkbox in the settings."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:241
+#: src/class-rokka-integration-settings.php:254
 msgid "Creating stacks..."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:242
+#: src/class-rokka-integration-settings.php:255
 msgid "Stack sync successful! Please reload this page to update status."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:243
+#: src/class-rokka-integration-settings.php:256
 msgid "Stack sync failed! Error:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:244
+#: src/class-rokka-integration-settings.php:257
 msgid "Upload of image successful. Image ID:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:245
+#: src/class-rokka-integration-settings.php:258
 msgid "Upload of image failed! Image ID:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:246
+#: src/class-rokka-integration-settings.php:259
 msgid "Image upload finished!"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:247
+#: src/class-rokka-integration-settings.php:260
 msgid "There was an error during the upload of the images!"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:248
+#: src/class-rokka-integration-settings.php:261
 msgid "Nothing to process here, all images are already uploaded to rokka."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:249
+#: src/class-rokka-integration-settings.php:262
 msgid "Image successfully removed. Image ID:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:250
+#: src/class-rokka-integration-settings.php:263
 msgid "Removing of image failed! Image ID:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:251
+#: src/class-rokka-integration-settings.php:264
 msgid "Do you really want to delete all images from rokka?"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:252
+#: src/class-rokka-integration-settings.php:265
 msgid "All images have been removed!"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:253
+#: src/class-rokka-integration-settings.php:266
 msgid "There was an error during the removal of the images!"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:254
+#: src/class-rokka-integration-settings.php:267
 msgid "Nothing to process here, there are no images on rokka yet."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:265
-#: src/class-rokka-integration-settings.php:271
+#: src/class-rokka-integration-settings.php:278
+#: src/class-rokka-integration-settings.php:284
 msgid "Sync stacks"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:266
+#: src/class-rokka-integration-settings.php:279
 msgid "Mass upload/delete"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:273
+#: src/class-rokka-integration-settings.php:286
 msgid ""
 "Stacks are a set of operations on rokka which represent the image sizes as "
 "they are defined in Wordpress. If you change the image sizes in Wordpress, "
@@ -186,154 +186,160 @@ msgid ""
 "stacks on rokka."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:280
+#: src/class-rokka-integration-settings.php:297
 msgid "Stack name"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:281
+#: src/class-rokka-integration-settings.php:298
 #: src/class-rokka-media-management.php:235
 msgid "Width"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:282
+#: src/class-rokka-integration-settings.php:299
 #: src/class-rokka-media-management.php:238
 msgid "Height"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:283
+#: src/class-rokka-integration-settings.php:300
 msgid "Crop"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:284
+#: src/class-rokka-integration-settings.php:301
 msgid "Sync status"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:290
+#: src/class-rokka-integration-settings.php:307
 msgid "All good!"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:293
+#: src/class-rokka-integration-settings.php:310
 msgid "Stack will be created"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:296
+#: src/class-rokka-integration-settings.php:313
 msgid "Stack will be updated"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:299
+#: src/class-rokka-integration-settings.php:316
 msgid "Stack will be deleted"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:317
+#: src/class-rokka-integration-settings.php:334
 msgid "Yes"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:317
+#: src/class-rokka-integration-settings.php:334
 msgid "No"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:324
+#: src/class-rokka-integration-settings.php:341
 msgid "Sync stacks with rokka"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:327
+#: src/class-rokka-integration-settings.php:344
 msgid "There are no image sizes defined in WordPress."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:330
+#: src/class-rokka-integration-settings.php:351
+#, php-format
+msgctxt "%s contains the error from rokka"
+msgid "There was an error listing the stacks from rokka. %s"
+msgstr ""
+
+#: src/class-rokka-integration-settings.php:362
 msgid "Please enable rokka first (in main settings)."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:336
+#: src/class-rokka-integration-settings.php:368
 msgid "Mass upload images to rokka"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:339
+#: src/class-rokka-integration-settings.php:371
 msgid "The following images will be uploaded to rokka:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:344
-#: src/class-rokka-integration-settings.php:369
+#: src/class-rokka-integration-settings.php:376
+#: src/class-rokka-integration-settings.php:401
 #, php-format
 msgctxt "%1$s contains image id. %2$s contains image path."
 msgid "ID: %1$s / Path: %2$s"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:348
+#: src/class-rokka-integration-settings.php:380
 msgid "Upload all images to rokka"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:352
-#: src/class-rokka-integration-settings.php:377
+#: src/class-rokka-integration-settings.php:384
+#: src/class-rokka-integration-settings.php:409
 msgid "Log:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:357
+#: src/class-rokka-integration-settings.php:389
 msgid "All images are already uploaded to rokka. Nothing to do here."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:361
+#: src/class-rokka-integration-settings.php:393
 msgid "Danger zone - Mass delete images"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:364
+#: src/class-rokka-integration-settings.php:396
 msgid "The following images will be deleted from rokka:"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:373
+#: src/class-rokka-integration-settings.php:405
 msgid "Remove all images from rokka"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:382
+#: src/class-rokka-integration-settings.php:414
 msgid "There are no images on rokka yet. Please upload them first."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:386
+#: src/class-rokka-integration-settings.php:418
 msgid "Please enable rokka first (in main settings)"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:399
+#: src/class-rokka-integration-settings.php:431
 msgid "Check rokka crendentials"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:416
+#: src/class-rokka-integration-settings.php:448
 msgid "Liip Logo"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:604
 #: src/class-rokka-integration-settings.php:640
 #: src/class-rokka-integration-settings.php:676
-#: src/class-rokka-integration-settings.php:703
+#: src/class-rokka-integration-settings.php:712
+#: src/class-rokka-integration-settings.php:739
 msgid "Permission denied! There was something wrong with the nonce."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:621
+#: src/class-rokka-integration-settings.php:657
 msgid "This image is already on rokka. No need to upload it another time."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:624
 #: src/class-rokka-integration-settings.php:660
+#: src/class-rokka-integration-settings.php:696
 msgid "image_id parameter missing."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:657
+#: src/class-rokka-integration-settings.php:693
 msgid "This image is not yet on rokka. No need to delete it."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:688
+#: src/class-rokka-integration-settings.php:724
 msgid "Could not process stacks."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:708
+#: src/class-rokka-integration-settings.php:744
 msgid "Yay! Your rokka credentials are valid."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:711
+#: src/class-rokka-integration-settings.php:747
 msgid "Whops! Something is wrong with your rokka credentials."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:741
-#: src/class-rokka-integration-settings.php:750
+#: src/class-rokka-integration-settings.php:777
+#: src/class-rokka-integration-settings.php:786
 #: src/class-rokka-integration.php:161 src/class-rokka-integration.php:168
 msgid "Cheatin&#8217; huh?"
 msgstr ""
