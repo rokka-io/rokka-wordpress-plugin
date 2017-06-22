@@ -108,12 +108,6 @@ class Rokka_Integration_Settings {
 				'placeholder' => __( 'My API Key' ),
 			),
 			array(
-				'id'          => 'api_secret',
-				'label'       => __( 'API Secret', 'rokka-integration' ),
-				'type'        => 'text',
-				'placeholder' => __( 'My API Secret' ),
-			),
-			array(
 				'id'          => 'stack_prefix',
 				'label'       => __( 'Stack Prefix', 'rokka-integration' ),
 				/* translators: %s contains default stack prefix */

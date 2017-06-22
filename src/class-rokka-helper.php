@@ -88,13 +88,6 @@ class Rokka_Helper {
 	private $api_key = '';
 
 	/**
-	 * Rokka API Secret.
-	 *
-	 * @var string
-	 */
-	private $api_secret = '';
-
-	/**
 	 * Delete previous image enabled.
 	 *
 	 * @var bool
@@ -150,7 +143,6 @@ class Rokka_Helper {
 		// loading options is expensive so we just do it once
 		$this->company_name = get_option( 'rokka_company_name' );
 		$this->api_key = get_option( 'rokka_api_key' );
-		$this->api_secret = get_option( 'rokka_api_secret' );
 		$this->delete_previous = get_option( 'rokka_delete_previous' );
 		// Backwards compatibility to plugin v1.1.0
 		if ( 'on' === $this->delete_previous ) {
@@ -174,7 +166,7 @@ class Rokka_Helper {
 		$this->rokka_enabled = (bool) $this->rokka_enabled;
 		$stack_prefix = get_option( 'rokka_stack_prefix' );
 		$this->stack_prefix = ( ! empty( $stack_prefix ) ? $stack_prefix : self::STACK_PREFIX_DEFAULT );
-		if ( ! $this->company_name || ! $this->api_key || ! $this->api_secret ) {
+		if ( ! $this->company_name || ! $this->api_key ) {
 			$this->rokka_enabled = false;
 		} else {
 			$this->settings_complete = true;
@@ -188,7 +180,7 @@ class Rokka_Helper {
 	 */
 	public function rokka_get_client() {
 		if ( is_null( $this->rokka_client ) ) {
-			$this->rokka_client = \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), $this->get_rokka_api_secret() );
+			$this->rokka_client = \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), '' );
 		}
 
 		return $this->rokka_client;
@@ -792,15 +784,6 @@ class Rokka_Helper {
 	 */
 	public function get_rokka_api_key() {
 		return $this->api_key;
-	}
-
-	/**
-	 * Returns Rokka api secret from options.
-	 *
-	 * @return string
-	 */
-	public function get_rokka_api_secret() {
-		return $this->api_secret;
 	}
 
 	/**
