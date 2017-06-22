@@ -66,6 +66,12 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 == Changelog ==
 
+= 1.2.0 =
+
+* [FEATURE] Add possibility to define options with constants. Available constants are: `ROKKA_COMPANY_NAME`, `ROKKA_API_KEY` and `ROKKA_STACK_PREFIX`
+* [FEATURE] Add possibility to overwrite base settings with constants. Available constants are: `ROKKA_DOMAIN` (default: `rokka.io`) and `ROKKA_SCHEME` (default: `https`)
+* [REMOVE] Removed rokka api secret option since it's not used anymore
+
 = 1.1.3 =
 
 * [FEATURE] Add Cli-Commands to create stacks and noop-stacks on rokka

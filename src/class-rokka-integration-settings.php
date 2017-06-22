@@ -100,12 +100,14 @@ class Rokka_Integration_Settings {
 				'label'       => __( 'Company name', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'my-company' ),
+				'constant_name' => Rokka_Helper::OPTION_COMPANY_NAME_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-integration' ),
 				'type'        => 'text',
 				'placeholder' => __( 'My API Key' ),
+				'constant_name' => Rokka_Helper::OPTION_API_KEY_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'stack_prefix',
@@ -115,6 +117,7 @@ class Rokka_Integration_Settings {
 				'type'        => 'text',
 				'placeholder' => Rokka_Helper::STACK_PREFIX_DEFAULT,
 				'sanitize_callback' => array( $this, 'sanitize_stack_prefix' ),
+				'constant_name' => Rokka_Helper::OPTION_STACK_PREFIX_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'rokka_enabled',
@@ -195,8 +198,18 @@ class Rokka_Integration_Settings {
 					'field' => $field,
 					'prefix' => $this->base,
 					'label_for' => $field['id'],
+					'constant_name' => array_key_exists( 'constant_name', $field ) ? $field['constant_name'] : '',
 				)
 			);
+
+			// disable saving of options which are stored in constants
+			if ( array_key_exists( 'constant_name', $field ) && ! empty( $field['constant_name'] ) && defined( $field['constant_name'] ) ) {
+				global $new_whitelist_options;
+				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ], true );
+				if ( false !== $option_key ) {
+					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][ $option_key ] );
+				}
+			}
 		}
 	}
 
@@ -272,60 +285,80 @@ class Rokka_Integration_Settings {
 							<p>
 								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
 							</p>
-							<?php $stacks_to_sync = $this->rokka_helper->get_stacks_to_sync(); ?>
-							<?php if ( ! empty( $stacks_to_sync ) ) : ?>
-								<table class="stack-sync">
-									<thead>
-									<tr>
-										<th class="name"><?php esc_html_e( 'Stack name', 'rokka-integration' ); ?></th>
-										<th class="width"><?php esc_html_e( 'Width', 'rokka-integration' ); ?></th>
-										<th class="height"><?php esc_html_e( 'Height', 'rokka-integration' ); ?></th>
-										<th class="crop"><?php esc_html_e( 'Crop', 'rokka-integration' ); ?></th>
-										<th class="status"><?php esc_html_e( 'Sync status', 'rokka-integration' ); ?></th>
-									</tr>
-									</thead>
-									<tbody>
-									<?php foreach ( $stacks_to_sync as $stack ) : ?>
-										<?php
-										$stack_operation_name = __( 'All good!', 'rokka-integration' );
-										switch ( $stack['operation'] ) {
-											case Rokka_Helper::STACK_SYNC_OPERATION_CREATE:
-												$stack_operation_name = __( 'Stack will be created', 'rokka-integration' );
-												break;
-											case Rokka_Helper::STACK_SYNC_OPERATION_UPDATE:
-												$stack_operation_name = __( 'Stack will be updated', 'rokka-integration' );
-												break;
-											case Rokka_Helper::STACK_SYNC_OPERATION_DELETE:
-												$stack_operation_name = __( 'Stack will be deleted', 'rokka-integration' );
-												break;
-										}
-										?>
-										<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
-											<?php if (
-												$this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] ||
-												Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation']
-											) : ?>
-												<td><?php echo esc_html( $stack['name'] ); ?></td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td><?php echo esc_html( $stack_operation_name ); ?></td>
-											<?php else : ?>
-												<td><?php echo esc_html( $stack['name'] ); ?></td>
-												<td><?php echo esc_html( $stack['width'] ); ?></td>
-												<td><?php echo esc_html( $stack['height'] ); ?></td>
-												<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-integration' ) : esc_html_e( 'No', 'rokka-integration' ); ?></td>
-												<td><?php echo esc_html( $stack_operation_name ); ?></td>
-											<?php endif ; ?>
+							<?php
+							try {
+								$stacks_to_sync = $this->rokka_helper->get_stacks_to_sync();
+								?>
+
+								<?php if ( ! empty( $stacks_to_sync ) ) : ?>
+									<table class="stack-sync">
+										<thead>
+										<tr>
+											<th class="name"><?php esc_html_e( 'Stack name', 'rokka-integration' ); ?></th>
+											<th class="width"><?php esc_html_e( 'Width', 'rokka-integration' ); ?></th>
+											<th class="height"><?php esc_html_e( 'Height', 'rokka-integration' ); ?></th>
+											<th class="crop"><?php esc_html_e( 'Crop', 'rokka-integration' ); ?></th>
+											<th class="status"><?php esc_html_e( 'Sync status', 'rokka-integration' ); ?></th>
 										</tr>
-									<?php endforeach ; ?>
-									</tbody>
-								</table>
-								<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-integration' ); ?></button>
-								<div id="progress-info-stacks"></div>
-							<?php else : ?>
-								<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
-							<?php endif ; ?>
+										</thead>
+										<tbody>
+										<?php foreach ( $stacks_to_sync as $stack ) : ?>
+											<?php
+											$stack_operation_name = __( 'All good!', 'rokka-integration' );
+											switch ( $stack['operation'] ) {
+												case Rokka_Helper::STACK_SYNC_OPERATION_CREATE:
+													$stack_operation_name = __( 'Stack will be created', 'rokka-integration' );
+													break;
+												case Rokka_Helper::STACK_SYNC_OPERATION_UPDATE:
+													$stack_operation_name = __( 'Stack will be updated', 'rokka-integration' );
+													break;
+												case Rokka_Helper::STACK_SYNC_OPERATION_DELETE:
+													$stack_operation_name = __( 'Stack will be deleted', 'rokka-integration' );
+													break;
+											}
+											?>
+											<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
+												<?php if (
+													$this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] ||
+													Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation']
+												) : ?>
+													<td><?php echo esc_html( $stack['name'] ); ?></td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td><?php echo esc_html( $stack_operation_name ); ?></td>
+												<?php else : ?>
+													<td><?php echo esc_html( $stack['name'] ); ?></td>
+													<td><?php echo esc_html( $stack['width'] ); ?></td>
+													<td><?php echo esc_html( $stack['height'] ); ?></td>
+													<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-integration' ) : esc_html_e( 'No', 'rokka-integration' ); ?></td>
+													<td><?php echo esc_html( $stack_operation_name ); ?></td>
+												<?php endif ; ?>
+											</tr>
+										<?php endforeach ; ?>
+										</tbody>
+									</table>
+									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-integration' ); ?></button>
+									<div id="progress-info-stacks"></div>
+								<?php else : ?>
+									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
+								<?php endif ; ?>
+							<?php } catch ( Exception $e ) { ?>
+								<p>
+									<?php
+									printf(
+										// translators: %s contains the error from rokka
+										esc_html_x(
+											'There was an error listing the stacks from rokka. %s',
+											'%s contains the error from rokka',
+											'rokka-integration'
+										),
+										esc_html( $e->getMessage() )
+									);
+									?>
+								</p>
+							<?php } ?>
+
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
 						<?php endif ; ?>
@@ -447,21 +480,25 @@ class Rokka_Integration_Settings {
 		}
 
 		// Get saved data
-		$data = '';
+		$option_value = '';
 
 		$option_name .= $field['id'];
-		$option = get_option( $option_name );
+		if ( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ) ) {
+			$option = constant( $data['constant_name'] );
+		} else {
+			$option = get_option( $option_name );
+		}
 
 		// Get data to display in field
 		if ( isset( $option ) ) {
-			$data = $option;
+			$option_value = $option;
 		}
 
 		// Show default data if no option saved and default is supplied
-		if ( false === $data && isset( $field['default'] ) ) {
-			$data = $field['default'];
-		} elseif ( false === $data ) {
-			$data = '';
+		if ( false === $option_value && isset( $field['default'] ) ) {
+			$option_value = $field['default'];
+		} elseif ( false === $option_value ) {
+			$option_value = '';
 		}
 
 		$html = '';
@@ -471,21 +508,21 @@ class Rokka_Integration_Settings {
 			case 'url':
 			case 'email':
 				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" class="' . ( ! empty( $data['constant_name'] ) &&  defined( $data['constant_name'] ) ? 'disabled' : '' ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $option_value ) . '" ' . disabled( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ), true, false ) . '/>' . "\n";
 				break;
 
 			case 'textarea':
 				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
-				$html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . $data . '</textarea><br/>' . "\n";
+				$html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . $option_value . '</textarea><br/>' . "\n";
 				break;
 
 			case 'checkbox':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $data, false ) . '/>' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $option_value, false ) . '/>' . "\n";
 				break;
 
 			case 'radio':
 				foreach ( $field['options'] as $k => $v ) {
-					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $k, $data, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
+					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $k, $option_value, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
 				}
 				break;
 
@@ -493,7 +530,7 @@ class Rokka_Integration_Settings {
 				$html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( $k === $data ) {
+					if ( $k === $option_value ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
