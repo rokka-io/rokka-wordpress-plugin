@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: rokka-integration 1.1.3\n"
+"Project-Id-Version: rokka-integration 1.2.0\n"
 "Report-Msgid-Bugs-To: contact@liip.ch\n"
-"POT-Creation-Date: 2017-04-24 14:50+0200\n"
+"POT-Creation-Date: 2017-06-22 09:16+0200\n"
 "PO-Revision-Date: 2017-04-04 11:57+0200\n"
 "Last-Translator: Juerg Hunziker <juerg.hunziker@liip.ch>\n"
 "Language-Team: German\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/class-rokka-helper.php:262
+#: src/class-rokka-helper.php:314
 #, php-format
 msgctxt "%s contains file path"
 msgid "File %s does not exist"
@@ -40,18 +40,10 @@ msgid "My API Key"
 msgstr ""
 
 #: src/class-rokka-integration-settings.php:112
-msgid "API Secret"
-msgstr ""
-
-#: src/class-rokka-integration-settings.php:114
-msgid "My API Secret"
-msgstr ""
-
-#: src/class-rokka-integration-settings.php:118
 msgid "Stack Prefix"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:120
+#: src/class-rokka-integration-settings.php:114
 #, php-format
 msgctxt "%s contains default stack prefix"
 msgid ""
@@ -61,14 +53,24 @@ msgid ""
 "are allowed. Default %s"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:127
+#: src/class-rokka-integration-settings.php:121
 msgid "Enable rokka integration"
+msgstr ""
+
+#: src/class-rokka-integration-settings.php:122
+msgid ""
+"This will enable the rokka integration. Please make sure that you already "
+"have synced the stacks to rokka before enabling this."
+msgstr ""
+
+#: src/class-rokka-integration-settings.php:127
+msgid "Delete previous images if metadata changes"
 msgstr ""
 
 #: src/class-rokka-integration-settings.php:128
 msgid ""
-"This will enable the rokka integration. Please make sure that you already "
-"have synced the stacks to rokka before enabling this."
+"Enable this if you don't need to keep the previous image on rokka if you "
+"change something on the metadata of an image (eg. subject area)."
 msgstr ""
 
 #: src/class-rokka-integration-settings.php:133
@@ -298,40 +300,40 @@ msgstr ""
 msgid "Liip Logo"
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:612
-#: src/class-rokka-integration-settings.php:648
-#: src/class-rokka-integration-settings.php:684
-#: src/class-rokka-integration-settings.php:711
+#: src/class-rokka-integration-settings.php:604
+#: src/class-rokka-integration-settings.php:640
+#: src/class-rokka-integration-settings.php:676
+#: src/class-rokka-integration-settings.php:703
 msgid "Permission denied! There was something wrong with the nonce."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:629
+#: src/class-rokka-integration-settings.php:621
 msgid "This image is already on rokka. No need to upload it another time."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:632
-#: src/class-rokka-integration-settings.php:668
+#: src/class-rokka-integration-settings.php:624
+#: src/class-rokka-integration-settings.php:660
 msgid "image_id parameter missing."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:665
+#: src/class-rokka-integration-settings.php:657
 msgid "This image is not yet on rokka. No need to delete it."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:696
+#: src/class-rokka-integration-settings.php:688
 msgid "Could not process stacks."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:716
+#: src/class-rokka-integration-settings.php:708
 msgid "Yay! Your rokka credentials are valid."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:719
+#: src/class-rokka-integration-settings.php:711
 msgid "Whops! Something is wrong with your rokka credentials."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:749
-#: src/class-rokka-integration-settings.php:758
+#: src/class-rokka-integration-settings.php:741
+#: src/class-rokka-integration-settings.php:750
 #: src/class-rokka-integration.php:161 src/class-rokka-integration.php:168
 msgid "Cheatin&#8217; huh?"
 msgstr ""
