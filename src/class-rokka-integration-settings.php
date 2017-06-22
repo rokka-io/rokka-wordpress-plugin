@@ -205,9 +205,9 @@ class Rokka_Integration_Settings {
 			// disable saving of options which are stored in constants
 			if ( array_key_exists( 'constant_name', $field ) && ! empty( $field['constant_name'] ) && defined( $field['constant_name'] ) ) {
 				global $new_whitelist_options;
-				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ] );
-				if ( $option_key !== false ) {
-					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][$option_key] );
+				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ], true );
+				if ( false !== $option_key ) {
+					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][ $option_key ] );
 				}
 			}
 		}
