@@ -347,12 +347,13 @@ class Rokka_Integration_Settings {
 								<p>
 									<?php
 									printf(
+										// translators: %s contains the error from rokka
 										esc_html_x(
 											'There was an error listing the stacks from rokka. %s',
 											'%s contains the error from rokka',
 											'rokka-integration'
 										),
-										$e->getMessage()
+										esc_html( $e->getMessage() )
 									);
 									?>
 								</p>

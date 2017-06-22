@@ -175,7 +175,7 @@ class Rokka_Helper {
 		if ( defined( self::ROKKA_SCHEME_CONSTANT_NAME ) ) {
 			$this->rokka_scheme = constant( self::ROKKA_SCHEME_CONSTANT_NAME );
 		}
-		
+
 		$this->load_options();
 	}
 
