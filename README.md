@@ -9,8 +9,10 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ## Further Information
 
+* Documentation: https://github.com/rokka-io/rokka-wordpress-plugin/wiki
 * WordPress Plugin: https://wordpress.org/plugins/rokka-integration/
 * Website: https://rokka.io
+* Changelog: https://github.com/rokka-io/rokka-wordpress-plugin/releases
 * GitHub Repository: https://github.com/rokka-io/rokka-wordpress-plugin
 * Issue tracker: https://github.com/rokka-io/rokka-wordpress-plugin/issues
 
@@ -19,10 +21,6 @@ This WordPress plugin integrates the rokka image service. All images from your i
 ### Requirements
 
 * Node.js >=7.10.0 (https://nodejs.org/)
-
-    ```
-    $ npm install -g gulp
-    ```
 
 ### Installation
 
