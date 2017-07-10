@@ -95,11 +95,18 @@ class Rokka_Helper {
 	const STACK_SYNC_OPERATION_DELETE = 'delete';
 
 	/**
+	 * Rokka base domain
+	 *
+	 * @var string
+	 */
+	private $rokka_base_domain = 'rokka.io';
+
+	/**
 	 * Rokka domain
 	 *
 	 * @var string
 	 */
-	private $rokka_domain = 'rokka.io';
+	private $rokka_domain = '';
 
 	/**
 	 * Rokka scheme
@@ -189,6 +196,12 @@ class Rokka_Helper {
 		} else {
 			$this->company_name = get_option( 'rokka_company_name' );
 		}
+
+		// if rokka domain is not configured in constants create default rokka domain (<company_name>.rokka.io)
+		if ( empty( $this->get_rokka_domain() ) ) {
+			$this->rokka_domain = $this->get_rokka_company_name() . '.' . $this->get_rokka_base_domain();
+		}
+
 		if ( defined( self::OPTION_API_KEY_CONSTANT_NAME ) ) {
 			$this->api_key = constant( self::OPTION_API_KEY_CONSTANT_NAME );
 		} else {
@@ -717,7 +730,7 @@ class Rokka_Helper {
 			// use fallback image name if empty
 			$filename = 'image.jpg';
 		}
-		return $this->get_rokka_scheme() . '://' . $this->get_rokka_company_name() . '.' . $this->get_rokka_domain() . '/' . $this->get_stack_prefix() . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
+		return $this->get_rokka_scheme() . '://' . $this->get_rokka_domain() . '/' . $this->get_stack_prefix() . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
 	}
 
 	/**
@@ -815,7 +828,16 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Returns Rokka domain from options.
+	 * Returns Rokka base domain.
+	 *
+	 * @return string
+	 */
+	public function get_rokka_base_domain() {
+		return $this->rokka_base_domain;
+	}
+
+	/**
+	 * Returns Rokka domain.
 	 *
 	 * @return string
 	 */
