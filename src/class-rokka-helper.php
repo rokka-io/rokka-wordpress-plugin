@@ -842,7 +842,8 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_rokka_domain() {
-		return $this->rokka_domain;
+		// remove all trailing slashes from domain
+		return rtrim( $this->rokka_domain, '/' );
 	}
 
 	/**
