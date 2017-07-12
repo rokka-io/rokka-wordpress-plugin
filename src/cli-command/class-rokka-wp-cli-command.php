@@ -34,8 +34,14 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	 * default: false
 	 * ---
 	 *
+	 * [--autoformat]
+	 * : Whether or not autoformat should be enabled on the stack.
+	 * ---
+	 * default: false
+	 * ---
+	 *
 	 * ## EXAMPLE
-	 * 		wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop
+	 * 		wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop --autoformat
 	 *
 	 * @param array $args Arguments from cli-command.
 	 * @param array $assoc_args Associative arguments from cli-command.
@@ -47,13 +53,14 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 			$name = $assoc_args['name'];
 			$width = $assoc_args['width'];
 			$height = $assoc_args['height'];
-			$crop = $assoc_args['crop'];
+			$crop = (bool) $assoc_args['crop'];
+			$autoformat = (bool) $assoc_args['autoformat'];
 
 			try {
-				WP_CLI::line( sprintf( 'Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s]...', $name, $width, $height, $crop ) );
+				WP_CLI::line( sprintf( 'Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s, autoformat: %5$s]...', $name, $width, $height, $crop, $autoformat ) );
 
 				$rokka_helper = new Rokka_Helper();
-				$rokka_helper->create_stack( $name, $width, $height, $crop );
+				$rokka_helper->create_stack( $name, $width, $height, $crop, true, $autoformat );
 				WP_CLI::success( 'Stack successfully created or updated.' );
 			} catch ( Exception $e ) {
 				WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );

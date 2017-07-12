@@ -430,10 +430,11 @@ class Rokka_Helper {
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
+	 * @param bool   $autoformat Enable autoformat on stack. Default false.
 	 *
 	 * @throws Exception Throws exception if there was something wrong with the request.
 	 */
-	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true ) {
+	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true, $autoformat = false ) {
 		$client = $this->rokka_get_client();
 		$operations = array();
 		$mode = $crop ? 'fill' : 'box';
@@ -450,7 +451,7 @@ class Rokka_Helper {
 			) );
 		}
 		$options = array(
-			'autoformat' => $this->get_autoformat(),
+			'autoformat' => $autoformat,
 		);
 
 		$client->createStack( $name, $operations, '', $options, $overwrite );
@@ -482,7 +483,7 @@ class Rokka_Helper {
 	 * @throws Exception Throws exception if there was something wrong with the request.
 	 */
 	public function update_stack( $name, $width, $height, $crop = false ) {
-		$this->create_stack( $name, $width, $height, $crop, true );
+		$this->create_stack( $name, $width, $height, $crop, true, $this->get_autoformat() );
 	}
 
 	/**
@@ -515,7 +516,7 @@ class Rokka_Helper {
 			}
 
 			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
-				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
+				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], $this->get_autoformat() );
 			} elseif ( self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
 				$this->update_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
 			} elseif ( self::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) {
