@@ -130,6 +130,13 @@ class Rokka_Helper {
 	private $api_key = '';
 
 	/**
+	 * Autoformat option.
+	 *
+	 * @var bool
+	 */
+	private $autoformat = false;
+
+	/**
 	 * Delete previous image enabled.
 	 *
 	 * @var bool
@@ -207,6 +214,7 @@ class Rokka_Helper {
 		} else {
 			$this->api_key = get_option( 'rokka_api_key' );
 		}
+		$this->autoformat = (bool) get_option( 'rokka_autoformat' );
 		$this->delete_previous = get_option( 'rokka_delete_previous' );
 		// Backwards compatibility to plugin v1.1.0
 		if ( 'on' === $this->delete_previous ) {
@@ -441,8 +449,11 @@ class Rokka_Helper {
 				'height' => $height,
 			) );
 		}
+		$options = array(
+			'autoformat' => $this->get_autoformat(),
+		);
 
-		$client->createStack( $name, $operations, '', [], $overwrite );
+		$client->createStack( $name, $operations, '', $options, $overwrite );
 	}
 
 	/**
@@ -549,18 +560,19 @@ class Rokka_Helper {
 		$stacks_to_sync = array();
 
 		// Create a noop stack (full size stack) if it not exists already
+		$noop_stackname = $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name();
 		try {
-			$client->getStack( $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() );
-			$stacks_to_sync[] = array(
-				'name' => $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(),
+			$client->getStack( $noop_stackname );
+			$stacks_to_sync[ $noop_stackname ] = array(
+				'name' => $noop_stackname,
 				'width' => '0',
 				'height' => '0',
 				'crop' => false,
 				'operation' => self::STACK_SYNC_OPERATION_KEEP,
 			);
 		} catch ( Exception $e ) {
-			$stacks_to_sync[] = array(
-				'name' => $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name(),
+			$stacks_to_sync[ $noop_stackname ] = array(
+				'name' => $noop_stackname,
 				'width' => '0',
 				'height' => '0',
 				'crop' => false,
@@ -592,7 +604,7 @@ class Rokka_Helper {
 								$stack_crop = ( 'fill' === $operation['options']['mode'] ) ? true : false;
 								// if stack has changed
 								if ( $stack_width !== $width || $stack_height !== $height || $stack_crop !== $crop ) {
-									$stacks_to_sync[] = array(
+									$stacks_to_sync[ $prefixed_name ] = array(
 										'name' => $prefixed_name,
 										'width' => $width,
 										'height' => $height,
@@ -600,7 +612,7 @@ class Rokka_Helper {
 										'operation' => self::STACK_SYNC_OPERATION_UPDATE,
 									);
 								} else {
-									$stacks_to_sync[] = array(
+									$stacks_to_sync[ $prefixed_name ] = array(
 										'name' => $prefixed_name,
 										'width' => $width,
 										'height' => $height,
@@ -610,12 +622,16 @@ class Rokka_Helper {
 								}
 							}
 						}
+						// set sync operation to update if autoformat option changed
+						if ( $this->autoformat_changed( $stack ) ) {
+							$stacks_to_sync[ $prefixed_name ]['operation'] = self::STACK_SYNC_OPERATION_UPDATE;
+						}
 						break;
 					}
 				}
 
 				if ( ! $stack_already_on_rokka ) {
-					$stacks_to_sync[] = array(
+					$stacks_to_sync[ $prefixed_name ] = array(
 						'name' => $prefixed_name,
 						'width' => $width,
 						'height' => $height,
@@ -642,7 +658,7 @@ class Rokka_Helper {
 					}
 				}
 				if ( ! $stack_still_exists_in_wp ) {
-					$stacks_to_sync[] = array(
+					$stacks_to_sync[ $stack->name ] = array(
 						'name' => $stack->name,
 						'width' => 0,
 						'height' => 0,
@@ -654,6 +670,24 @@ class Rokka_Helper {
 		}
 
 		return $stacks_to_sync;
+	}
+
+	/**
+	 * Checks if the autoformat option has changed since the last stack synchronization.
+	 *
+	 * @param \Rokka\Client\Core\Stack $stack Stack to check option.
+	 *
+	 * @return bool
+	 */
+	protected function autoformat_changed( $stack ) {
+		// @codingStandardsIgnoreStart
+		$stack_options = $stack->stackOptions;
+		// @codingStandardsIgnoreEnd
+		if ( array_key_exists( 'autoformat', $stack_options ) ) {
+				return $stack_options['autoformat'] !== $this->get_autoformat();
+		} else {
+			return $this->get_autoformat();
+		}
 	}
 
 	/**
@@ -889,6 +923,15 @@ class Rokka_Helper {
 	 */
 	public function are_settings_complete() {
 		return $this->settings_complete;
+	}
+
+	/**
+	 * Returns if autoformat option is enabled.
+	 *
+	 * @return bool
+	 */
+	public function get_autoformat() {
+		return $this->autoformat;
 	}
 
 	/**
