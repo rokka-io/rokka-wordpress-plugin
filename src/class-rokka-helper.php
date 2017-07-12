@@ -609,7 +609,7 @@ class Rokka_Helper {
 								}
 							}
 						}
-						// set sync opteration to update if autoformat option changed
+						// set sync operation to update if autoformat option changed
 						if ( $this->autoformat_changed( $stack ) ) {
 							$stacks_to_sync[ $prefixed_name ]['operation'] = self::STACK_SYNC_OPERATION_UPDATE;
 						}
