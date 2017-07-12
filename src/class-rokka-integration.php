@@ -76,7 +76,7 @@ class Rokka_Integration {
 	 * @param string $file Main plugin file path.
 	 * @param string $version Version number.
 	 */
-	public function __construct( $file = '', $version = '1.2.0' ) {
+	public function __construct( $file = '', $version = '1.2.1' ) {
 		$this->_version = $version;
 		$this->_token   = 'rokka-integration';
 
@@ -146,7 +146,7 @@ class Rokka_Integration {
 	 *
 	 * @return Rokka_Integration Rokka_Integration instance
 	 */
-	public static function instance( $file = '', $version = '1.2.0' ) {
+	public static function instance( $file = '', $version = '1.2.1' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}

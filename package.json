@@ -1,6 +1,6 @@
 {
   "name": "rokka-wordpress-plugin",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Rokka integration plugin for WordPress",
   "main": "index.js",
   "scripts": {

@@ -10,7 +10,7 @@ find "." \
      -not -path "tests/*" \
      -not -path "vendor/*" \
      -type f \( -name "*.php" \) \
-     | xargs xgettext --language=PHP --add-comments=TRANSLATORS: --force-po --from-code=UTF-8 --no-wrap --foreign-user --package-name="rokka-integration" --package-version=1.2.0 --msgid-bugs-address=contact@liip.ch \
+     | xargs xgettext --language=PHP --add-comments=TRANSLATORS: --force-po --from-code=UTF-8 --no-wrap --foreign-user --package-name="rokka-integration" --package-version=1.2.1 --msgid-bugs-address=contact@liip.ch \
      --keyword=__ \
      --keyword=_e \
      --keyword=__ngettext:1,2 \
