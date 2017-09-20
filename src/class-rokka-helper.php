@@ -508,7 +508,7 @@ class Rokka_Helper {
 
 		foreach ( $stacks_to_sync as $stack ) {
 			// handle full size stack specially
-			if ( $stack['name'] === $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() ) {
+			if ( $stack['name'] === $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() ) ) {
 				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
 					$this->create_noop_stack( $stack['name'] );
 				}
@@ -555,13 +555,14 @@ class Rokka_Helper {
 		 * @var \Rokka\Client\Core\Stack[] $stacks_on_rokka
 		 */
 		$stacks_on_rokka = array_filter( $stack_collection->getStacks(), function ( $stack ) {
+			// filter out all non prefixed stacks
 			return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
 		} );
 
 		$stacks_to_sync = array();
 
 		// Create a noop stack (full size stack) if it not exists already
-		$noop_stackname = $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name();
+		$noop_stackname = $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() );
 		try {
 			$client->getStack( $noop_stackname );
 			$stacks_to_sync[ $noop_stackname ] = array(
@@ -585,7 +586,7 @@ class Rokka_Helper {
 				$width = $size[0];
 				$height = $size[1];
 				$crop = $size[2];
-				$prefixed_name = $this->get_stack_prefix() . $name;
+				$prefixed_name = $this->get_prefixed_stack_name( $name );
 				$stack_already_on_rokka = false;
 
 				// loop through all stacks which are already on rokka
@@ -643,16 +644,16 @@ class Rokka_Helper {
 			}
 		}
 
-		// find deleted stacks in wordpress
+		// find deleted stacks in WordPress
 		if ( ! empty( $stacks_on_rokka ) && ! empty( $sizes ) ) {
 			foreach ( $stacks_on_rokka as $stack ) {
 				// full size stack should never be deleted
-				if ( $stack->name === $this->get_stack_prefix() . $this->get_rokka_full_size_stack_name() ) {
+				if ( $stack->name === $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() ) ) {
 					continue;
 				}
 				$stack_still_exists_in_wp = false;
 				foreach ( $sizes as $name => $size ) {
-					$prefixed_name = $this->get_stack_prefix() . $name;
+					$prefixed_name = $this->get_prefixed_stack_name( $name );
 					if ( $stack->name === $prefixed_name ) {
 						$stack_still_exists_in_wp = true;
 						break;
@@ -745,9 +746,8 @@ class Rokka_Helper {
 	 */
 	public function get_rokka_url( $hash, $filename, $size = 'thumbnail' ) {
 		if ( is_array( $size ) ) {
-			$stack = null;
-
 			// if size is requested as width / height array -> find matching or nearest rokka size
+			$stack = null;
 			$rokka_sizes = $this->get_available_image_sizes();
 			foreach ( $rokka_sizes as $size_name => $size_values ) {
 				if ( $size[0] <= $size_values[0] ) {
@@ -765,7 +765,17 @@ class Rokka_Helper {
 			// use fallback image name if empty
 			$filename = 'image.jpg';
 		}
-		return $this->get_rokka_scheme() . '://' . $this->get_rokka_domain() . '/' . $this->get_stack_prefix() . $stack . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
+		return $this->get_rokka_scheme() . '://' . $this->get_rokka_domain() . '/' . $this->get_prefixed_stack_name( $stack ) . '/' . $hash . '/' . $this->sanitize_rokka_filename( $filename );
+	}
+
+	/**
+	 * Returns prefixes stack name
+	 *
+	 * @param string $stack_name Stack name without prefix.
+	 * @return string Prefixed stack name.
+	 */
+	public function get_prefixed_stack_name( $stack_name ) {
+		return $this->get_stack_prefix() . $stack_name;
 	}
 
 	/**

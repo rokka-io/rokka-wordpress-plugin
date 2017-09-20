@@ -289,7 +289,7 @@ class Rokka_Integration_Settings {
 						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in Wordpress. If you change the image sizes in Wordpress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
 							</p>
 							<?php
 							try {
@@ -324,10 +324,7 @@ class Rokka_Integration_Settings {
 											}
 											?>
 											<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
-												<?php if (
-													$this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] ||
-													Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation']
-												) : ?>
+												<?php if ( $this->rokka_helper->get_prefixed_stack_name( $this->rokka_helper->get_rokka_full_size_stack_name() ) === $stack['name'] || Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) : ?>
 													<td><?php echo esc_html( $stack['name'] ); ?></td>
 													<td>-</td>
 													<td>-</td>
@@ -514,7 +511,7 @@ class Rokka_Integration_Settings {
 			case 'url':
 			case 'email':
 				$placeholder = ( array_key_exists( 'placeholder', $field ) ? $field['placeholder'] : '' );
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" class="' . ( ! empty( $data['constant_name'] ) &&  defined( $data['constant_name'] ) ? 'disabled' : '' ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $option_value ) . '" ' . disabled( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ), true, false ) . '/>' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" class="' . ( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ) ? 'disabled' : '' ) . '" placeholder="' . esc_attr( $placeholder ) . '" value="' . esc_attr( $option_value ) . '" ' . disabled( ! empty( $data['constant_name'] ) && defined( $data['constant_name'] ), true, false ) . '/>' . "\n";
 				break;
 
 			case 'textarea':

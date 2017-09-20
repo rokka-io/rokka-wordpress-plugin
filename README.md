@@ -21,6 +21,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 ### Requirements
 
 * Node.js >=7.10.0 (https://nodejs.org/)
+* gettext (https://www.gnu.org/software/gettext/)
 
 ### Installation
 
