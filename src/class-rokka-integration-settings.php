@@ -324,7 +324,7 @@ class Rokka_Integration_Settings {
 											}
 											?>
 											<tr class="<?php echo esc_attr( $stack['operation'] ); ?>">
-												<?php if ( $this->rokka_helper->get_stack_prefix() . $this->rokka_helper->get_rokka_full_size_stack_name() === $stack['name'] || Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) : ?>
+												<?php if ( $this->rokka_helper->get_prefixed_stack_name( $this->rokka_helper->get_rokka_full_size_stack_name() ) === $stack['name'] || Rokka_Helper::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) : ?>
 													<td><?php echo esc_html( $stack['name'] ); ?></td>
 													<td>-</td>
 													<td>-</td>
