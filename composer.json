@@ -29,14 +29,14 @@
     "email": "contact@liip.ch"
   },
   "require": {
-    "rokka/client": "^0.8.0"
+    "rokka/client": "^0.10.0"
   },
   "config": {
     "bin-dir": "bin"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^2.8",
-    "wp-coding-standards/wpcs": "^0.11.0",
+    "squizlabs/php_codesniffer": "^3.1",
+    "wp-coding-standards/wpcs": "^0.13.1",
     "phpunit/phpunit": "^5.7"
   }
 }
