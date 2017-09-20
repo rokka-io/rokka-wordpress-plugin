@@ -41,7 +41,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	 * ---
 	 *
 	 * ## EXAMPLE
-	 * 		wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop --autoformat
+	 *      wp rokka create_stack --name=banner-large --width=1600 --height=700 --crop --autoformat
 	 *
 	 * @param array $args Arguments from cli-command.
 	 * @param array $assoc_args Associative arguments from cli-command.
@@ -82,7 +82,7 @@ class Rokka_Wp_Cli_Command extends WP_CLI_Command {
 	 * ---
 	 *
 	 * ## EXAMPLE
-	 * 		wp rokka create_noop_stack --name=full
+	 *      wp rokka create_noop_stack --name=full
 	 *
 	 * @param array $args Arguments from cli-command.
 	 * @param array $assoc_args Associative arguments from cli-command.

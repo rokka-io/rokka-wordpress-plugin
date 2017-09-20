@@ -643,7 +643,7 @@ class Rokka_Helper {
 			}
 		}
 
-		// find deleted stacks in wordpress
+		// find deleted stacks in WordPress
 		if ( ! empty( $stacks_on_rokka ) && ! empty( $sizes ) ) {
 			foreach ( $stacks_on_rokka as $stack ) {
 				// full size stack should never be deleted
