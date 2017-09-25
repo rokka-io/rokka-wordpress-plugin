@@ -13,7 +13,7 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$this->_plugin_dir = dirname( dirname( __FILE__ ) );
 		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
 		$this->images = [];
-		$this->images['2000x1500.png'] = $this->factory->attachment->create_upload_object( $this->_plugin_dir . '/tests/features/images/2000x1500.png', 0 );
+		$this->images['2000x1500.png'] = $this->attachment_create_upload_object( $this->_plugin_dir . '/tests/features/images/2000x1500.png', 0 );
 	}
 
 	public function tearDown() {
@@ -59,5 +59,38 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 
 	public function get_rokka_url( $id, $filename, $stack ) {
 		return $this->rokka_url . '/' . $stack . '/rokka_dummy_hash_' . $id . '/' . $filename;
+	}
+
+	/**
+	 * Backport from WP_UnitTest_Factory_For_Attachment of WordPress 4.8 to be able to use this in WordPress < 4.4.
+	 * source: https://develop.svn.wordpress.org/tags/4.8/tests/phpunit/includes/factory/class-wp-unittest-factory-for-attachment.php
+	 */
+	public function attachment_create_upload_object( $file, $parent = 0 ) {
+		$contents = file_get_contents($file);
+		$upload = wp_upload_bits(basename($file), null, $contents);
+
+		$type = '';
+		if ( ! empty($upload['type']) ) {
+			$type = $upload['type'];
+		} else {
+			$mime = wp_check_filetype( $upload['file'] );
+			if ($mime)
+				$type = $mime['type'];
+		}
+
+		$attachment = array(
+			'post_title' => basename( $upload['file'] ),
+			'post_content' => '',
+			'post_type' => 'attachment',
+			'post_parent' => $parent,
+			'post_mime_type' => $type,
+			'guid' => $upload[ 'url' ],
+		);
+
+		// Save the data
+		$id = wp_insert_attachment( $attachment, $upload[ 'file' ], $parent );
+		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );
+
+		return $id;
 	}
 }
