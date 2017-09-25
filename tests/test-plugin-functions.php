@@ -53,7 +53,8 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 	}
 
 	public function get_default_wordpress_url( $filename ) {
-		$current_upload_dir = wp_get_upload_dir();
+		// we can't use wp_get_upload_dir() here since this method was introduced in WordPress 4.5.
+		$current_upload_dir = wp_upload_dir( null, false );
 		return $current_upload_dir['url'] . '/' . $filename;
 	}
 
