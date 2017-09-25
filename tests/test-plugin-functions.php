@@ -13,7 +13,7 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$this->_plugin_dir = dirname( dirname( __FILE__ ) );
 		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
 		$this->images = [];
-		$this->images['2000x1500.png'] = self::factory()->attachment->create_upload_object( $this->_plugin_dir . '/tests/features/images/2000x1500.png', 0 );
+		$this->images['2000x1500.png'] = $this->factory->attachment->create_upload_object( $this->_plugin_dir . '/tests/features/images/2000x1500.png', 0 );
 	}
 
 	public function tearDown() {
