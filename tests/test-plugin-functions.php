@@ -5,8 +5,7 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 	private $images;
 	private $rokka_company_name = 'dummy_company_name';
 	private $rokka_url = '';
-	private $full_stack_name = 'full';
-	private $default_stack_prefix = 'wp-';
+	private $stack_prefix = 'wp-';
 
 	public function setUp() {
 		parent::setUp();
@@ -34,32 +33,40 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$this->add_rokka_hashes();
 		$image_to_check = '2000x1500.png';
 		$image_id = $this->images[$image_to_check];
-		$expected_attachment_url = $this->get_rokka_url( $image_id, $image_to_check, $this->default_stack_prefix . $this->full_stack_name );
+		$expected_attachment_url = $this->get_rokka_url( $image_id, $image_to_check, $this->get_stack_name_from_size( 'full' ) );
 		$attachment_url = wp_get_attachment_url( $image_id );
 		$this->assertEquals( $expected_attachment_url, $attachment_url );
 		$this->remove_rokka_hashes();
 	}
 
-	public function add_rokka_hashes() {
+	protected function add_rokka_hashes() {
 		foreach( $this->images as $id ) {
-			add_post_meta( $id, 'rokka_hash', 'rokka_dummy_hash_' . $id, true );
+			add_post_meta( $id, 'rokka_hash', $this->get_rokka_hash( $id ), true );
 		}
 	}
 
-	public function remove_rokka_hashes() {
+	protected function remove_rokka_hashes() {
 		foreach( $this->images as $id ) {
 			delete_post_meta( $id, 'rokka_hash' );
 		}
 	}
 
-	public function get_default_wordpress_url( $filename ) {
+	protected function get_default_wordpress_url( $filename ) {
 		// we can't use wp_get_upload_dir() here since this method was introduced in WordPress 4.5.
 		$current_upload_dir = wp_upload_dir( null, false );
 		return $current_upload_dir['url'] . '/' . $filename;
 	}
 
-	public function get_rokka_url( $id, $filename, $stack ) {
-		return $this->rokka_url . '/' . $stack . '/rokka_dummy_hash_' . $id . '/' . $filename;
+	protected function get_rokka_url( $id, $filename, $stack ) {
+		return $this->rokka_url . '/' . $stack . '/' . $this->get_rokka_hash( $id ) . '/' . $filename;
+	}
+
+	protected function get_rokka_hash( $image_id ) {
+		return 'rokka_dummy_hash_' . $image_id;
+	}
+
+	protected function get_stack_name_from_size( $size ) {
+		return $this->stack_prefix . $size;
 	}
 
 	/**
