@@ -18,7 +18,7 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 
 	public function tearDown() {
 		parent::tearDown();
-		$upload_dir = wp_get_upload_dir();
+		$upload_dir = wp_upload_dir( null, false );
 		exec(sprintf("rm -rf %s", escapeshellarg($upload_dir['basedir'])));
 		exec(sprintf("mkdir -p %s", escapeshellarg($upload_dir['basedir'])));
 	}
