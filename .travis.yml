@@ -11,16 +11,7 @@ env:
 
 before_script:
   - bash scripts/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
-    fi
-  - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+  - bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 
 script:
   - scripts/phpcodesniffer.sh
