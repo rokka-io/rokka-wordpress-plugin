@@ -119,7 +119,6 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$large_filename = $attachment_meta['sizes']['large']['file'];
 		$medium_filename = $attachment_meta['sizes']['medium']['file'];
 		$larger_filename = $attachment_meta['sizes']['larger']['file'];
-		$huge_filename = $attachment_meta['sizes']['huge']['file'];
 
 		$attachment_image = wp_get_attachment_image( $this->images[$image_to_check], 'medium' );
 
@@ -130,6 +129,8 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 			$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image ) );
+
+			$huge_filename = $attachment_meta['sizes']['huge']['file']; // huge size of the image only exists in newer versions of WordPress since the size is bigger than the image it wasn't added in old versions.
 			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
 			$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image ) );
 		} else {
@@ -141,10 +142,10 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$this->add_rokka_hashes();
 		$image_to_check = '2000x1500.png';
 		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
+		print_r($attachment_meta);
 		$large_filename = $attachment_meta['sizes']['large']['file'];
 		$medium_filename = $attachment_meta['sizes']['medium']['file'];
 		$larger_filename = $attachment_meta['sizes']['larger']['file'];
-		$huge_filename = $attachment_meta['sizes']['huge']['file'];
 
 		$attachment_image = wp_get_attachment_image( $this->images[$image_to_check], 'medium' );
 
@@ -155,6 +156,8 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 			$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image ) );
 			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image ) );
+
+			$huge_filename = $attachment_meta['sizes']['huge']['file']; // huge size of the image only exists in newer versions of WordPress since the size is bigger than the image it wasn't added in old versions.
 			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
 			$this->assertEquals( 0, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image ) );
 		} else {
