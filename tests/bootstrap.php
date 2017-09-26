@@ -1,23 +1,28 @@
 <?php
-
-require_once dirname( __FILE__ ) . '/../web/wp-unittest-config.php';
+/**
+ * PHPUnit bootstrap file
+ *
+ * @package rokka-integration
+ */
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 if ( ! $_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
 
+// Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
 
-function _manually_switch_theme() {
-	switch_theme( 'nebis' );
+/**
+ * Manually load the plugin being tested.
+ */
+function _manually_load_plugin() {
+	update_option( 'rokka_api_key', 'dummy_api_key' );
+	update_option( 'rokka_company_name', 'dummy_company_name' );
+	update_option( 'rokka_rokka_enabled', true );
+	require dirname( dirname( __FILE__ ) ) . '/rokka-integration.php';
 }
+tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
-tests_add_filter( 'plugins_loaded', '_manually_switch_theme' );
-
-// autoload timber plugin dependencies
-if ( file_exists($composer_autoload = __DIR__ . '/../web/content/plugins/timber-library/vendor/autoload.php') ) {
-	require_once($composer_autoload);
-}
-
+// Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';

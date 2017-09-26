@@ -14,6 +14,7 @@ SKIP_DB_CREATE=${6-false}
 
 WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
+HERE=`dirname $0`
 
 download() {
     if [ `which curl` ]; then
@@ -44,7 +45,8 @@ set -ex
 install_wp() {
 
 	if [ -d $WP_CORE_DIR ]; then
-		return;
+		# rokka: remove core dir in any case
+		rm -rf $WP_CORE_DIR
 	fi
 
 	mkdir -p $WP_CORE_DIR
@@ -64,6 +66,10 @@ install_wp() {
 		tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
 	fi
 
+	# rokka: copy plugin to test dir
+	mkdir $WP_CORE_DIR/wp-content/plugins/rokka-wordpress-plugin
+	yes | cp -r $HERE/../* $WP_CORE_DIR/wp-content/plugins/rokka-wordpress-plugin
+
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
@@ -73,6 +79,11 @@ install_test_suite() {
 		local ioption='-i .bak'
 	else
 		local ioption='-i'
+	fi
+
+	if [ -d $WP_TESTS_DIR ]; then
+		# rokka: remove tests dir in any case
+		rm -rf $WP_TESTS_DIR
 	fi
 
 	# set up testing suite if it doesn't yet exist
@@ -117,6 +128,9 @@ install_db() {
 			EXTRA=" --host=$DB_HOSTNAME --protocol=tcp"
 		fi
 	fi
+
+	# rokka: Always drop DB
+	mysql --user="$DB_USER" --password="$DB_PASS" -e "drop database if exists $DB_NAME"
 
 	# create database
 	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
