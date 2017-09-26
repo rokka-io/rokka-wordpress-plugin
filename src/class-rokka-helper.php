@@ -725,6 +725,58 @@ class Rokka_Helper {
 		return $sizes;
 	}
 
+	/**
+	 * Returns nearest matching image size name by given width and height.
+	 *
+	 * @param int $width  Width to get size name for.
+	 * @param int $height Height to get size name for.
+	 *
+	 * @return string
+	 */
+	public function get_nearest_matching_image_size( $width, $height ) {
+		$sizes = $this->get_available_image_sizes();
+		foreach ( $sizes as $size_name => $size_values ) {
+			// If the image dimensions are within 1px of the expected size, use it.
+			if ( wp_image_matches_ratio( $width, $height, $size_values[0], $size_values[0] ) ) {
+				if ( $width <= $size_values[0] ) {
+					return $size_name;
+				}
+			}
+		}
+
+		return $this->get_rokka_full_size_stack_name();
+	}
+
+	/**
+	 * Retrieves size name by given image url.
+	 *
+	 * @param int    $image_id ID of image.
+	 * @param string $image_url URL of image.
+	 * @param array  $image_meta Meta information of image.
+	 *
+	 * @return string
+	 */
+	public function get_size_by_image_url( $image_id, $image_url, $image_meta = array() ) {
+		if ( empty( $image_meta ) ) {
+			$image_meta = wp_get_attachment_metadata( $image_id );
+		}
+
+		$last_slash_pos = strrpos( $image_url, '/' );
+
+		if ( false === $last_slash_pos ) {
+			return $this->get_rokka_full_size_stack_name();
+		}
+
+		$image_name = substr( $image_url, $last_slash_pos + 1 );
+
+		foreach ( $image_meta['sizes'] as $name => $size ) {
+			if ( $image_name === $size['file'] ) {
+				return $name;
+			}
+		}
+
+		return $this->get_rokka_full_size_stack_name();
+	}
 
 	/**
 	 * Gets stack name of full size image
@@ -746,18 +798,8 @@ class Rokka_Helper {
 	 */
 	public function get_rokka_url( $hash, $filename, $size = 'thumbnail' ) {
 		if ( is_array( $size ) ) {
-			// if size is requested as width / height array -> find matching or nearest rokka size
-			$stack = null;
-			$rokka_sizes = $this->get_available_image_sizes();
-			foreach ( $rokka_sizes as $size_name => $size_values ) {
-				if ( $size[0] <= $size_values[0] ) {
-					$stack = $size_name;
-					break;
-				}
-			}
-			if ( is_null( $stack ) ) {
-				$stack = 'thumbnail';
-			}
+			// if size is requested as width / height array -> find nearest size
+			$stack = $this->get_nearest_matching_image_size( $size[0], $size[1] );
 		} else {
 			$stack = $size;
 		}

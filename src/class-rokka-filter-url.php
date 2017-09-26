@@ -95,7 +95,7 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 		$attachment_meta = wp_get_attachment_metadata( $post_id );
-		if ( in_array( 'thumbnail', $attachment_meta['sizes'], true ) ) {
+		if ( array_key_exists( 'thumbnail', $attachment_meta['sizes'] ) ) {
 			$filename = $attachment_meta['sizes']['thumbnail']['file'];
 		} else {
 			// if size is not available in meta data use original filename
@@ -126,7 +126,7 @@ class Rokka_Filter_Url {
 		// https://liip-development.rokka.io/<size>/<filename-from-attachment-metadata>
 		// Regenerate the rokka urls and replace them.
 		foreach ( $response['sizes'] as $size => $size_details ) {
-			if ( in_array( $size, $meta['sizes'], true ) ) {
+			if ( array_key_exists( $size, $meta['sizes'] ) ) {
 				$filename = $meta['sizes'][ $size ]['file'];
 			} else {
 				// if size is not available in meta data use original filename
@@ -281,32 +281,21 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $attachment_id, 'rokka_hash', true );
 
-		$available_image_sizes = $this->rokka_helper->get_available_image_sizes();
-
-		$prepared_available_image_sizes = array();
-		foreach ( $available_image_sizes as $size_name => $size ) {
-			$width = $size[0];
-			$prepared_available_image_sizes[ $width ] = $size_name;
-		}
-
 		$rewritten_sources = array();
 		foreach ( $sources as $source_width => $source ) {
 			// copy original source data
 			$rewritten_sources[ $source_width ] = $source;
-			if ( array_key_exists( $source_width, $prepared_available_image_sizes ) ) {
-				$size_name = $prepared_available_image_sizes[ $source_width ];
-				if ( in_array( $size_name, $image_meta['sizes'], true ) ) {
-					$filename = $image_meta['sizes'][ $size_name ]['file'];
-				} else {
-					// if size is not available in meta data use original filename
-					$filename = wp_basename( $image_meta['file'] );
-				}
-				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
+
+			$size_name = $this->rokka_helper->get_size_by_image_url( $attachment_id, $source['url'], $image_meta );
+
+			if ( array_key_exists( $size_name, $image_meta['sizes'] ) ) {
+				$filename = $image_meta['sizes'][ $size_name ]['file'];
 			} else {
-				$filename = $image_meta['file'];
-				// if the size doesn't exists it must be the original image
-				$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $this->rokka_helper->get_rokka_full_size_stack_name() );
+				// if size is not available in meta data use original filename
+				$filename = wp_basename( $image_meta['file'] );
 			}
+
+			$rewritten_sources[ $source_width ]['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
 		}
 
 		return $rewritten_sources;
