@@ -68,41 +68,49 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 	}
 
 	public function test_get_attachment_image_srcset_without_rokka() {
-		$image_to_check = '2000x1500.png';
-		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
-		$large_filename = $attachment_meta['sizes']['large']['file'];
-		$medium_filename = $attachment_meta['sizes']['medium']['file'];
-		$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
-		$larger_filename = $attachment_meta['sizes']['larger']['file'];
-		$huge_filename = $attachment_meta['sizes']['huge']['file'];
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$image_to_check        = '2000x1500.png';
+			$attachment_meta       = wp_get_attachment_metadata( $this->images[ $image_to_check ] );
+			$large_filename        = $attachment_meta['sizes']['large']['file'];
+			$medium_filename       = $attachment_meta['sizes']['medium']['file'];
+			$larger_filename       = $attachment_meta['sizes']['larger']['file'];
+			$huge_filename         = $attachment_meta['sizes']['huge']['file'];
 
-		$attachment_image_srcset = wp_get_attachment_image_srcset( $this->images[$image_to_check], 'large' );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
-		// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
-		$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image_srcset ) );
+			$attachment_image_srcset = wp_get_attachment_image_srcset( $this->images[ $image_to_check ], 'large' );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
+			if ( array_key_exists( 'medium_large', $attachment_meta['sizes'] ) ) {
+				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
+				$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image_srcset ) );
+			}
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
+			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
+			$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image_srcset ) );
+		}
 	}
 
 	public function test_get_attachment_image_srcset() {
-		$this->add_rokka_hashes();
-		$image_to_check = '2000x1500.png';
-		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
-		$large_filename = $attachment_meta['sizes']['large']['file'];
-		$medium_filename = $attachment_meta['sizes']['medium']['file'];
-		$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
-		$larger_filename = $attachment_meta['sizes']['larger']['file'];
-		$huge_filename = $attachment_meta['sizes']['huge']['file'];
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$this->add_rokka_hashes();
+			$image_to_check        = '2000x1500.png';
+			$attachment_meta       = wp_get_attachment_metadata( $this->images[ $image_to_check ] );
+			$large_filename        = $attachment_meta['sizes']['large']['file'];
+			$medium_filename       = $attachment_meta['sizes']['medium']['file'];
+			$larger_filename       = $attachment_meta['sizes']['larger']['file'];
+			$huge_filename         = $attachment_meta['sizes']['huge']['file'];
 
-		$attachment_image_srcset = wp_get_attachment_image_srcset( $this->images[$image_to_check], 'large' );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image_srcset ) );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image_srcset ) );
-		// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
-		$this->assertEquals( 0, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image_srcset ) );
-		$this->remove_rokka_hashes();
+			$attachment_image_srcset = wp_get_attachment_image_srcset( $this->images[ $image_to_check ], 'large' );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image_srcset ) );
+			if ( array_key_exists( 'medium_large', $attachment_meta['sizes'] ) ) {
+				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
+				$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image_srcset ) );
+			}
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image_srcset ) );
+			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
+			$this->assertEquals( 0, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image_srcset ) );
+			$this->remove_rokka_hashes();
+		}
 	}
 
 	public function test_get_attachment_image_without_rokka() {
@@ -110,18 +118,23 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
 		$large_filename = $attachment_meta['sizes']['large']['file'];
 		$medium_filename = $attachment_meta['sizes']['medium']['file'];
-		$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 		$larger_filename = $attachment_meta['sizes']['larger']['file'];
 		$huge_filename = $attachment_meta['sizes']['huge']['file'];
 
 		$attachment_image = wp_get_attachment_image( $this->images[$image_to_check], 'medium' );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image ) );
-		// the requested size appears in src attribute and in srcset attribute
-		$this->assertEquals( 2, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image ) );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image ) );
-		$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image ) );
-		// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
-		$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image ) );
+
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image ) );
+			// the requested size appears in src attribute and in srcset attribute
+			$this->assertEquals( 2, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image ) );
+			$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image ) );
+			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
+			$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image ) );
+		} else {
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image ) );
+		}
 	}
 
 	public function test_get_attachment_image() {
@@ -130,18 +143,23 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
 		$large_filename = $attachment_meta['sizes']['large']['file'];
 		$medium_filename = $attachment_meta['sizes']['medium']['file'];
-		$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 		$larger_filename = $attachment_meta['sizes']['larger']['file'];
 		$huge_filename = $attachment_meta['sizes']['huge']['file'];
 
 		$attachment_image = wp_get_attachment_image( $this->images[$image_to_check], 'medium' );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image ) );
-		// the requested size appears in src attribute and in srcset attribute
-		$this->assertEquals( 2, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image ) );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image ) );
-		$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image ) );
-		// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
-		$this->assertEquals( 0, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[$image_to_check], $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image ) );
+
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image ) );
+			// the requested size appears in src attribute and in srcset attribute
+			$this->assertEquals( 2, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image ) );
+			$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image ) );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image ) );
+			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
+			$this->assertEquals( 0, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image ) );
+		} else {
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $this->images[ $image_to_check ], $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image ) );
+		}
 		$this->remove_rokka_hashes();
 	}
 
