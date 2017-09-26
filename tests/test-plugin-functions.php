@@ -142,7 +142,6 @@ class PluginFunctionsTest extends WP_UnitTestCase {
 		$this->add_rokka_hashes();
 		$image_to_check = '2000x1500.png';
 		$attachment_meta = wp_get_attachment_metadata( $this->images[$image_to_check] );
-		print_r($attachment_meta);
 		$large_filename = $attachment_meta['sizes']['large']['file'];
 		$medium_filename = $attachment_meta['sizes']['medium']['file'];
 		$larger_filename = $attachment_meta['sizes']['larger']['file'];
