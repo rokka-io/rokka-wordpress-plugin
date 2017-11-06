@@ -3,8 +3,8 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 4.8.2
-Stable tag: 1.2.2
+Tested up to: 4.8.3
+Stable tag: 1.2.3
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
