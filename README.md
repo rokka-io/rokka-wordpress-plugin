@@ -58,11 +58,29 @@ Update all .po files with newly extracted messages from .pot file:
 To compile all .po files to .mo files use the following script:
 
     $ scripts/translations/compile_translation_files.sh
+    
+### Unit tests
 
-### Before you commit to the Repository
+To run the unit tests you need to setup your local WordPress testing environment (PHP / MySQL required). Use the following script for this:
+
+    $ scripts/init-unit-test-environment.sh
+
+To run the tests use the following script:
+
+    $ scripts/unit-tests.sh
+
+### Code Sniffer
 
 Execute the code sniffer by executing the following command from the plugin root:
 
     $ scripts/phpcodesniffer.sh
 
 Fix the errors in prior to commit. Commit when fixed, so the build will pass on [Travis CI](https://travis-ci.org/rokka-io/rokka-wordpress-plugin).
+
+## Release new plugin version
+
+To release a new version to the WordPress plugin repository use the following script:
+
+    $ scripts/deploy-wp-plugin.sh
+
+This command will automatically release the latest git tag as a version in the plugin repository.
