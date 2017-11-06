@@ -67,10 +67,18 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 == Changelog ==
 
+= 1.2.3 =
+
+* [FEATURE] Add unit tests to test url filtering
+* [UPDATE] Updated rokka-client-php to v1.0.0
+* [FIX] Fix URL filtering when creating srcset
+* [FIX] Use correct filenames for different sizes
+* [FIX] There shouldn't be an upload error when it's not needed to upload an attachment to rokka
+
 = 1.2.2 =
 
 * [UPDATE] Updated rokka-client-php to v0.10.0
-* [CHANGE] Improved generation of prefixed stack names.
+* [CHANGE] Improved generation of prefixed stack names
 
 = 1.2.1 =
 
