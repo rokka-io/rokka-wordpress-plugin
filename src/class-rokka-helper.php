@@ -279,7 +279,7 @@ class Rokka_Helper {
 		}
 
 		if ( ! $this->is_valid_attachment( $attachment_id, $file_path ) ) {
-			return false;
+			return true; // return true if upload is not needed.
 		}
 
 		$file_name = wp_basename( $file_path );
