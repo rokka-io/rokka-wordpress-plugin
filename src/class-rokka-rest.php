@@ -59,7 +59,7 @@ class Rokka_Rest {
 	/**
 	 * Updates file on rokka.
 	 *
-	 * @param int    $attachment_id Attachment ID.
+	 * @param int $attachment_id Attachment ID.
 	 *
 	 * @return boolean
 	 */
