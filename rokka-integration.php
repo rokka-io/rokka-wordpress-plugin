@@ -28,6 +28,7 @@ require_once( dirname( __FILE__ ) . '/src/class-rokka-integration.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-integration-settings.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-helper.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-media-management.php' );
+require_once( dirname( __FILE__ ) . '/src/class-rokka-rest.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-filter-url.php' );
 require_once( dirname( __FILE__ ) . '/src/class-rokka-filter-content.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -48,6 +49,7 @@ function rokka_integration() {
 
 	if ( $rokka_helper->is_rokka_enabled() ) {
 		new Rokka_Filter_Url( $rokka_helper );
+		new Rokka_Rest( $rokka_helper );
 		if ( ! is_admin() && $rokka_helper->is_output_parsing_enabled() ) {
 			new Rokka_Filter_Content( $rokka_helper );
 		}
