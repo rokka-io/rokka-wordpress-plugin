@@ -247,6 +247,12 @@ class Rokka_Helper {
 		if ( ! empty( $this->company_name ) && ! empty( $this->api_key ) ) {
 			$this->settings_complete = true;
 		}
+
+		// If settings are not complete -> disable rokka integration
+		if ( ! $this->settings_complete ) {
+			update_option( 'rokka_rokka_enabled', false );
+			$this->rokka_enabled = false;
+		}
 	}
 
 	/**

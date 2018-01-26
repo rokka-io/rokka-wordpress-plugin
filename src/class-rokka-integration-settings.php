@@ -124,6 +124,7 @@ class Rokka_Integration_Settings {
 				'label'       => __( 'Enable rokka integration', 'rokka-integration' ),
 				'description' => __( 'This will enable the rokka integration. Please make sure that you already have synced the stacks to rokka before enabling this.', 'rokka-integration' ),
 				'type'        => 'checkbox',
+				'disabled'    => ! $this->rokka_helper->are_settings_complete(),
 			),
 			array(
 				'id'          => 'autoformat',
@@ -205,6 +206,7 @@ class Rokka_Integration_Settings {
 					'prefix' => $this->base,
 					'label_for' => $field['id'],
 					'constant_name' => array_key_exists( 'constant_name', $field ) ? $field['constant_name'] : '',
+					'disabled' => array_key_exists( 'disabled', $field ) ? $field['disabled'] : '',
 				)
 			);
 
@@ -286,7 +288,7 @@ class Rokka_Integration_Settings {
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
+						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></h2>
 							<p>
 								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
@@ -504,6 +506,8 @@ class Rokka_Integration_Settings {
 			$option_value = '';
 		}
 
+		$disabled = ( array_key_exists( 'disabled', $field ) ? $field['disabled'] : false );
+
 		$html = '';
 
 		switch ( $field['type'] ) {
@@ -520,7 +524,7 @@ class Rokka_Integration_Settings {
 				break;
 
 			case 'checkbox':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $option_value, false ) . '/>' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" class="' . ( $disabled ? 'disabled' : '' ) . '" value="1" ' . checked( '1', $option_value, false ) . ' ' . disabled( $disabled, true, false ) . '/>' . "\n";
 				break;
 
 			case 'radio':
