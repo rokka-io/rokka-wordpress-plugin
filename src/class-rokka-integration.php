@@ -22,6 +22,13 @@ class Rokka_Integration {
 	private static $_instance = null;
 
 	/**
+	 * Rokka_Helper instance.
+	 *
+	 * @var Rokka_Helper
+	 */
+	public $rokka_helper = null;
+
+	/**
 	 * Rokka_Integration_Settings instance.
 	 *
 	 * @var Rokka_Integration_Settings
@@ -73,12 +80,14 @@ class Rokka_Integration {
 	/**
 	 * Rokka_Integration constructor.
 	 *
-	 * @param string $file Main plugin file path.
-	 * @param string $version Version number.
+	 * @param string       $file Main plugin file path.
+	 * @param string       $version Version number.
+	 * @param Rokka_Helper $rokka_helper Rokka helper instance.
 	 */
-	public function __construct( $file = '', $version = '1.2.3' ) {
+	public function __construct( $file = '', $version = '1.2.3', $rokka_helper = null ) {
 		$this->_version = $version;
-		$this->_token   = 'rokka-integration';
+		$this->_token = 'rokka-integration';
+		$this->rokka_helper = $rokka_helper;
 
 		// Load plugin environment variables
 		$this->file       = $file;
@@ -141,14 +150,15 @@ class Rokka_Integration {
 	 * Main Rokka_Integration Instance
 	 * Ensures only one instance of Rokka_Integration is loaded or can be loaded.
 	 *
-	 * @param string $file Main plugin file path.
-	 * @param string $version Plugin version.
+	 * @param string       $file Main plugin file path.
+	 * @param string       $version Plugin version.
+	 * @param Rokka_Helper $rokka_helper Rokka helper instance.
 	 *
 	 * @return Rokka_Integration Rokka_Integration instance
 	 */
-	public static function instance( $file = '', $version = '1.2.3' ) {
+	public static function instance( $file = '', $version = '1.2.3', $rokka_helper = null ) {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $file, $version );
+			self::$_instance = new self( $file, $version, $rokka_helper );
 		}
 
 		return self::$_instance;

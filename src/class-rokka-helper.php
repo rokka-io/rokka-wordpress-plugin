@@ -262,6 +262,14 @@ class Rokka_Helper {
 		return $this->rokka_client;
 	}
 
+	/**
+	 * Sets the rokka image client. (Should only be used in unit tests to mock rokka client library)
+	 *
+	 * @param \Rokka\Client\Image $rokka_client Rokka client library instance.
+	 */
+	public function rokka_set_client( $rokka_client ) {
+		$this->rokka_client = $rokka_client;
+	}
 
 	/**
 	 * Uploads file to Rokka.
@@ -312,6 +320,8 @@ class Rokka_Helper {
 	 * @param int $attachment_id Attachment id.
 	 *
 	 * @return bool
+	 *
+	 * @throws Exception Throws exception if there was something wrong with deleting image on rokka.
 	 */
 	public function delete_image_from_rokka( $attachment_id ) {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );

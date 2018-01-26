@@ -44,8 +44,8 @@ require_once( dirname( __FILE__ ) . '/vendor/autoload.php' );
  * @return Rokka_Integration Rokka_Integration instance
  */
 function rokka_integration() {
-	$instance = Rokka_Integration::instance( __FILE__, '1.2.3' );
 	$rokka_helper = new Rokka_Helper();
+	$instance = Rokka_Integration::instance( __FILE__, '1.2.3', $rokka_helper );
 
 	if ( $rokka_helper->is_rokka_enabled() ) {
 		new Rokka_Filter_Url( $rokka_helper );
