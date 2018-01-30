@@ -15,25 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Rokka_Integration_Settings {
 
 	/**
-	 * The single instance of Rokka_Integration_Settings.
-	 *
-	 * @var Rokka_Integration_Settings
-	 */
-	private static $_instance = null;
-
-	/**
-	 * The main plugin object.
-	 *
-	 * @var Rokka_Integration
-	 */
-	public $parent = null;
-
-	/**
 	 * Prefix for plugin settings.
 	 *
 	 * @var string
 	 */
-	public $base = '';
+	public $option_prefix = '';
+
+	/**
+	 * Plugin token.
+	 *
+	 * @var string
+	 */
+	public $plugin_token = '';
 
 	/**
 	 * Menu slug.
@@ -41,6 +34,13 @@ class Rokka_Integration_Settings {
 	 * @var string
 	 */
 	public $menu_slug = '';
+
+	/**
+	 * URL to plugin assets.
+	 *
+	 * @var string
+	 */
+	public $assets_url = '';
 
 	/**
 	 * Available settings fields for plugin.
@@ -59,13 +59,17 @@ class Rokka_Integration_Settings {
 	/**
 	 * Rokka_Integration_Settings constructor.
 	 *
-	 * @param Rokka_Integration $parent The main plugin object.
+	 * @param Rokka_Helper $rokka_helper Rokka_Helper instance.
+	 * @param string       $plugin_token Plugin token.
+	 * @param string       $assets_url URL to plugin assets.
 	 */
-	public function __construct( $parent ) {
-		$this->parent = $parent;
-		$this->rokka_helper = $this->parent->rokka_helper;
+	public function __construct( $rokka_helper, $plugin_token, $assets_url ) {
+		$this->rokka_helper = $rokka_helper;
+		$this->plugin_token = $plugin_token;
+		$this->menu_slug = $this->plugin_token . '_settings';
+		$this->assets_url = $assets_url;
 
-		$this->base = 'rokka_';
+		$this->option_prefix = 'rokka_';
 
 		// Initialise settings
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
@@ -150,7 +154,6 @@ class Rokka_Integration_Settings {
 	 * Add settings page to admin menu.
 	 */
 	public function add_menu_item() {
-		$this->menu_slug = $this->parent->_token . '_settings';
 		add_options_page( __( 'Rokka Settings', 'rokka-integration' ), __( 'Rokka Settings', 'rokka-integration' ), 'manage_options', $this->menu_slug, array( $this, 'settings_page' ) );
 	}
 
@@ -162,7 +165,7 @@ class Rokka_Integration_Settings {
 	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings' ) ) . '">' . esc_html__( 'Settings', 'rokka-integration' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->menu_slug ) ) . '">' . esc_html__( 'Settings', 'rokka-integration' ) . '</a>';
 		// add settings link as first element
 		array_unshift( $links, $settings_link );
 
@@ -179,15 +182,15 @@ class Rokka_Integration_Settings {
 		add_settings_section( $section, __( 'Main settings', 'rokka-integration' ), array(
 			$this,
 			'settings_section',
-		), $this->parent->_token . '_settings' );
+		), $this->plugin_token . '_settings' );
 
 		foreach ( $this->settings_fields as $field ) {
 			// Register field
-			$option_name = $this->base . $field['id'];
+			$option_name = $this->option_prefix . $field['id'];
 			if ( array_key_exists( 'sanitize_callback', $field ) ) {
-				register_setting( $this->parent->_token . '_settings', $option_name, $field['sanitize_callback'] );
+				register_setting( $this->menu_slug, $option_name, $field['sanitize_callback'] );
 			} else {
-				register_setting( $this->parent->_token . '_settings', $option_name );
+				register_setting( $this->menu_slug, $option_name );
 			}
 
 			// Add field to page
@@ -198,11 +201,11 @@ class Rokka_Integration_Settings {
 					$this,
 					'display_field',
 				),
-				$this->parent->_token . '_settings',
+				$this->menu_slug,
 				$section,
 				array(
 					'field' => $field,
-					'prefix' => $this->base,
+					'prefix' => $this->option_prefix,
 					'label_for' => $field['id'],
 					'constant_name' => array_key_exists( 'constant_name', $field ) ? $field['constant_name'] : '',
 					'disabled' => array_key_exists( 'disabled', $field ) ? $field['disabled'] : '',
@@ -212,9 +215,9 @@ class Rokka_Integration_Settings {
 			// disable saving of options which are stored in constants
 			if ( array_key_exists( 'constant_name', $field ) && ! empty( $field['constant_name'] ) && defined( $field['constant_name'] ) ) {
 				global $new_whitelist_options;
-				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ], true );
+				$option_key = array_search( $option_name, $new_whitelist_options[ $this->menu_slug ], true );
 				if ( false !== $option_key ) {
-					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][ $option_key ] );
+					unset( $new_whitelist_options[ $this->menu_slug ][ $option_key ] );
 				}
 			}
 		}
@@ -274,16 +277,16 @@ class Rokka_Integration_Settings {
 				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-integration' ),
 			),
 		);
-		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
+		wp_localize_script( $this->plugin_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
-		<div class="wrap" id="<?php echo esc_attr( $this->parent->_token ); ?>_settings">
+		<div class="wrap" id="<?php echo esc_attr( $this->plugin_token ); ?>_settings">
 			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-integration' ); ?></h1>
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-integration' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
@@ -428,8 +431,8 @@ class Rokka_Integration_Settings {
 						<form method="post" action="options.php" enctype="multipart/form-data">
 							<?php
 							// Get settings fields
-							settings_fields( $this->parent->_token . '_settings' );
-							do_settings_sections( $this->parent->_token . '_settings' );
+							settings_fields( $this->menu_slug );
+							do_settings_sections( $this->menu_slug );
 							submit_button();
 							?>
 							<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
@@ -450,7 +453,7 @@ class Rokka_Integration_Settings {
 					</div>
 					<div id="logo-liip" class="logo">
 						<a href="https://liip.ch">
-							<img src="<?php echo esc_url( $this->parent->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-integration' ); ?>" />
+							<img src="<?php echo esc_url( $this->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-integration' ); ?>" />
 						</a>
 					</div>
 					<div id="address-block">
@@ -754,42 +757,6 @@ class Rokka_Integration_Settings {
 			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-integration' ), 400 );
 			wp_die();
 		}
-	}
-
-	/**
-	 * Main Rokka_Integration_Settings Instance
-	 *
-	 * Ensures only one instance of Rokka_Integration_Settings is loaded or can be loaded.
-	 *
-	 * @param Rokka_Integration $parent The main plugin object.
-	 *
-	 * @static
-	 * @return Rokka_Integration_Settings Rokka_Integration_Settings instance
-	 */
-	public static function instance( $parent ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent );
-		}
-
-		return self::$_instance;
-	}
-
-	/**
-	 * Cloning is forbidden.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->parent->_version ) );
-	}
-
-	/**
-	 * Unserializing instances of this class is forbidden.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->parent->_version ) );
 	}
 
 }

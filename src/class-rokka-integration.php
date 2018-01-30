@@ -43,7 +43,7 @@ class Rokka_Integration {
 	public $_version = '2.0.0';
 
 	/**
-	 * The token.
+	 * The plugin token.
 	 *
 	 * @var string
 	 */
@@ -145,9 +145,7 @@ class Rokka_Integration {
 				new Rokka_Media_Management( $this->rokka_helper );
 			}
 
-			if ( is_null( $this->settings ) ) {
-				$this->settings = Rokka_Integration_Settings::instance( $this );
-			}
+			$this->settings = new Rokka_Integration_Settings( $this->rokka_helper, $this->_token, $this->assets_url );
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
