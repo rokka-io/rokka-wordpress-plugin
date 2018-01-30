@@ -65,7 +65,7 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 		update_option( 'rokka_company_name', 'dummy_company_name' );
 		update_option( 'rokka_rokka_enabled', true );
 
-		// reload plugin to enable rokka with options set
+		// Reload plugin to enable rokka
 		Rokka_Integration::instance()->init_plugin();
 
 		// Mock rokka client library
