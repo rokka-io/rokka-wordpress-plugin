@@ -5,6 +5,10 @@
  * @package rokka-integration
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class Rokka_Helper
  */
