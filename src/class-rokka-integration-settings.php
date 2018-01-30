@@ -77,7 +77,7 @@ class Rokka_Integration_Settings {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		// Add settings link to plugin list table
-		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array(
+		add_filter( 'plugin_action_links_' . plugin_basename( ROKKA_PLUGIN_FILE ), array(
 			$this,
 			'add_settings_link',
 		) );
@@ -92,7 +92,7 @@ class Rokka_Integration_Settings {
 	/**
 	 * Sets the rokka helper. (Should only be used in unit tests to reinitialize rokka heler)
 	 *
-	 * @param $rokka_helper
+	 * @param Rokka_Helper $rokka_helper Rokka helper instance.
 	 */
 	public function set_rokka_helper( $rokka_helper ) {
 		$this->rokka_helper = $rokka_helper;
