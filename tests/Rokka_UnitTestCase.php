@@ -12,10 +12,15 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	protected $rokka_company_name = 'dummy_company_name';
 	protected $rokka_url = '';
 	protected $stack_prefix = 'wp-';
+	protected $rokka_hash = 'my_random_rokka_hash_123';
 	protected $sizes = [];
 
 	public function setUp() {
 		parent::setUp();
+
+		// enable backend to load all hooks
+		set_current_screen( 'edit-post' );
+
 		$this->_plugin_dir = dirname( dirname( __FILE__ ) );
 		$this->images_dir = $this->_plugin_dir . '/tests/features/images/';
 		$this->sizes = [
@@ -48,13 +53,44 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
 	}
 
-	public function tearDown() {
+	function tearDown() {
+		// Remove all uploads.
+		$this->remove_added_uploads();
 		parent::tearDown();
-		$upload_dir = wp_upload_dir( null, false );
-		exec(sprintf("rm -rf %s", escapeshellarg($upload_dir['basedir'])));
-		exec(sprintf("mkdir -p %s", escapeshellarg($upload_dir['basedir'])));
 	}
 
+	protected function enable_rokka() {
+		// Set rokka options
+		update_option( 'rokka_api_key', 'dummy_api_key' );
+		update_option( 'rokka_company_name', 'dummy_company_name' );
+		update_option( 'rokka_rokka_enabled', true );
+
+		// reload plugin to enable rokka with options set
+		Rokka_Integration::instance()->init_plugin();
+
+		// Mock rokka client library
+		$rokka_client_mock = $this->createMock( \Rokka\Client\Image::class );
+		$source_image_collection_mock = $this->createMock( \Rokka\Client\Core\SourceImageCollection::class );
+		$source_images = array(
+			(object) array(
+				'format' => '',
+				'organization' => $this->rokka_company_name,
+				'link' => '',
+				'created' => '',
+				'hash' => $this->rokka_hash,
+			)
+		);
+
+		$source_image_collection_mock->method( 'getSourceImages' )
+		                             ->willReturn( $source_images );
+
+		// Configure the stub.
+		$rokka_client_mock->method( 'uploadSourceImage' )
+		                  ->willReturn( $source_image_collection_mock );
+
+		$rokka_integration_plugin = Rokka_Integration::instance();
+		$rokka_integration_plugin->rokka_helper->rokka_set_client( $rokka_client_mock );
+	}
 
 	protected function prepare_image_sizes() {
 		// redefine original WordPress sizes
@@ -76,7 +112,7 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {
-		add_post_meta( $attachment_id, 'rokka_hash', $this->get_rokka_hash( $attachment_id ), true );
+		add_post_meta( $attachment_id, 'rokka_hash', $this->get_rokka_hash(), true );
 	}
 
 	protected function remove_rokka_hash( $attachment_id ) {
@@ -93,16 +129,16 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 		return '/' . preg_quote( $this->get_default_wordpress_url( $filename ), '/' ) . '/';
 	}
 
-	protected function get_rokka_url( $id, $filename, $stack ) {
-		return $this->rokka_url . '/' . $stack . '/' . $this->get_rokka_hash( $id ) . '/' . $filename;
+	protected function get_rokka_url( $filename, $stack ) {
+		return $this->rokka_url . '/' . $stack . '/' . $this->get_rokka_hash() . '/' . $filename;
 	}
 
-	protected function ger_rokka_url_regex_pattern( $id, $filename, $stack ) {
-		return '/' . preg_quote( $this->get_rokka_url( $id, $filename, $stack ), '/' ) . '/';
+	protected function ger_rokka_url_regex_pattern( $filename, $stack ) {
+		return '/' . preg_quote( $this->get_rokka_url( $filename, $stack ), '/' ) . '/';
 	}
 
-	protected function get_rokka_hash( $image_id ) {
-		return 'rokka_dummy_hash_' . $image_id;
+	protected function get_rokka_hash() {
+		return $this->rokka_hash;
 	}
 
 	protected function get_stack_name_from_size( $size ) {
