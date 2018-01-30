@@ -90,15 +90,6 @@ class Rokka_Integration_Settings {
 	}
 
 	/**
-	 * Sets the rokka helper. (Should only be used in unit tests to reinitialize rokka heler)
-	 *
-	 * @param Rokka_Helper $rokka_helper Rokka helper instance.
-	 */
-	public function set_rokka_helper( $rokka_helper ) {
-		$this->rokka_helper = $rokka_helper;
-	}
-
-	/**
 	 * Initialize settings.
 	 */
 	public function init_settings() {
