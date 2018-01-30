@@ -5,7 +5,7 @@ Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
 Tested up to: 4.9.2
 Requires PHP: 5.6
-Stable tag: 1.2.3
+Stable tag: 2.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,13 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 2.0.0 =
+
+This is a huge rewrite of the plugin but there should be no breaking changes.
+
+* [FEATURE] Support attachments which are uploaded through the WordPress REST API (This ensures compatibility to the new Gutenberg editor)
+* [FEATURE] Auto disable rokka integration if settings are incomplete
 
 = 1.2.3 =
 
