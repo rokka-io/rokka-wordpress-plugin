@@ -144,7 +144,7 @@ if ( ! class_exists( 'Rokka_Integration' ) ) :
 			add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		}
 
-		protected function init_plugin() {
+		public function init_plugin() {
 			$this->rokka_helper = new Rokka_Helper();
 
 			if ( $this->rokka_helper->is_rokka_enabled() ) {
