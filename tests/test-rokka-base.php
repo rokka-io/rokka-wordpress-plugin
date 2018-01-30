@@ -1,4 +1,5 @@
 <?php
+
 class Rokka_Base_Test extends Rokka_UnitTestCase {
 	/**
 	 * Test check version.
