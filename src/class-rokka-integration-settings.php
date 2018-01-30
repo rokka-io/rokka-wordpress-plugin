@@ -54,17 +54,16 @@ class Rokka_Integration_Settings {
 	 *
 	 * @var Rokka_Helper
 	 */
-	private $rokka_helper;
+	public $rokka_helper;
 
 	/**
 	 * Rokka_Integration_Settings constructor.
 	 *
 	 * @param Rokka_Integration $parent The main plugin object.
-	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
 	 */
-	public function __construct( $parent, $rokka_helper ) {
-		$this->rokka_helper = $rokka_helper;
+	public function __construct( $parent ) {
 		$this->parent = $parent;
+		$this->rokka_helper = $this->parent->rokka_helper;
 
 		$this->base = 'rokka_';
 
@@ -88,6 +87,15 @@ class Rokka_Integration_Settings {
 		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
 		add_action( 'wp_ajax_rokka_sync_stacks', array( $this, 'ajax_rokka_sync_stacks' ) );
 		add_action( 'wp_ajax_rokka_check_credentials', array( $this, 'ajax_rokka_check_credentials' ) );
+	}
+
+	/**
+	 * Sets the rokka helper. (Should only be used in unit tests to reinitialize rokka heler)
+	 *
+	 * @param $rokka_helper
+	 */
+	public function set_rokka_helper( $rokka_helper ) {
+		$this->rokka_helper = $rokka_helper;
 	}
 
 	/**
@@ -763,14 +771,13 @@ class Rokka_Integration_Settings {
 	 * Ensures only one instance of Rokka_Integration_Settings is loaded or can be loaded.
 	 *
 	 * @param Rokka_Integration $parent The main plugin object.
-	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
 	 *
 	 * @static
 	 * @return Rokka_Integration_Settings Rokka_Integration_Settings instance
 	 */
-	public static function instance( $parent, $rokka_helper ) {
+	public static function instance( $parent ) {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent, $rokka_helper );
+			self::$_instance = new self( $parent );
 		}
 
 		return self::$_instance;
