@@ -115,13 +115,14 @@ class Rokka_Integration {
 	 * Initializes hooks.
 	 */
 	protected function init_hooks() {
-		register_activation_hook( ROKKA_PLUGIN_FILE, array( $this, 'install' ) );
-
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_assets' ), 10, 1 );
 
 		// Load textdomain
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+
+		// check version number on each request
+		add_action( 'init', array( $this, 'check_version' ) );
 	}
 
 	/**
@@ -227,16 +228,22 @@ class Rokka_Integration {
 	}
 
 	/**
-	 * Installation. Runs on activation.
+	 * Checks plugin version.
+	 *
+	 * This check is done on all requests and runs if the versions do not match.
 	 */
-	public function install() {
-		$this->_log_version_number();
+	public function check_version() {
+		if ( ! defined( 'IFRAME_REQUEST' ) && get_option( $this->_token . '_version' ) !== $this->_version ) {
+			$this->_log_version_number();
+			do_action( $this->_token . '_updated' );
+		}
 	}
 
 	/**
 	 * Log the plugin version number in database.
 	 */
 	private function _log_version_number() {
+		delete_option( $this->_token . '_version' );
 		update_option( $this->_token . '_version', $this->_version );
 	}
 
