@@ -18,9 +18,6 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		// enable backend to load all hooks
-		set_current_screen( 'edit-post' );
-
 		$this->_plugin_dir = dirname( dirname( __FILE__ ) );
 		$this->images_dir = $this->_plugin_dir . '/tests/features/images/';
 		$this->sizes = [
@@ -53,12 +50,23 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		// Remove all uploads.
 		$this->remove_added_uploads();
 		parent::tearDown();
 	}
 
+	/**
+	 * Simulates backend environment (is_admin() === true)
+	 */
+	protected function enable_backend() {
+		// enable backend
+		set_current_screen( 'edit-post' );
+	}
+
+	/**
+	 * Enables rokka integration
+	 */
 	protected function enable_rokka() {
 		// Set rokka options
 		update_option( 'rokka_api_key', 'dummy_api_key' );
