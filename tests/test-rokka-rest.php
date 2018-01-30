@@ -1,7 +1,7 @@
 <?php
 
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '>=' ) ) {
-	class RokkaRestTest extends Rokka_REST_UnitTestCase {
+	class Rokka_Rest_Test extends Rokka_REST_UnitTestCase {
 		public function test_add_image_via_rest_without_rokka() {
 			$image_name = '2000x1500.png';
 			$response   = $this->upload_image_via_rest( $image_name );

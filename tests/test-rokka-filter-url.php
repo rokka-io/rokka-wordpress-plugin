@@ -1,6 +1,6 @@
 <?php
 
-class PluginFunctionsTest extends Rokka_UnitTestCase {
+class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 	public function test_get_attachment_url_without_rokka() {
 		$image_name = '2000x1500.png';
 		$attachment_id = $this->upload_attachment( $image_name );
