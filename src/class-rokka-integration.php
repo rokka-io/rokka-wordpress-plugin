@@ -97,6 +97,7 @@ class Rokka_Integration {
 	 */
 	public function includes() {
 		// Load plugin class files
+		require_once( ROKKA_ABSPATH . 'src/class-rokka-attachment.php' );
 		require_once( ROKKA_ABSPATH . 'src/class-rokka-integration-settings.php' );
 		require_once( ROKKA_ABSPATH . 'src/class-rokka-helper.php' );
 		require_once( ROKKA_ABSPATH . 'src/class-rokka-media-management.php' );
@@ -123,6 +124,9 @@ class Rokka_Integration {
 
 		// check version number on each request
 		add_action( 'init', array( $this, 'check_version' ) );
+
+		// display all collected notices if available
+		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
 	}
 
 	/**
@@ -135,6 +139,7 @@ class Rokka_Integration {
 
 		if ( $this->rokka_helper->is_rokka_enabled() ) {
 			new Rokka_Filter_Url( $this->rokka_helper );
+			new Rokka_Attachment( $this->rokka_helper );
 			new Rokka_Rest( $this->rokka_helper );
 			if ( ! is_admin() && $this->rokka_helper->is_output_parsing_enabled() ) {
 				new Rokka_Filter_Content( $this->rokka_helper );
@@ -197,6 +202,27 @@ class Rokka_Integration {
 	public function load_plugin_textdomain() {
 		$domain = 'rokka-integration'; // textdomain can't be stored in class variable since it must be a single string literal
 		load_plugin_textdomain( $domain, false, dirname( plugin_basename( ROKKA_PLUGIN_FILE ) ) . '/languages/' );
+	}
+
+	/**
+	 * Displays all admin notices
+	 *
+	 * @return bool
+	 */
+	public function show_admin_notices() {
+		$notices = get_option( 'rokka_notices' );
+		if ( empty( $notices ) || ! is_array( $notices ) ) {
+			return '';
+		}
+
+		// print all messages
+		foreach ( $notices as $type => $messages ) {
+			foreach ( $messages as $notice ) {
+				echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $notice ) . '</p></div>';
+			}
+		}
+
+		return delete_option( 'rokka_notices' );
 	}
 
 	/**

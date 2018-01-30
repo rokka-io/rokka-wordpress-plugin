@@ -926,6 +926,26 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Stores message in option to print it after redirect
+	 *
+	 * @param string $message Message which should be stored.
+	 * @param string $type Message type (error, warning, success, info).
+	 *
+	 * @return bool True if message was stored successfully.
+	 */
+	public function store_message_in_notices_option( $message, $type = 'success' ) {
+		if ( ! empty( $message ) ) {
+			// store message in option array
+			$notices = get_option( 'rokka_notices' );
+			$notices[ $type ][] = $message;
+
+			return update_option( 'rokka_notices', $notices );
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns Rokka url scheme.
 	 *
 	 * @return string

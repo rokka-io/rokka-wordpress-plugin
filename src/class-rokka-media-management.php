@@ -35,11 +35,6 @@ class Rokka_Media_Management {
 	 * Initializes media management.
 	 */
 	public function init() {
-		// handle changes on attachments
-		add_action( 'add_attachment', array( $this, 'rokka_upload' ), 10, 1 );
-		add_filter( 'update_attached_file', array( $this, 'rokka_update' ), 10, 2 );
-		add_action( 'delete_attachment', array( $this, 'rokka_delete' ), 10, 1 );
-
 		// add custom columns to media admin list
 		add_filter( 'manage_media_columns', array( $this, 'add_custom_media_columns' ), 10, 2 );
 		add_action( 'manage_media_custom_column', array( $this, 'print_custom_media_columns_data' ), 10, 2 );
@@ -57,94 +52,6 @@ class Rokka_Media_Management {
 		add_filter( 'bulk_actions-upload', array( $this, 'add_bulk_actions' ), 10, 1 );
 		add_filter( 'handle_bulk_actions-upload', array( $this, 'handle_upload_bulk_action' ), 10, 3 );
 		add_filter( 'handle_bulk_actions-upload', array( $this, 'handle_delete_bulk_action' ), 10, 3 );
-
-		// display all notices after executing list actions
-		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
-	}
-
-	/**
-	 * Handle upload of image to rokka.
-	 *
-	 * @param integer $attachment_id Attachment id.
-	 */
-	public function rokka_upload( $attachment_id ) {
-		try {
-			$upload_success = $this->rokka_helper->upload_image_to_rokka( $attachment_id );
-
-			if ( ! $upload_success ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $attachment_id ), 'error' );
-			}
-		} catch ( Exception $e ) {
-			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
-		}
-	}
-
-	/**
-	 * Updates file on rokka.
-	 *
-	 * @param string $file          Path to the attached file to update.
-	 * @param int    $attachment_id Attachment ID.
-	 *
-	 * @return string
-	 */
-	public function rokka_update( $file, $attachment_id ) {
-		// This check is also needed that this function is not executed when the attachment is added (add_attachment action)
-		if ( ! $this->rokka_helper->is_on_rokka( $attachment_id ) ) {
-			return $file;
-		}
-
-		try {
-			// delete old image on rokka before uploading new one
-			$delete_success = $this->rokka_helper->delete_image_from_rokka( $attachment_id );
-
-			if ( ! $delete_success ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka.', '%s contains image id', 'rokka-integration' ), $attachment_id ), 'error' );
-			}
-
-			// upload new file to rokka
-			$upload_success = $this->rokka_helper->upload_image_to_rokka( $attachment_id, $file );
-
-			if ( ! $upload_success ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka.', '%s contains image id', 'rokka-integration' ), $attachment_id ), 'error' );
-			}
-		} catch ( Exception $e ) {
-			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %1$s on rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
-		}
-
-		return $file;
-	}
-
-	/**
-	 * Deletes an image on rokka.
-	 *
-	 * @param int $post_id Attachment id.
-	 *
-	 * @return bool
-	 */
-	public function rokka_delete( $post_id ) {
-		if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
-			return false;
-		}
-
-		try {
-			$delete_success = $this->rokka_helper->delete_image_from_rokka( $post_id );
-
-			if ( ! $delete_success ) {
-				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
-			}
-			return $delete_success;
-		} catch ( Exception $e ) {
-			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
-		}
-
-		return false;
 	}
 
 	/**
@@ -306,7 +213,7 @@ class Rokka_Media_Management {
 				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
 			} catch ( Exception $e ) {
 				/* translators: %s contains error message */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error saving the subject area. Message: %s' , '%s contains error message', 'rokka-integration' ), $e->getMessage() ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error saving the subject area. Message: %s' , '%s contains error message', 'rokka-integration' ), $e->getMessage() ), 'error' );
 			}
 		}
 
@@ -372,14 +279,14 @@ class Rokka_Media_Management {
 
 			if ( $delete_success ) {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully deleted from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ) );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully deleted from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ) );
 			} else {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 			}
 		} catch ( Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 		}
 
 		wp_safe_redirect( wp_get_referer() );
@@ -403,14 +310,14 @@ class Rokka_Media_Management {
 
 			if ( $upload_success ) {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully uploaded to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ) );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'Image %s was successfully uploaded to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ) );
 			} else {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 			}
 		} catch ( Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 		}
 
 		wp_safe_redirect( wp_get_referer() );
@@ -451,11 +358,11 @@ class Rokka_Media_Management {
 		foreach ( $post_ids as $post_id ) {
 			if ( ! $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 				$image_count--;
 			} elseif ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 				$image_count--;
 			} else {
 				try {
@@ -463,17 +370,17 @@ class Rokka_Media_Management {
 
 					if ( ! $upload_success ) {
 						/* translators: %s contains image id */
-						$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+						$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 					}
 				} catch ( Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
-					$this->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 				}
 			}
 		}
 		if ( $image_count > 0 ) {
 			/* translators: %s contains image count */
-			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been uploaded to rokka.', '%s images have been uploaded to rokka.', $image_count, '%s contains image count', 'rokka-integration' ), $image_count ) );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _nx( '%s image has been uploaded to rokka.', '%s images have been uploaded to rokka.', $image_count, '%s contains image count', 'rokka-integration' ), $image_count ) );
 		}
 		return $redirect_to;
 	}
@@ -497,7 +404,7 @@ class Rokka_Media_Management {
 		foreach ( $post_ids as $post_id ) {
 			if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
 				/* translators: %s contains image id */
-				$this->store_message_in_notices_option( sprintf( _x( 'The image %s is not yet on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The image %s is not yet on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 				$image_count--;
 			} else {
 				try {
@@ -505,60 +412,19 @@ class Rokka_Media_Management {
 
 					if ( ! $delete_success ) {
 						/* translators: %s contains image id */
-						$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
+						$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 					}
 				} catch ( Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
-					$this->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 				}
 			}
 		}
 		if ( $image_count > 0 ) {
 			/* translators: %s contains image count */
-			$this->store_message_in_notices_option( sprintf( _nx( '%s image has been deleted from rokka.', '%s images have been deleted from rokka.', $image_count, '%s contains image count', 'rokka-integration' ), $image_count ) );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _nx( '%s image has been deleted from rokka.', '%s images have been deleted from rokka.', $image_count, '%s contains image count', 'rokka-integration' ), $image_count ) );
 		}
 		return $redirect_to;
-	}
-
-	/**
-	 * Stores message in option to print it out after redirect
-	 *
-	 * @param string $message Message which should be stored.
-	 * @param string $type Message type (error, warning, success, info).
-	 *
-	 * @return bool True if message was stored successfully.
-	 */
-	protected function store_message_in_notices_option( $message, $type = 'success' ) {
-		if ( ! empty( $message ) ) {
-			// store message in option array
-			$notices = get_option( 'rokka_notices' );
-			$notices[ $type ][] = $message;
-
-			return update_option( 'rokka_notices', $notices );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Displays all admin notices
-	 *
-	 * @return bool
-	 */
-	public function show_admin_notices() {
-		$notices = get_option( 'rokka_notices' );
-		if ( empty( $notices ) || ! is_array( $notices ) ) {
-			return '';
-		}
-
-		// print all messages
-		foreach ( $notices as $type => $messages ) {
-			foreach ( $messages as $notice ) {
-				echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $notice ) . '</p></div>';
-			}
-		}
-
-		return delete_option( 'rokka_notices' );
 	}
 
 }
