@@ -10,6 +10,7 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	protected $_plugin_dir;
 	protected $images_dir;
 	protected $rokka_company_name = 'dummy_company_name';
+	protected $rokka_api_key = 'dummy_api_key';
 	protected $rokka_url = '';
 	protected $stack_prefix = 'wp-';
 	protected $rokka_hash = 'my_random_rokka_hash_123';
@@ -69,8 +70,8 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	 */
 	protected function enable_rokka() {
 		// Set rokka options
-		update_option( 'rokka_api_key', 'dummy_api_key' );
-		update_option( 'rokka_company_name', 'dummy_company_name' );
+		update_option( 'rokka_api_key', $this->rokka_api_key );
+		update_option( 'rokka_company_name', $this->rokka_company_name );
 		update_option( 'rokka_rokka_enabled', true );
 
 		// Reload plugin to enable rokka
@@ -137,8 +138,11 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 		return '/' . preg_quote( $this->get_default_wordpress_url( $filename ), '/' ) . '/';
 	}
 
-	protected function get_rokka_url( $filename, $stack ) {
-		return $this->rokka_url . '/' . $stack . '/' . $this->get_rokka_hash() . '/' . $filename;
+	protected function get_rokka_url( $filename, $stack, $rokka_url = '' ) {
+		if ( empty( $rokka_url ) ) {
+			$rokka_url = $this->rokka_url;
+		}
+		return $rokka_url . '/' . $stack . '/' . $this->get_rokka_hash() . '/' . $filename;
 	}
 
 	protected function ger_rokka_url_regex_pattern( $filename, $stack ) {
