@@ -159,7 +159,7 @@ class Rokka_Integration {
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::add_command(
 				'rokka',
-				'Rokka_WP_CLI_Command'
+				'\Rokka_Integration\CLI_Command\Rokka_WP_CLI_Command'
 			);
 		}
 	}
