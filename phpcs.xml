@@ -13,6 +13,8 @@
 	<rule ref="WordPress">
 		<exclude name="Squiz.Commenting.InlineComment" />
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
+		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
 		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
 		<exclude name="WordPress.VIP.RestrictedFunctions" />
 	</rule>
