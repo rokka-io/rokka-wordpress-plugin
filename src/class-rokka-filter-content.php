@@ -1,9 +1,11 @@
-<?php namespace Rokka_Integration;
+<?php
 /**
  * Rokka filter content
  *
  * @package rokka-integration
  */
+
+namespace Rokka_Integration;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

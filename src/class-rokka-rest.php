@@ -1,9 +1,11 @@
-<?php namespace Rokka_Integration;
+<?php
 /**
  * Handles actions from WP REST API.
  *
  * @package rokka-integration
  */
+
+namespace Rokka_Integration;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -100,9 +102,9 @@ class Rokka_Rest {
 	 * @since 4.7.0
 	 *
 	 * @param \WP_Post         $attachment Inserted or updated attachment
-	 *                                    object.
+	 *                                     object.
 	 * @param \WP_REST_Request $request    The request sent to the API.
-	 * @param bool            $creating   True when creating an attachment, false when updating.
+	 * @param bool             $creating   True when creating an attachment, false when updating.
 	 */
 	public function handle_rest_insert( $attachment, $request, $creating ) {
 		if ( $creating ) {

@@ -1,9 +1,11 @@
-<?php namespace Rokka_Integration\CLI_Command;
+<?php
 /**
  * Rokka cli command class.
  *
  * @package rokka-cli-command
  */
+
+namespace Rokka_Integration\CLI_Command;
 
 use \Rokka_Integration\Rokka_Helper;
 

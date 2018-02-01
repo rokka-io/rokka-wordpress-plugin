@@ -1,9 +1,11 @@
-<?php namespace Rokka_Integration;
+<?php
 /**
  * Media Management
  *
  * @package rokka-integration
  */
+
+namespace Rokka_Integration;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -58,7 +60,7 @@ class Rokka_Media_Management {
 	 * Adds hash as custom attachment field
 	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
 	 *
-	 * @param array   $form_fields An array of attachment form fields.
+	 * @param array    $form_fields An array of attachment form fields.
 	 * @param \WP_Post $post        The WP_Post attachment object.
 	 * @return array
 	 */
@@ -86,7 +88,7 @@ class Rokka_Media_Management {
 	 * Adds subject area as custom attachment field
 	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
 	 *
-	 * @param array   $form_fields An array of attachment form fields.
+	 * @param array    $form_fields An array of attachment form fields.
 	 * @param \WP_Post $post        The WP_Post attachment object.
 	 * @return array
 	 */
