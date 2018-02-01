@@ -1,4 +1,4 @@
-<?php
+<?php namespace Tests\Rokka_Integration;
 /**
  * Created by PhpStorm.
  * User: work
@@ -6,7 +6,9 @@
  * Time: 09:12
  */
 
-class Rokka_UnitTestCase extends WP_UnitTestCase {
+use Rokka_Integration\Rokka_Integration;
+
+class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	protected $_plugin_dir;
 	protected $images_dir;
 	protected $rokka_company_name = 'dummy_company_name';

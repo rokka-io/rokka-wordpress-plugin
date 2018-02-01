@@ -1,4 +1,4 @@
-<?php
+<?php namespace Tests\Rokka_Integration;
 /**
  * Created by PhpStorm.
  * User: work
@@ -35,7 +35,7 @@ class Rokka_REST_UnitTestCase extends Rokka_UnitTestCase {
 	 * Uploads image via rest and returns response.
 	 *
 	 * @param string $image_name Name of image which should be uploaded.
-	 * @return WP_REST_Response
+	 * @return \WP_REST_Response
 	 */
 	public function upload_image_via_rest( $image_name ) {
 		$file = file_get_contents( $this->images_dir . $image_name );

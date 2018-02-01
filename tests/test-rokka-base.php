@@ -1,4 +1,8 @@
 <?php
+namespace Tests\Rokka_Integration;
+
+use Rokka_Integration\Rokka_Helper;
+use Rokka_Integration\Rokka_Integration;
 
 class Rokka_Base_Test extends Rokka_UnitTestCase {
 	/**

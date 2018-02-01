@@ -1,4 +1,4 @@
-<?php
+<?php namespace Tests\Rokka_Integration;
 
 class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 	public function test_get_attachment_url_without_rokka() {

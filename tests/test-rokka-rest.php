@@ -1,4 +1,4 @@
-<?php
+<?php namespace Tests\Rokka_Integration;
 
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '>=' ) ) {
 	class Rokka_Rest_Test extends Rokka_REST_UnitTestCase {
