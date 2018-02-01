@@ -58,7 +58,7 @@ class Rokka_Attachment {
 			}
 		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id, $e->getMessage() ), 'error' );
 		}
 	}
 
@@ -94,7 +94,7 @@ class Rokka_Attachment {
 			}
 		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %1$s on rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %1$s on rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id, $e->getMessage() ), 'error' );
 		}
 
 		return $file;
@@ -122,7 +122,7 @@ class Rokka_Attachment {
 			return $delete_success;
 		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id, $e->getMessage() ), 'error' );
 		}
 
 		return false;

@@ -99,19 +99,19 @@ class Rokka_Integration {
 	 */
 	public function includes() {
 		// Load plugin class files
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-attachment.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-integration-settings.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-helper.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-media-management.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-rest.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-filter-url.php' );
-		require_once( ROKKA_ABSPATH . 'src/class-rokka-filter-content.php' );
+		require_once ROKKA_ABSPATH . 'src/class-rokka-attachment.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-integration-settings.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-helper.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-media-management.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-rest.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-url.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-content.php';
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			require_once( ROKKA_ABSPATH . 'src/cli-command/class-rokka-wp-cli-command.php' );
+			require_once ROKKA_ABSPATH . 'src/cli-command/class-rokka-wp-cli-command.php';
 		}
 
 		// add vendor library
-		require_once( ROKKA_ABSPATH . 'vendor/autoload.php' );
+		require_once ROKKA_ABSPATH . 'vendor/autoload.php';
 	}
 
 	/**
@@ -134,7 +134,7 @@ class Rokka_Integration {
 	/**
 	 * Initialize plugin dependencies.
 	 *
-	 * @throws Exception Throws exception if WP_CLI command couldn't be added.
+	 * @throws \Exception Throws exception if WP_CLI command couldn't be added.
 	 */
 	public function init_plugin() {
 		$this->rokka_helper = new Rokka_Helper();
@@ -262,7 +262,7 @@ class Rokka_Integration {
 	 */
 	public function check_version() {
 		if ( ! defined( 'IFRAME_REQUEST' ) && get_option( $this->_token . '_version' ) !== $this->_version ) {
-			$this->_log_version_number();
+			$this->log_version_number();
 			do_action( $this->_token . '_updated' );
 		}
 	}
@@ -270,7 +270,7 @@ class Rokka_Integration {
 	/**
 	 * Log the plugin version number in database.
 	 */
-	private function _log_version_number() {
+	protected function log_version_number() {
 		delete_option( $this->_token . '_version' );
 		update_option( $this->_token . '_version', $this->_version );
 	}

@@ -180,7 +180,7 @@ class Rokka_Media_Management {
 	 * @param array $attachment An array of attachment metadata.
 	 * @return array
 	 */
-	function save_custom_attachment_fields( $post, $attachment ) {
+	public function save_custom_attachment_fields( $post, $attachment ) {
 		$hash = '';
 
 		// save hash field
@@ -215,7 +215,7 @@ class Rokka_Media_Management {
 				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
 			} catch ( \Exception $e ) {
 				/* translators: %s contains error message */
-				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error saving the subject area. Message: %s' , '%s contains error message', 'rokka-integration' ), $e->getMessage() ), 'error' );
+				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error saving the subject area. Message: %s', '%s contains error message', 'rokka-integration' ), $e->getMessage() ), 'error' );
 			}
 		}
 
@@ -288,7 +288,7 @@ class Rokka_Media_Management {
 			}
 		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id, $e->getMessage() ), 'error' );
 		}
 
 		wp_safe_redirect( wp_get_referer() );
@@ -319,7 +319,7 @@ class Rokka_Media_Management {
 			}
 		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
-			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id, $e->getMessage() ), 'error' );
 		}
 
 		wp_safe_redirect( wp_get_referer() );
@@ -376,7 +376,7 @@ class Rokka_Media_Management {
 					}
 				} catch ( \Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
-					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id, $e->getMessage() ), 'error' );
 				}
 			}
 		}
@@ -418,7 +418,7 @@ class Rokka_Media_Management {
 					}
 				} catch ( \Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
-					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
+					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s', '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id, $e->getMessage() ), 'error' );
 				}
 			}
 		}

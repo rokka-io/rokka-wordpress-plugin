@@ -282,20 +282,20 @@ class Rokka_Integration_Settings {
 		wp_localize_script( $this->plugin_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
 		<div class="wrap" id="<?php echo esc_attr( $this->plugin_token ); ?>_settings">
-			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-integration' ); ?></h1>
+			<h1><?php esc_html_e( 'Rokka Settings', 'rokka-integration' ); ?></h1>
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings', 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete', 'rokka-integration' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></h2>
+							<h2><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.', 'rokka-integration' ); ?>
 							</p>
 							<?php
 							try {
@@ -342,16 +342,16 @@ class Rokka_Integration_Settings {
 													<td><?php echo esc_html( $stack['height'] ); ?></td>
 													<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-integration' ) : esc_html_e( 'No', 'rokka-integration' ); ?></td>
 													<td><?php echo esc_html( $stack_operation_name ); ?></td>
-												<?php endif ; ?>
+												<?php endif; ?>
 											</tr>
-										<?php endforeach ; ?>
+										<?php endforeach; ?>
 										</tbody>
 									</table>
-									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-integration' ); ?></button>
+									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
 									<div id="progress-info-stacks"></div>
 								<?php else : ?>
 									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
-								<?php endif ; ?>
+								<?php endif; ?>
 							<?php } catch ( \Exception $e ) { ?>
 								<p>
 									<?php
@@ -370,15 +370,15 @@ class Rokka_Integration_Settings {
 
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
-						<?php endif ; ?>
+						<?php endif; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-integration' ); ?></h2>
+							<h2><?php esc_html_e( 'Mass upload images to rokka', 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_upload ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:' , 'rokka-integration' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:', 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_upload as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -387,7 +387,7 @@ class Rokka_Integration_Settings {
 								}
 								echo '</ul>'
 								?>
-								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka' , 'rokka-integration' ); ?></button>
+								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka', 'rokka-integration' ); ?></button>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
@@ -396,14 +396,14 @@ class Rokka_Integration_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.' , 'rokka-integration' ); ?>
+									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.', 'rokka-integration' ); ?>
 								</p>
-							<?php endif ; ?>
+							<?php endif; ?>
 
-							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-integration' ); ?></h2>
+							<h2><?php esc_html_e( 'Danger zone - Mass delete images', 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_delete ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:' , 'rokka-integration' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:', 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_delete as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -412,7 +412,7 @@ class Rokka_Integration_Settings {
 								}
 								echo '</ul>';
 								?>
-								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka' , 'rokka-integration' ); ?></button>
+								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka', 'rokka-integration' ); ?></button>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">
@@ -421,12 +421,12 @@ class Rokka_Integration_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-integration' ); ?>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.', 'rokka-integration' ); ?>
 								</p>
-							<?php endif ; ?>
+							<?php endif; ?>
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-integration' ); ?></p>
-						<?php endif ; ?>
+						<?php endif; ?>
 					</div>
 				<?php else : ?>
 					<div class="tab-content">
@@ -438,12 +438,12 @@ class Rokka_Integration_Settings {
 							submit_button();
 							?>
 							<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
-								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials' , 'rokka-integration' ); ?></button>
+								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials', 'rokka-integration' ); ?></button>
 								<div id="rokka-credentials-status"></div>
-							<?php endif ; ?>
+							<?php endif; ?>
 						</form>
 					</div>
-				<?php endif ; ?>
+				<?php endif; ?>
 			</div><!--end #column-left -->
 
 			<div id="column-right">
