@@ -23,6 +23,9 @@ class Rokka_Base_Test extends Rokka_UnitTestCase {
 
 	/**
 	 * Settings provided via constant should be prioritized over database options
+	 * This test must run in a separate process since it defines constants!
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_check_constant_settings() {
 		$constant_api_key = 'constant_api_key';
