@@ -88,7 +88,7 @@ class Rokka_WP_CLI_Command extends WP_CLI_Command {
 	 * @param array $assoc_args Associative arguments from cli-command.
 	 */
 	public function create_noop_stack( $args, $assoc_args ) {
-		if ( isset( $assoc_args['name'] ) && ! empty ( $assoc_args['name'] ) ) {
+		if ( isset( $assoc_args['name'] ) && ! empty( $assoc_args['name'] ) ) {
 			try {
 				$rokka_helper = new Rokka_Helper();
 				if ( $rokka_helper->are_settings_complete() ) {
