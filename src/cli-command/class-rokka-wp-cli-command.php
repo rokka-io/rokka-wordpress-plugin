@@ -9,7 +9,7 @@ namespace Rokka_Integration\CLI_Command;
 
 use \Rokka_Integration\Rokka_Helper;
 
-if ( ! class_exists( '\WP_CLI_Command' ) ) {
+if ( ! class_exists( \WP_CLI_Command::class ) ) {
 	return;
 }
 

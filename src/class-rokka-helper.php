@@ -7,6 +7,9 @@
 
 namespace Rokka_Integration;
 
+use Rokka\Client\Core\Stack;
+use Rokka\Client\Core\StackOperation;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -458,25 +461,27 @@ class Rokka_Helper {
 	 */
 	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true, $autoformat = false ) {
 		$client = $this->rokka_get_client();
-		$operations = array();
+		$stack = new Stack( null, $name );
 		$mode = $crop ? 'fill' : 'box';
-		$operations[] = new \Rokka\Client\Core\StackOperation( 'resize', array(
-			'width' => $width,
-			'height' => $height,
-			'mode' => $mode,
-			'upscale' => false,
-		) );
-		if ( $crop ) {
-			$operations[] = new \Rokka\Client\Core\StackOperation( 'crop', array(
+		$stack->addStackOperation(
+			new StackOperation( 'resize', array(
 				'width' => $width,
 				'height' => $height,
-			) );
-		}
-		$options = array(
-			'autoformat' => $autoformat,
+				'mode' => $mode,
+				'upscale' => false,
+			) )
 		);
+		if ( $crop ) {
+			$stack->addStackOperation(
+				new StackOperation( 'crop', array(
+					'width' => $width,
+					'height' => $height,
+				) )
+			);
+		}
+		$stack->setStackOptions( [ 'autoformat' => $autoformat ] );
 
-		$client->createStack( $name, $operations, '', $options, $overwrite );
+		$client->saveStack( $stack, [ 'overwrite' => $overwrite ] );
 	}
 
 	/**
@@ -489,9 +494,8 @@ class Rokka_Helper {
 	 */
 	public function create_noop_stack( $name, $overwrite = true ) {
 		$client = $this->rokka_get_client();
-		$operations = array();
-		$operations[] = new \Rokka\Client\Core\StackOperation( 'noop' );
-		$client->createStack( $name, $operations, '', [], $overwrite );
+		$stack = new Stack( null, $name );
+		$client->saveStack( $stack, [ 'overwrite' => $overwrite ] );
 	}
 
 	/**
@@ -866,7 +870,7 @@ class Rokka_Helper {
 	 *
 	 * @return false|string New hash on success. False on failure.
 	 *
-	 * @throws Exception Throws exception if there was something wrong with saving the subject area on rokka.
+	 * @throws \Exception Throws exception if there was something wrong with saving the subject area on rokka.
 	 */
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
