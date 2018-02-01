@@ -18,7 +18,7 @@ class Rokka_UnitTestCase extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->_plugin_dir = dirname( dirname( __FILE__ ) );
+		$this->_plugin_dir = dirname( dirname( dirname( __FILE__ ) ) ); // two levels up
 		$this->images_dir = $this->_plugin_dir . '/tests/features/images/';
 		$this->sizes = [
 			'thumbnail' => [

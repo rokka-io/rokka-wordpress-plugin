@@ -25,8 +25,8 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 require $_tests_dir . '/includes/bootstrap.php';
 
 // Load own UnitTestCase framework
-require_once dirname( __FILE__ ) . '/Rokka_UnitTestCase.php';
+require_once dirname( __FILE__ ) . '/framework/Rokka_UnitTestCase.php';
 // Only initialize REST unit tests in supported versions (WP >= 4.7)
 if ( version_compare( $GLOBALS['wp_version'], '4.7', '>=' ) ) {
-	require_once dirname( __FILE__ ) . '/Rokka_REST_UnitTestCase.php';
+	require_once dirname( __FILE__ ) . '/framework/Rokka_REST_UnitTestCase.php';
 }
