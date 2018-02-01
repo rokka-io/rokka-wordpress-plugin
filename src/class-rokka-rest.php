@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Handles actions from WP REST API.
  *
@@ -53,7 +53,7 @@ class Rokka_Rest {
 			if ( ! $upload_success ) {
 				return false;
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return false;
 		}
 
@@ -87,7 +87,7 @@ class Rokka_Rest {
 			if ( ! $upload_success ) {
 				return false;
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return false;
 		}
 
@@ -99,9 +99,9 @@ class Rokka_Rest {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_Post         $attachment Inserted or updated attachment
+	 * @param \WP_Post         $attachment Inserted or updated attachment
 	 *                                    object.
-	 * @param WP_REST_Request $request    The request sent to the API.
+	 * @param \WP_REST_Request $request    The request sent to the API.
 	 * @param bool            $creating   True when creating an attachment, false when updating.
 	 */
 	public function handle_rest_insert( $attachment, $request, $creating ) {

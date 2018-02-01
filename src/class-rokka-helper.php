@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Rokka helper class.
  *
@@ -289,7 +289,7 @@ class Rokka_Helper {
 	 *
 	 * @return bool
 	 *
-	 * @throws Exception Throws exception if there was something wrong with uploading image to rokka.
+	 * @throws \Exception Throws exception if there was something wrong with uploading image to rokka.
 	 */
 	public function upload_image_to_rokka( $attachment_id, $file_path = '' ) {
 		if ( empty( $file_path ) ) {
@@ -331,7 +331,7 @@ class Rokka_Helper {
 	 *
 	 * @return bool
 	 *
-	 * @throws Exception Throws exception if there was something wrong with deleting image on rokka.
+	 * @throws \Exception Throws exception if there was something wrong with deleting image on rokka.
 	 */
 	public function delete_image_from_rokka( $attachment_id ) {
 		$hash = get_post_meta( $attachment_id, 'rokka_hash', true );
@@ -392,7 +392,7 @@ class Rokka_Helper {
 	 *
 	 * @return bool
 	 *
-	 * @throws Exception Exception on failure.
+	 * @throws \Exception Exception on failure.
 	 */
 	private function is_valid_attachment( $attachment_id, $file_path ) {
 		if ( empty( $file_path ) ) {
@@ -408,7 +408,7 @@ class Rokka_Helper {
 		if ( ! file_exists( $file_path ) ) {
 			/* translators: %s contains file path */
 			$error_msg = sprintf( esc_html_x( 'File %s does not exist', '%s contains file path', 'rokka-integration' ), $file_path );
-			throw new Exception( $error_msg );
+			throw new \Exception( $error_msg );
 		}
 
 		return true;
@@ -452,7 +452,7 @@ class Rokka_Helper {
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
 	 * @param bool   $autoformat Enable autoformat on stack. Default false.
 	 *
-	 * @throws Exception Throws exception if there was something wrong with the request.
+	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
 	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true, $autoformat = false ) {
 		$client = $this->rokka_get_client();
@@ -483,7 +483,7 @@ class Rokka_Helper {
 	 * @param string $name Stack name.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
 	 *
-	 * @throws Exception Throws exception if there was something wrong with the request.
+	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
 	public function create_noop_stack( $name, $overwrite = true ) {
 		$client = $this->rokka_get_client();
@@ -500,7 +500,7 @@ class Rokka_Helper {
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
 	 *
-	 * @throws Exception Throws exception if there was something wrong with the request.
+	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
 	public function update_stack( $name, $width, $height, $crop = false ) {
 		$this->create_stack( $name, $width, $height, $crop, true, $this->get_autoformat() );
@@ -521,7 +521,7 @@ class Rokka_Helper {
 	 *
 	 * @return array
 	 *
-	 * @throws Exception Throws exception if there was something wrong with syncing the stacks with rokka.
+	 * @throws \Exception Throws exception if there was something wrong with syncing the stacks with rokka.
 	 */
 	public function rokka_sync_stacks() {
 		$stacks_to_sync = $this->get_stacks_to_sync();
@@ -592,7 +592,7 @@ class Rokka_Helper {
 				'crop' => false,
 				'operation' => self::STACK_SYNC_OPERATION_KEEP,
 			);
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			$stacks_to_sync[ $noop_stackname ] = array(
 				'name' => $noop_stackname,
 				'width' => '0',
@@ -868,7 +868,7 @@ class Rokka_Helper {
 	 */
 	public function save_subject_area( $hash, $x, $y, $width, $height ) {
 		$client = $this->rokka_get_client();
-		$subject_area = new Rokka\Client\Core\DynamicMetadata\SubjectArea( $x, $y, $width, $height );
+		$subject_area = new \Rokka\Client\Core\DynamicMetadata\SubjectArea( $x, $y, $width, $height );
 		$new_hash = $client->setDynamicMetadata(
 			$subject_area,
 			$hash,
@@ -892,14 +892,14 @@ class Rokka_Helper {
 		$client = $this->rokka_get_client();
 		try {
 			$new_hash = $client->deleteDynamicMetadata(
-				Rokka\Client\Core\DynamicMetadata\SubjectArea::getName(),
+				\Rokka\Client\Core\DynamicMetadata\SubjectArea::getName(),
 				$hash,
 				'',
 				array(
 					'deletePrevious' => $this->get_delete_previous(),
 				)
 			);
-		} catch ( GuzzleHttp\Exception\ClientException $e ) {
+		} catch ( \GuzzleHttp\Exception\ClientException $e ) {
 			// the deleteDynamicMetadata will throw a ClientException if the SubjectArea doesn't exist
 			// ignore this exception and continue
 			// hash stays the same in this case
@@ -920,7 +920,7 @@ class Rokka_Helper {
 			// the list stacks request fails if the credentials are wrong
 			$client->listStacks( 1 );
 			return true;
-		} catch ( GuzzleHttp\Exception\ClientException $e ) {
+		} catch ( \GuzzleHttp\Exception\ClientException $e ) {
 			return false;
 		}
 	}

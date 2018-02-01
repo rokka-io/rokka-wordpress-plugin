@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Rokka settings page
  *
@@ -350,7 +350,7 @@ class Rokka_Integration_Settings {
 								<?php else : ?>
 									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
 								<?php endif ; ?>
-							<?php } catch ( Exception $e ) { ?>
+							<?php } catch ( \Exception $e ) { ?>
 								<p>
 									<?php
 									printf(
@@ -669,7 +669,7 @@ class Rokka_Integration_Settings {
 			} else {
 				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
@@ -705,7 +705,7 @@ class Rokka_Integration_Settings {
 			} else {
 				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
@@ -733,7 +733,7 @@ class Rokka_Integration_Settings {
 
 			wp_send_json_error( __( 'Could not process stacks.', 'rokka-integration' ), 400 );
 			wp_die();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 

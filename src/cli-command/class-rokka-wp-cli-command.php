@@ -1,18 +1,20 @@
-<?php
+<?php namespace Rokka_Integration\CLI_Command;
 /**
  * Rokka cli command class.
  *
  * @package rokka-cli-command
  */
 
-if ( ! class_exists( 'WP_CLI_Command' ) ) {
+use \Rokka_Integration\Rokka_Helper;
+
+if ( ! class_exists( '\WP_CLI_Command' ) ) {
 	return;
 }
 
 /**
  * Class Rokka_WP_CLI_Command
  */
-class Rokka_WP_CLI_Command extends WP_CLI_Command {
+class Rokka_WP_CLI_Command extends \WP_CLI_Command {
 
 	/**
 	 * Creates stack on rokka.
@@ -59,17 +61,17 @@ class Rokka_WP_CLI_Command extends WP_CLI_Command {
 			try {
 				$rokka_helper = new Rokka_Helper();
 				if ( $rokka_helper->are_settings_complete() ) {
-					WP_CLI::line( sprintf( 'Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s, autoformat: %5$s]...', $name, $width, $height, ( $crop ? 'true' : 'false' ), ( $autoformat ? 'true' : 'false' ) ) );
+					\WP_CLI::line( sprintf( 'Creating stack %1$s [width: %2$s, height: %3$s, crop: %4$s, autoformat: %5$s]...', $name, $width, $height, ( $crop ? 'true' : 'false' ), ( $autoformat ? 'true' : 'false' ) ) );
 					$rokka_helper->create_stack( $name, $width, $height, $crop, true, $autoformat );
-					WP_CLI::success( 'Stack successfully created or updated.' );
+					\WP_CLI::success( 'Stack successfully created or updated.' );
 				} else {
-					WP_CLI::warning( 'Please configure rokka in settings before creating new stack.' );
+					\WP_CLI::warning( 'Please configure rokka in settings before creating new stack.' );
 				}
-			} catch ( Exception $e ) {
-				WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
+			} catch ( \Exception $e ) {
+				\WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
 			}
 		} else {
-			WP_CLI::error( 'Please provide all required parameters.' );
+			\WP_CLI::error( 'Please provide all required parameters.' );
 		}
 	}
 
@@ -92,17 +94,17 @@ class Rokka_WP_CLI_Command extends WP_CLI_Command {
 			try {
 				$rokka_helper = new Rokka_Helper();
 				if ( $rokka_helper->are_settings_complete() ) {
-					WP_CLI::line( sprintf( 'Creating noop stack %1$s...', $assoc_args['name'] ) );
+					\WP_CLI::line( sprintf( 'Creating noop stack %1$s...', $assoc_args['name'] ) );
 					$rokka_helper->create_noop_stack( $assoc_args['name'] );
-					WP_CLI::success( 'Stack successfully created or updated.' );
+					\WP_CLI::success( 'Stack successfully created or updated.' );
 				} else {
-					WP_CLI::warning( 'Please configure rokka in settings before creating noop stack.' );
+					\WP_CLI::warning( 'Please configure rokka in settings before creating noop stack.' );
 				}
-			} catch ( Exception $e ) {
-				WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
+			} catch ( \Exception $e ) {
+				\WP_CLI::error( 'rokka-API threw an exception: ' . $e->getMessage() );
 			}
 		} else {
-			WP_CLI::error( 'Please provide all required parameters.' );
+			\WP_CLI::error( 'Please provide all required parameters.' );
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Attachment
  *
@@ -54,7 +54,7 @@ class Rokka_Attachment {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $attachment_id ), 'error' );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
 			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
 		}
@@ -90,7 +90,7 @@ class Rokka_Attachment {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %s on rokka.', '%s contains image id', 'rokka-integration' ), $attachment_id ), 'error' );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
 			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error updating image %1$s on rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $attachment_id,  $e->getMessage() ), 'error' );
 		}
@@ -118,7 +118,7 @@ class Rokka_Attachment {
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 			}
 			return $delete_success;
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
 			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 		}

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Rokka filter content
  *

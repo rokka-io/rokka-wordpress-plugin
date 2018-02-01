@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Media Management
  *
@@ -59,7 +59,7 @@ class Rokka_Media_Management {
 	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
 	 *
 	 * @param array   $form_fields An array of attachment form fields.
-	 * @param WP_Post $post        The WP_Post attachment object.
+	 * @param \WP_Post $post        The WP_Post attachment object.
 	 * @return array
 	 */
 	public function add_attachment_hash_edit_field( $form_fields, $post ) {
@@ -87,7 +87,7 @@ class Rokka_Media_Management {
 	 * Source: https://code.tutsplus.com/articles/creating-custom-fields-for-attachments-in-wordpress--net-13076
 	 *
 	 * @param array   $form_fields An array of attachment form fields.
-	 * @param WP_Post $post        The WP_Post attachment object.
+	 * @param \WP_Post $post        The WP_Post attachment object.
 	 * @return array
 	 */
 	public function add_attachment_subject_area_edit_field( $form_fields, $post ) {
@@ -211,7 +211,7 @@ class Rokka_Media_Management {
 					$new_hash = $this->rokka_helper->remove_subject_area( $hash );
 				}
 				update_post_meta( $post['ID'], 'rokka_hash', $new_hash );
-			} catch ( Exception $e ) {
+			} catch ( \Exception $e ) {
 				/* translators: %s contains error message */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error saving the subject area. Message: %s' , '%s contains error message', 'rokka-integration' ), $e->getMessage() ), 'error' );
 			}
@@ -284,7 +284,7 @@ class Rokka_Media_Management {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
 			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 		}
@@ -315,7 +315,7 @@ class Rokka_Media_Management {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			/* translators: %1$s contains image id, %2$s contains error message */
 			$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 		}
@@ -372,7 +372,7 @@ class Rokka_Media_Management {
 						/* translators: %s contains image id */
 						$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %s to rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 					}
-				} catch ( Exception $e ) {
+				} catch ( \Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
 					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error uploading image %1$s to rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 				}
@@ -414,7 +414,7 @@ class Rokka_Media_Management {
 						/* translators: %s contains image id */
 						$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %s from rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
 					}
-				} catch ( Exception $e ) {
+				} catch ( \Exception $e ) {
 					/* translators: %1$s contains image id, %2$s contains error message */
 					$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'There was an error deleting image %1$s from rokka. Message: %2$s' , '%1$s contains image id, %2$s contains error message', 'rokka-integration' ), $post_id,  $e->getMessage() ), 'error' );
 				}

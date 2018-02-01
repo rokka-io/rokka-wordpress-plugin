@@ -1,4 +1,4 @@
-<?php
+<?php namespace Rokka_Integration;
 /**
  * Main class
  *
@@ -155,7 +155,7 @@ class Rokka_Integration {
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			WP_CLI::add_command(
+			\WP_CLI::add_command(
 				'rokka',
 				'Rokka_WP_CLI_Command'
 			);
