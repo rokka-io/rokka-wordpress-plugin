@@ -1,15 +1,11 @@
 <?php
 /**
  * Plugin Name: Rokka Integration
- * Version: 2.0.0
  * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.
+ * Version: 2.0.0
  * Author: Liip AG
- * Author URI: http://liip.ch/
- * License: GPL2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Requires at least: 4.0
- * Tested up to: 4.9.2
+ * Author URI: https://www.liip.ch
  *
  * Text Domain: rokka-integration
  * Domain Path: /languages/
