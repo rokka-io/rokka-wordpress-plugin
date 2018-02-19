@@ -13,7 +13,7 @@ env:
   - WP_VERSION=latest
 
 matrix:
-  exclude:
+  exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error:  'break' not in the 'loop' or 'switch' context
     - php: 7.0
       env: WP_VERSION=4.0
     - php: 7.1
