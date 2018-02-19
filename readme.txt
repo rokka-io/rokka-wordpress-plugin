@@ -3,7 +3,7 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 4.9.2
+Tested up to: 4.9.4
 Requires PHP: 5.6
 Stable tag: 2.0.0
 License: GPLv2
@@ -74,10 +74,12 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 = 2.0.0 =
 
-This is a huge rewrite of the plugin but there should be no breaking changes.
+This is a huge rewrite of the plugin but there shouldn't be any breaking changes.
 
 * [FEATURE] Support attachments which are uploaded through the WordPress REST API (This ensures compatibility to the new Gutenberg editor)
 * [FEATURE] Auto disable rokka integration if settings are incomplete
+* [UPDATE] Updated rokka-client-php to v1.2.0
+* [CHANGE] Improved unit test coverage
 
 = 1.2.3 =
 
