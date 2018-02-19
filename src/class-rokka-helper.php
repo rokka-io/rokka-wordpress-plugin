@@ -271,7 +271,7 @@ class Rokka_Helper {
 	 */
 	public function rokka_get_client() {
 		if ( is_null( $this->rokka_client ) ) {
-			$this->rokka_client = \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key(), '' );
+			$this->rokka_client = \Rokka\Client\Factory::getImageClient( $this->get_rokka_company_name(), $this->get_rokka_api_key() );
 		}
 
 		return $this->rokka_client;
