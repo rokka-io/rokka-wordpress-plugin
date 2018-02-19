@@ -38,7 +38,7 @@ class Rokka_REST_UnitTestCase extends Rokka_UnitTestCase {
 	 * @return \WP_REST_Response
 	 */
 	public function upload_image_via_rest( $image_name ) {
-		$file = file_get_contents( $this->images_dir . $image_name );
+		$file = file_get_contents( $this->features_dir . $image_name );
 		// create admin user
 		$user_id = $this->factory->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $user_id );

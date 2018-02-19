@@ -22,6 +22,32 @@ class Rokka_Base_Test extends Rokka_UnitTestCase {
 	}
 
 	/**
+	 * Test unsupported mime type
+	 */
+	public function test_unsupported_mime_type() {
+		$this->enable_rokka();
+		$file_name = 'unsupported-mime-type.mp4';
+		$attachment_id = $this->upload_attachment( $file_name );
+		$expected_attachment_url = $this->get_default_wordpress_url( $file_name );
+		$attachment_url = wp_get_attachment_url( $attachment_id );
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
+
+	
+	/**
+	 * Test unsupported mime type
+	 */
+	public function test_unsupported_file_name() {
+		$this->enable_rokka();
+		$file_name = '(un)supported_File.name.png';
+		$attachment_id = $this->upload_attachment( $file_name );
+		$expected_file_name = 'unsupported-file-name-.png'; // WordPress does some strange things in sanitize_file_name()
+		$expected_attachment_url = $this->get_rokka_url( $expected_file_name, $this->get_stack_name_from_size( 'full' ) );
+		$attachment_url = wp_get_attachment_url( $attachment_id );
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
+
+	/**
 	 * This test is not active since it fails on Travis-CI. It seems that the deprecation warnings are treated as errors when raised in a separate process.
 	 *
 	 * Settings provided via constant should be prioritized over database options

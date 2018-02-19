@@ -10,7 +10,7 @@ use Rokka_Integration\Rokka_Integration;
 
 class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	protected $_plugin_dir;
-	protected $images_dir;
+	protected $features_dir;
 	protected $rokka_company_name = 'dummy_company_name';
 	protected $rokka_api_key = 'dummy_api_key';
 	protected $rokka_url = '';
@@ -22,7 +22,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		parent::setUp();
 
 		$this->_plugin_dir = dirname( dirname( dirname( __FILE__ ) ) ); // two levels up
-		$this->images_dir = $this->_plugin_dir . '/tests/features/images/';
+		$this->features_dir = $this->_plugin_dir . '/tests/features/';
 		$this->sizes = [
 			'thumbnail' => [
 				'width' => 150,
@@ -159,8 +159,8 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		return $this->stack_prefix . $size;
 	}
 
-	public function upload_attachment( $image_name ) {
-		return $this->attachment_create_upload_object( $this->images_dir . $image_name, 0 );
+	public function upload_attachment( $file_name ) {
+		return $this->attachment_create_upload_object( $this->features_dir . $file_name, 0 );
 	}
 
 	/**
