@@ -184,7 +184,7 @@ class Rokka_Integration_Settings {
 		add_settings_section( $section, __( 'Main settings', 'rokka-integration' ), array(
 			$this,
 			'settings_section',
-		), $this->plugin_token . '_settings' );
+		), $this->menu_slug );
 
 		foreach ( $this->settings_fields as $field ) {
 			// Register field
@@ -281,7 +281,7 @@ class Rokka_Integration_Settings {
 		);
 		wp_localize_script( $this->plugin_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
-		<div class="wrap" id="<?php echo esc_attr( $this->plugin_token ); ?>_settings">
+		<div class="wrap" id="<?php echo esc_attr( $this->menu_slug ); ?>">
 			<h1><?php esc_html_e( 'Rokka Settings', 'rokka-integration' ); ?></h1>
 
 			<div id="column-left">
