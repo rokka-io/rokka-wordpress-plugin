@@ -5,6 +5,12 @@
  * @package rokka-integration
  */
 
+namespace Rokka_Integration;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class Rokka_Filter_Url
  */

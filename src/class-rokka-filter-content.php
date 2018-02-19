@@ -5,6 +5,12 @@
  * @package rokka-integration
  */
 
+namespace Rokka_Integration;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class Rokka_Filter_Content
  */
@@ -38,10 +44,6 @@ class Rokka_Filter_Content {
 	 * Initialize Rokka_Filter_Content.
 	 */
 	protected function init() {
-		// check if the custom folder is at another location than default
-		if ( defined( 'UPLOADS' ) ) {
-			$this->upload_folder = '/' . UPLOADS . '/';
-		}
 		$uploads_dir = wp_upload_dir();
 		$this->upload_baseurl = $uploads_dir['baseurl'];
 

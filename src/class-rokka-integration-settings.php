@@ -5,6 +5,8 @@
  * @package rokka-integration
  */
 
+namespace Rokka_Integration;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -15,25 +17,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Rokka_Integration_Settings {
 
 	/**
-	 * The single instance of Rokka_Integration_Settings.
-	 *
-	 * @var Rokka_Integration_Settings
-	 */
-	private static $_instance = null;
-
-	/**
-	 * The main plugin object.
-	 *
-	 * @var Rokka_Integration
-	 */
-	public $parent = null;
-
-	/**
 	 * Prefix for plugin settings.
 	 *
 	 * @var string
 	 */
-	public $base = '';
+	public $option_prefix = '';
+
+	/**
+	 * Plugin token.
+	 *
+	 * @var string
+	 */
+	public $plugin_token = '';
 
 	/**
 	 * Menu slug.
@@ -41,6 +36,13 @@ class Rokka_Integration_Settings {
 	 * @var string
 	 */
 	public $menu_slug = '';
+
+	/**
+	 * URL to plugin assets.
+	 *
+	 * @var string
+	 */
+	public $assets_url = '';
 
 	/**
 	 * Available settings fields for plugin.
@@ -54,19 +56,22 @@ class Rokka_Integration_Settings {
 	 *
 	 * @var Rokka_Helper
 	 */
-	private $rokka_helper;
+	public $rokka_helper;
 
 	/**
 	 * Rokka_Integration_Settings constructor.
 	 *
-	 * @param Rokka_Integration $parent The main plugin object.
-	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
+	 * @param Rokka_Helper $rokka_helper Rokka_Helper instance.
+	 * @param string       $plugin_token Plugin token.
+	 * @param string       $assets_url URL to plugin assets.
 	 */
-	public function __construct( $parent, $rokka_helper ) {
+	public function __construct( $rokka_helper, $plugin_token, $assets_url ) {
 		$this->rokka_helper = $rokka_helper;
-		$this->parent = $parent;
+		$this->plugin_token = $plugin_token;
+		$this->menu_slug = $this->plugin_token . '_settings';
+		$this->assets_url = $assets_url;
 
-		$this->base = 'rokka_';
+		$this->option_prefix = 'rokka_';
 
 		// Initialise settings
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
@@ -78,7 +83,7 @@ class Rokka_Integration_Settings {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		// Add settings link to plugin list table
-		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array(
+		add_filter( 'plugin_action_links_' . plugin_basename( ROKKA_PLUGIN_FILE ), array(
 			$this,
 			'add_settings_link',
 		) );
@@ -124,6 +129,7 @@ class Rokka_Integration_Settings {
 				'label'       => __( 'Enable rokka integration', 'rokka-integration' ),
 				'description' => __( 'This will enable the rokka integration. Please make sure that you already have synced the stacks to rokka before enabling this.', 'rokka-integration' ),
 				'type'        => 'checkbox',
+				'disabled'    => ! $this->rokka_helper->are_settings_complete(),
 			),
 			array(
 				'id'          => 'autoformat',
@@ -150,7 +156,6 @@ class Rokka_Integration_Settings {
 	 * Add settings page to admin menu.
 	 */
 	public function add_menu_item() {
-		$this->menu_slug = $this->parent->_token . '_settings';
 		add_options_page( __( 'Rokka Settings', 'rokka-integration' ), __( 'Rokka Settings', 'rokka-integration' ), 'manage_options', $this->menu_slug, array( $this, 'settings_page' ) );
 	}
 
@@ -162,7 +167,7 @@ class Rokka_Integration_Settings {
 	 * @return array Modified links
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings' ) ) . '">' . esc_html__( 'Settings', 'rokka-integration' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->menu_slug ) ) . '">' . esc_html__( 'Settings', 'rokka-integration' ) . '</a>';
 		// add settings link as first element
 		array_unshift( $links, $settings_link );
 
@@ -179,15 +184,15 @@ class Rokka_Integration_Settings {
 		add_settings_section( $section, __( 'Main settings', 'rokka-integration' ), array(
 			$this,
 			'settings_section',
-		), $this->parent->_token . '_settings' );
+		), $this->menu_slug );
 
 		foreach ( $this->settings_fields as $field ) {
 			// Register field
-			$option_name = $this->base . $field['id'];
+			$option_name = $this->option_prefix . $field['id'];
 			if ( array_key_exists( 'sanitize_callback', $field ) ) {
-				register_setting( $this->parent->_token . '_settings', $option_name, $field['sanitize_callback'] );
+				register_setting( $this->menu_slug, $option_name, $field['sanitize_callback'] );
 			} else {
-				register_setting( $this->parent->_token . '_settings', $option_name );
+				register_setting( $this->menu_slug, $option_name );
 			}
 
 			// Add field to page
@@ -198,22 +203,23 @@ class Rokka_Integration_Settings {
 					$this,
 					'display_field',
 				),
-				$this->parent->_token . '_settings',
+				$this->menu_slug,
 				$section,
 				array(
 					'field' => $field,
-					'prefix' => $this->base,
+					'prefix' => $this->option_prefix,
 					'label_for' => $field['id'],
 					'constant_name' => array_key_exists( 'constant_name', $field ) ? $field['constant_name'] : '',
+					'disabled' => array_key_exists( 'disabled', $field ) ? $field['disabled'] : '',
 				)
 			);
 
 			// disable saving of options which are stored in constants
 			if ( array_key_exists( 'constant_name', $field ) && ! empty( $field['constant_name'] ) && defined( $field['constant_name'] ) ) {
 				global $new_whitelist_options;
-				$option_key = array_search( $option_name, $new_whitelist_options[ $this->parent->_token . '_settings' ], true );
+				$option_key = array_search( $option_name, $new_whitelist_options[ $this->menu_slug ], true );
 				if ( false !== $option_key ) {
-					unset( $new_whitelist_options[ $this->parent->_token . '_settings' ][ $option_key ] );
+					unset( $new_whitelist_options[ $this->menu_slug ][ $option_key ] );
 				}
 			}
 		}
@@ -273,23 +279,23 @@ class Rokka_Integration_Settings {
 				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-integration' ),
 			),
 		);
-		wp_localize_script( $this->parent->_token . '-settings-js', 'rokkaSettings', $rokka_settings );
+		wp_localize_script( $this->plugin_token . '-settings-js', 'rokkaSettings', $rokka_settings );
 		?>
-		<div class="wrap" id="<?php echo esc_attr( $this->parent->_token ); ?>_settings">
-			<h1><?php esc_html_e( 'Rokka Settings' , 'rokka-integration' ); ?></h1>
+		<div class="wrap" id="<?php echo esc_attr( $this->menu_slug ); ?>">
+			<h1><?php esc_html_e( 'Rokka Settings', 'rokka-integration' ); ?></h1>
 
 			<div id="column-left">
 				<div id="settings-sections" class="nav-tabs-wrap">
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></a>
-					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->parent->_token . '_settings&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete' , 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=settings' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'settings' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Settings', 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'stacks' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>" class="nav-tab<?php echo 'upload' === $current_tab ? ' active' : ''; ?>"><?php esc_html_e( 'Mass upload/delete', 'rokka-integration' ); ?></a>
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
-							<h2><?php esc_html_e( 'Sync stacks' , 'rokka-integration' ); ?></h2>
+						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+							<h2><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></h2>
 							<p>
-								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.' , 'rokka-integration' ); ?>
+								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.', 'rokka-integration' ); ?>
 							</p>
 							<?php
 							try {
@@ -336,17 +342,17 @@ class Rokka_Integration_Settings {
 													<td><?php echo esc_html( $stack['height'] ); ?></td>
 													<td><?php $stack['crop'] ? esc_html_e( 'Yes', 'rokka-integration' ) : esc_html_e( 'No', 'rokka-integration' ); ?></td>
 													<td><?php echo esc_html( $stack_operation_name ); ?></td>
-												<?php endif ; ?>
+												<?php endif; ?>
 											</tr>
-										<?php endforeach ; ?>
+										<?php endforeach; ?>
 										</tbody>
 									</table>
-									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka' , 'rokka-integration' ); ?></button>
+									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
 									<div id="progress-info-stacks"></div>
 								<?php else : ?>
 									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
-								<?php endif ; ?>
-							<?php } catch ( Exception $e ) { ?>
+								<?php endif; ?>
+							<?php } catch ( \Exception $e ) { ?>
 								<p>
 									<?php
 									printf(
@@ -364,15 +370,15 @@ class Rokka_Integration_Settings {
 
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
-						<?php endif ; ?>
+						<?php endif; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
 					<div class="tab-content">
 						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
-							<h2><?php esc_html_e( 'Mass upload images to rokka' , 'rokka-integration' ); ?></h2>
+							<h2><?php esc_html_e( 'Mass upload images to rokka', 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_upload ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:' , 'rokka-integration' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be uploaded to rokka:', 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_upload as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -381,7 +387,7 @@ class Rokka_Integration_Settings {
 								}
 								echo '</ul>'
 								?>
-								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka' , 'rokka-integration' ); ?></button>
+								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka', 'rokka-integration' ); ?></button>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
@@ -390,14 +396,14 @@ class Rokka_Integration_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.' , 'rokka-integration' ); ?>
+									<?php esc_html_e( 'All images are already uploaded to rokka. Nothing to do here.', 'rokka-integration' ); ?>
 								</p>
-							<?php endif ; ?>
+							<?php endif; ?>
 
-							<h2><?php esc_html_e( 'Danger zone - Mass delete images' , 'rokka-integration' ); ?></h2>
+							<h2><?php esc_html_e( 'Danger zone - Mass delete images', 'rokka-integration' ); ?></h2>
 							<?php if ( ! empty( $images_to_delete ) ) : ?>
 								<?php
-								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:' , 'rokka-integration' ) . '</p>';
+								echo '<p>' . esc_html__( 'The following images will be deleted from rokka:', 'rokka-integration' ) . '</p>';
 								echo '<ul class="image-list">';
 								foreach ( $images_to_delete as $image_id ) {
 									$image_name = get_attached_file( $image_id );
@@ -406,7 +412,7 @@ class Rokka_Integration_Settings {
 								}
 								echo '</ul>';
 								?>
-								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka' , 'rokka-integration' ); ?></button>
+								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka', 'rokka-integration' ); ?></button>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">
@@ -415,29 +421,29 @@ class Rokka_Integration_Settings {
 								</div>
 							<?php else : ?>
 								<p>
-									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.' , 'rokka-integration' ); ?>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.', 'rokka-integration' ); ?>
 								</p>
-							<?php endif ; ?>
+							<?php endif; ?>
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-integration' ); ?></p>
-						<?php endif ; ?>
+						<?php endif; ?>
 					</div>
 				<?php else : ?>
 					<div class="tab-content">
 						<form method="post" action="options.php" enctype="multipart/form-data">
 							<?php
 							// Get settings fields
-							settings_fields( $this->parent->_token . '_settings' );
-							do_settings_sections( $this->parent->_token . '_settings' );
+							settings_fields( $this->menu_slug );
+							do_settings_sections( $this->menu_slug );
 							submit_button();
 							?>
 							<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
-								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials' , 'rokka-integration' ); ?></button>
+								<button class="button button-secondary" id="check-rokka-credentials"><?php esc_attr_e( 'Check rokka crendentials', 'rokka-integration' ); ?></button>
 								<div id="rokka-credentials-status"></div>
-							<?php endif ; ?>
+							<?php endif; ?>
 						</form>
 					</div>
-				<?php endif ; ?>
+				<?php endif; ?>
 			</div><!--end #column-left -->
 
 			<div id="column-right">
@@ -449,7 +455,7 @@ class Rokka_Integration_Settings {
 					</div>
 					<div id="logo-liip" class="logo">
 						<a href="https://liip.ch">
-							<img src="<?php echo esc_url( $this->parent->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-integration' ); ?>" />
+							<img src="<?php echo esc_url( $this->assets_url . '/images/logo-liip.png' ); ?>" alt="<?php esc_html_e( 'Liip Logo', 'rokka-integration' ); ?>" />
 						</a>
 					</div>
 					<div id="address-block">
@@ -504,6 +510,8 @@ class Rokka_Integration_Settings {
 			$option_value = '';
 		}
 
+		$disabled = ( array_key_exists( 'disabled', $field ) ? $field['disabled'] : false );
+
 		$html = '';
 
 		switch ( $field['type'] ) {
@@ -520,7 +528,7 @@ class Rokka_Integration_Settings {
 				break;
 
 			case 'checkbox':
-				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" value="1" ' . checked( '1', $option_value, false ) . '/>' . "\n";
+				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" class="' . ( $disabled ? 'disabled' : '' ) . '" value="1" ' . checked( '1', $option_value, false ) . ' ' . disabled( $disabled, true, false ) . '/>' . "\n";
 				break;
 
 			case 'radio':
@@ -663,7 +671,7 @@ class Rokka_Integration_Settings {
 			} else {
 				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
@@ -699,7 +707,7 @@ class Rokka_Integration_Settings {
 			} else {
 				wp_send_json_error( __( 'image_id parameter missing.', 'rokka-integration' ), 400 );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
@@ -727,7 +735,7 @@ class Rokka_Integration_Settings {
 
 			wp_send_json_error( __( 'Could not process stacks.', 'rokka-integration' ), 400 );
 			wp_die();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
 
@@ -751,43 +759,6 @@ class Rokka_Integration_Settings {
 			wp_send_json_error( __( 'Whops! Something is wrong with your rokka credentials.', 'rokka-integration' ), 400 );
 			wp_die();
 		}
-	}
-
-	/**
-	 * Main Rokka_Integration_Settings Instance
-	 *
-	 * Ensures only one instance of Rokka_Integration_Settings is loaded or can be loaded.
-	 *
-	 * @param Rokka_Integration $parent The main plugin object.
-	 * @param Rokka_Helper      $rokka_helper Instance of Rokka_Helper.
-	 *
-	 * @static
-	 * @return Rokka_Integration_Settings Rokka_Integration_Settings instance
-	 */
-	public static function instance( $parent, $rokka_helper ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent, $rokka_helper );
-		}
-
-		return self::$_instance;
-	}
-
-	/**
-	 * Cloning is forbidden.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->parent->_version ) );
-	}
-
-	/**
-	 * Unserializing instances of this class is forbidden.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->parent->_version ) );
 	}
 
 }

@@ -1,14 +1,25 @@
 language: php
 php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
 
 env:
-  - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=4.0 WP_MULTISITE=0
-  - WP_VERSION=4.4 WP_MULTISITE=0
-  - WP_VERSION=4.8 WP_MULTISITE=0
+  - WP_VERSION=4.0 # Minimum required version
+  - WP_VERSION=4.4 # Introduction of Responsive Images
+  - WP_VERSION=4.7 # Introduction of REST API
+  - WP_VERSION=4.8
+  - WP_VERSION=latest
+
+matrix:
+  exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error:  'break' not in the 'loop' or 'switch' context
+    - php: 7.0
+      env: WP_VERSION=4.0
+    - php: 7.1
+      env: WP_VERSION=4.0
+    - php: 7.2
+      env: WP_VERSION=4.0
 
 before_script:
   - bash scripts/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION

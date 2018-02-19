@@ -5,6 +5,8 @@
  * @package rokka-integration
  */
 
+namespace Rokka_Integration;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -19,7 +21,14 @@ class Rokka_Integration {
 	 *
 	 * @var Rokka_Integration
 	 */
-	private static $_instance = null;
+	protected static $_instance = null;
+
+	/**
+	 * Rokka_Helper instance.
+	 *
+	 * @var Rokka_Helper
+	 */
+	public $rokka_helper = null;
 
 	/**
 	 * Rokka_Integration_Settings instance.
@@ -33,28 +42,14 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $_version;
+	public $_version = '2.0.0';
 
 	/**
-	 * The token.
+	 * The plugin token.
 	 *
 	 * @var string
 	 */
-	public $_token;
-
-	/**
-	 * The main plugin file.
-	 *
-	 * @var string
-	 */
-	public $file;
-
-	/**
-	 * The main plugin directory.
-	 *
-	 * @var string
-	 */
-	public $dir;
+	public $_token = 'rokka-integration';
 
 	/**
 	 * The plugin assets directory.
@@ -72,27 +67,101 @@ class Rokka_Integration {
 
 	/**
 	 * Rokka_Integration constructor.
-	 *
-	 * @param string $file Main plugin file path.
-	 * @param string $version Version number.
 	 */
-	public function __construct( $file = '', $version = '1.2.3' ) {
-		$this->_version = $version;
-		$this->_token   = 'rokka-integration';
+	public function __construct() {
+		$this->define_constants();
+		$this->init_plugin_environment();
+		$this->includes();
+		$this->init_hooks();
+		$this->init_plugin();
+	}
 
+	/**
+	 * Define plugin constants.
+	 */
+	protected function define_constants() {
+		if ( ! defined( 'ROKKA_ABSPATH' ) ) {
+			define( 'ROKKA_ABSPATH', trailingslashit( dirname( ROKKA_PLUGIN_FILE ) ) );
+		}
+	}
+
+	/**
+	 * Initializes plugin environment variables
+	 */
+	protected function init_plugin_environment() {
 		// Load plugin environment variables
-		$this->file       = $file;
-		$this->dir        = dirname( $this->file );
-		$this->assets_dir = trailingslashit( $this->dir ) . 'assets';
-		$this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', $this->file ) ) );
+		$this->assets_dir = ROKKA_ABSPATH . 'assets';
+		$this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', ROKKA_PLUGIN_FILE ) ) );
+	}
 
-		register_activation_hook( $this->file, array( $this, 'install' ) );
+	/**
+	 * Include required core files used in admin and on the frontend.
+	 */
+	public function includes() {
+		// Load plugin class files
+		require_once ROKKA_ABSPATH . 'src/class-rokka-attachment.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-integration-settings.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-helper.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-media-management.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-rest.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-url.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-content.php';
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require_once ROKKA_ABSPATH . 'src/cli-command/class-rokka-wp-cli-command.php';
+		}
 
+		// add vendor library
+		require_once ROKKA_ABSPATH . 'vendor/autoload.php';
+	}
+
+	/**
+	 * Initializes hooks.
+	 */
+	protected function init_hooks() {
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_assets' ), 10, 1 );
 
 		// Load textdomain
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+
+		// check version number on each request
+		add_action( 'init', array( $this, 'check_version' ) );
+
+		// display all collected notices if available
+		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
+	}
+
+	/**
+	 * Initialize plugin dependencies.
+	 *
+	 * @throws \Exception Throws exception if WP_CLI command couldn't be added.
+	 */
+	public function init_plugin() {
+		$this->rokka_helper = new Rokka_Helper();
+
+		if ( $this->rokka_helper->is_rokka_enabled() ) {
+			new Rokka_Filter_Url( $this->rokka_helper );
+			new Rokka_Attachment( $this->rokka_helper );
+			new Rokka_Rest( $this->rokka_helper );
+			if ( ! is_admin() && $this->rokka_helper->is_output_parsing_enabled() ) {
+				new Rokka_Filter_Content( $this->rokka_helper );
+			}
+		}
+
+		if ( is_admin() ) {
+			if ( $this->rokka_helper->is_rokka_enabled() ) {
+				new Rokka_Media_Management( $this->rokka_helper );
+			}
+
+			$this->settings = new Rokka_Integration_Settings( $this->rokka_helper, $this->_token, $this->assets_url );
+		}
+
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			\WP_CLI::add_command(
+				'rokka',
+				'\Rokka_Integration\CLI_Command\Rokka_WP_CLI_Command'
+			);
+		}
 	}
 
 	/**
@@ -134,21 +203,39 @@ class Rokka_Integration {
 	 */
 	public function load_plugin_textdomain() {
 		$domain = 'rokka-integration'; // textdomain can't be stored in class variable since it must be a single string literal
-		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
+		load_plugin_textdomain( $domain, false, dirname( plugin_basename( ROKKA_PLUGIN_FILE ) ) . '/languages/' );
+	}
+
+	/**
+	 * Displays all admin notices
+	 *
+	 * @return bool
+	 */
+	public function show_admin_notices() {
+		$notices = get_option( 'rokka_notices' );
+		if ( empty( $notices ) || ! is_array( $notices ) ) {
+			return '';
+		}
+
+		// print all messages
+		foreach ( $notices as $type => $messages ) {
+			foreach ( $messages as $notice ) {
+				echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $notice ) . '</p></div>';
+			}
+		}
+
+		return delete_option( 'rokka_notices' );
 	}
 
 	/**
 	 * Main Rokka_Integration Instance
 	 * Ensures only one instance of Rokka_Integration is loaded or can be loaded.
 	 *
-	 * @param string $file Main plugin file path.
-	 * @param string $version Plugin version.
-	 *
 	 * @return Rokka_Integration Rokka_Integration instance
 	 */
-	public static function instance( $file = '', $version = '1.2.3' ) {
+	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $file, $version );
+			self::$_instance = new self();
 		}
 
 		return self::$_instance;
@@ -169,16 +256,22 @@ class Rokka_Integration {
 	}
 
 	/**
-	 * Installation. Runs on activation.
+	 * Checks plugin version.
+	 *
+	 * This check is done on all requests and runs if the versions do not match.
 	 */
-	public function install() {
-		$this->_log_version_number();
+	public function check_version() {
+		if ( ! defined( 'IFRAME_REQUEST' ) && get_option( $this->_token . '_version' ) !== $this->_version ) {
+			$this->log_version_number();
+			do_action( $this->_token . '_updated' );
+		}
 	}
 
 	/**
 	 * Log the plugin version number in database.
 	 */
-	private function _log_version_number() {
+	protected function log_version_number() {
+		delete_option( $this->_token . '_version' );
 		update_option( $this->_token . '_version', $this->_version );
 	}
 
