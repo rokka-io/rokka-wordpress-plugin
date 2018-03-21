@@ -542,7 +542,7 @@ class Rokka_Helper {
 			}
 
 			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
-				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], $this->get_autoformat() );
+				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], true, $this->get_autoformat() );
 			} elseif ( self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
 				$this->update_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
 			} elseif ( self::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) {
@@ -652,6 +652,7 @@ class Rokka_Helper {
 						}
 						// set sync operation to update if autoformat option changed
 						if ( $this->autoformat_changed( $stack ) ) {
+							echo "stack " . $prefixed_name . " changed";
 							$stacks_to_sync[ $prefixed_name ]['operation'] = self::STACK_SYNC_OPERATION_UPDATE;
 						}
 						break;
