@@ -3,7 +3,7 @@
  * Plugin Name: Rokka Integration
  * Plugin URI: https://github.com/rokka-io/rokka-wordpress-plugin
  * Description: Rokka image processing and cdn plugin for WordPress.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Liip AG
  * Author URI: https://www.liip.ch
  *

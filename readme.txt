@@ -5,7 +5,7 @@ Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
 Tested up to: 4.9.4
 Requires PHP: 5.6
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,10 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 2.0.1 =
+
+* [BUGFIX] Autoformat option was not set when syncing stacks for the first time.
 
 = 2.0.0 =
 
