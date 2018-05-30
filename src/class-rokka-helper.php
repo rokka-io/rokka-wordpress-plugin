@@ -847,13 +847,13 @@ class Rokka_Helper {
 	 * Returns nearest matching image size name with same ratio.
 	 *
 	 * @param array        $available_sizes Available sizes of image (from meta data).
-	 * @param array|string Image size to find matching size. Accepts any valid image size, or an array
-	 *                     of width and height values in pixels (in that order).
+	 * @param array|string $size Image size to find matching size. Accepts any valid image size, or an array
+	 *                           of width and height values in pixels (in that order).
 	 *
 	 * @return string|bool
 	 */
 	public function get_smaller_image_size_with_same_ratio( $available_sizes, $size ) {
-		if ( $size === 'full') {
+		if ( 'full' === $size ) {
 			return false;
 		}
 

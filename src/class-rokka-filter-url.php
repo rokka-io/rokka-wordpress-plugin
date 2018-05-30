@@ -88,10 +88,10 @@ class Rokka_Filter_Url {
 				$new_h = (int) round( $new_w / $dest_aspect_ratio );
 			}
 
-			$size_ratio = max($new_w / $orig_w, $new_h / $orig_h);
+			$size_ratio = max( $new_w / $orig_w, $new_h / $orig_h );
 
-			$crop_w = round($new_w / $size_ratio);
-			$crop_h = round($new_h / $size_ratio);
+			$crop_w = round( $new_w / $size_ratio );
+			$crop_h = round( $new_h / $size_ratio );
 
 			if ( ! is_array( $crop ) || count( $crop ) !== 2 ) {
 				$crop = array( 'center', 'center' );
