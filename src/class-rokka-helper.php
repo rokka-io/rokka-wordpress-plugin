@@ -872,7 +872,7 @@ class Rokka_Helper {
 				return $size_name;
 			} else {
 				// If the image dimensions are within 1px of the expected size, use it.
-				if ( wp_image_matches_ratio( $width, $height, $size_values['width'], $size_values['height'] ) ) {
+				if ( $this->wp_image_matches_ratio( $width, $height, $size_values['width'], $size_values['height'] ) ) {
 					if ( $size_values['width'] <= $width ) {
 						return $size_name;
 					}
