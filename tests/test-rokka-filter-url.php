@@ -65,6 +65,27 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 		}
 	}
 
+	public function test_get_attachment_image_srcset_too_small_image() {
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$this->enable_rokka();
+			$image_name = '1500x1800.png';
+			$attachment_id = $this->upload_attachment( $image_name );
+			$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+			$thumbnail_filename = $attachment_meta['sizes']['thumbnail']['file'];
+			$medium_crop_filename = $attachment_meta['sizes']['medium-crop']['file'];
+			$large_crop_filename = $attachment_meta['sizes']['large-crop']['file'];
+			// the sizes larger-crop and huge-crop shouldn't be generated since it's bigger than the original image
+			$this->assertArrayNotHasKey( 'larger-crop', $attachment_meta['sizes'] );
+			$this->assertArrayNotHasKey( 'huge-crop', $attachment_meta['sizes'] );
+
+			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huge-crop' );
+			$this->assertCount( 3, explode( ',', $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $thumbnail_filename, $this->get_stack_name_from_size( 'thumbnail' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $medium_crop_filename, $this->get_stack_name_from_size( 'medium-crop' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $large_crop_filename, $this->get_stack_name_from_size( 'large-crop' ) ), $attachment_image_srcset ) );
+		}
+	}
+
 	public function test_get_attachment_image_without_rokka() {
 		$image_name = '2000x1500.png';
 		$attachment_id = $this->upload_attachment( $image_name );
