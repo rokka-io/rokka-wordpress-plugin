@@ -50,7 +50,13 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 			],
 		];
 		$this->prepare_image_sizes();
+		// enhance max image width in srcset
+		add_filter( 'max_srcset_image_width', array( $this, 'enhance_max_srcset_image_width'), 10, 0 );
 		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
+	}
+
+	public function enhance_max_srcset_image_width() {
+		return 3000;
 	}
 
 	public function tearDown() {
@@ -120,6 +126,12 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		// add custom sizes
 		add_image_size( 'larger', $this->sizes['larger']['width'], $this->sizes['larger']['height'] );
 		add_image_size( 'huge', $this->sizes['huge']['width'], $this->sizes['huge']['height'] );
+
+		// add cropped sizes
+		add_image_size( 'medium-crop', $this->sizes['medium']['width'], $this->sizes['medium']['height'], true );
+		add_image_size( 'large-crop', $this->sizes['large']['width'], $this->sizes['large']['height'], true );
+		add_image_size( 'larger-crop', $this->sizes['larger']['width'], $this->sizes['larger']['height'], true );
+		add_image_size( 'huge-crop', $this->sizes['huge']['width'], $this->sizes['huge']['height'], true );
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {
