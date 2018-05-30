@@ -69,7 +69,7 @@ To run the unit tests you need to setup your local WordPress testing environment
 
 To run the tests use the following script:
 
-    $ scripts/unit-tests.sh
+    $ scripts/phpunit.sh
 
 ### Code Sniffer
 
