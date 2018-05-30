@@ -28,4 +28,4 @@ before_script:
 
 script:
   - scripts/phpcodesniffer.sh
-  - scripts/unit-tests.sh
+  - scripts/phpunit.sh
