@@ -844,6 +844,45 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * Returns nearest matching image size name with same ratio.
+	 *
+	 * @param array        $available_sizes Available sizes of image (from meta data).
+	 * @param array|string Image size to find matching size. Accepts any valid image size, or an array
+	 *                     of width and height values in pixels (in that order).
+	 *
+	 * @return string|bool
+	 */
+	public function get_smaller_image_size_with_same_ratio( $available_sizes, $size ) {
+		if ( $size === 'full') {
+			return false;
+		}
+
+		if ( is_array( $size ) ) {
+			$width = $size[0];
+			$height = $size[1];
+		} else {
+			// get width and height of requested size
+			$image_sizes = $this->get_available_image_sizes();
+			$width = $image_sizes[ $size ][0];
+			$height = $image_sizes[ $size ][1];
+		}
+
+		foreach ( $available_sizes as $size_name => $size_values ) {
+			if ( $size_name === $size ) {
+				return $size_name;
+			} else {
+				// If the image dimensions are within 1px of the expected size, use it.
+				if ( wp_image_matches_ratio( $width, $height, $size_values['width'], $size_values['height'] ) ) {
+					if ( $size_values['width'] <= $width ) {
+						return $size_name;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Retrieves size name by given image url.
 	 *
 	 * @param int    $image_id ID of image.

@@ -263,6 +263,12 @@ class Rokka_Filter_Url {
 			$height = $intermediate['height'];
 			$is_intermediate = true;
 		}
+		elseif ( $size_with_same_ratio = $this->rokka_helper->get_smaller_image_size_with_same_ratio( $meta['sizes'], $size ) ) {
+			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $meta['sizes'][ $size_with_same_ratio ]['file'], $size_with_same_ratio );
+			$width = $meta['sizes'][ $size_with_same_ratio ]['width'];
+			$height = $meta['sizes'][ $size_with_same_ratio ]['height'];
+			$is_intermediate = true;
+		}
 		elseif ( 'thumbnail' === $size  ) {
 			// fall back to the old thumbnail
 			if ( ( $thumb_file = wp_get_attachment_thumb_file( $id ) ) && $info = getimagesize( $thumb_file ) ) {
