@@ -75,17 +75,19 @@ class Rokka_Filter_Url {
 				return false;
 			}
 
-			$dest_aspect_ratio = $dest_w / $dest_h;
+			$aspect_ratio = $orig_w / $orig_h;
 
 			$new_w = $dest_w;
 			$new_h = $dest_h;
 
+			// If requested width was 0 (not defined) calculate new width with aspect ratio of the original image
 			if ( ! $new_w ) {
-				$new_w = (int) round( $new_h * $dest_aspect_ratio );
+				$new_w = (int) round( $new_h * $aspect_ratio );
 			}
 
+			// If requested height was 0 (not defined) calculate new height with aspect ratio of the original image
 			if ( ! $new_h ) {
-				$new_h = (int) round( $new_w / $dest_aspect_ratio );
+				$new_h = (int) round( $new_w / $aspect_ratio );
 			}
 
 			$size_ratio = max( $new_w / $orig_w, $new_h / $orig_h );
