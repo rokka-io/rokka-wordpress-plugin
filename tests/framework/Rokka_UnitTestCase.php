@@ -147,7 +147,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		return $rokka_url . '/' . $stack . '/' . $this->get_rokka_hash() . '/' . $filename;
 	}
 
-	protected function ger_rokka_url_regex_pattern( $filename, $stack ) {
+	protected function get_rokka_url_regex_pattern( $filename, $stack ) {
 		return '/' . preg_quote( $this->get_rokka_url( $filename, $stack ), '/' ) . '/';
 	}
 
