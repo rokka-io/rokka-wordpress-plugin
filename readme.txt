@@ -76,6 +76,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 * [BUGFIX] Autoformat option was not set when syncing stacks for the first time.
 * [BUGFIX] Backport wp_image_matches_ratio function to be compatible with older WordPress versions than 4.6.0
+* [BUGFIX] Fix finding of nearest matching size if image is requested with a width/height array instead of a size string
 
 = 2.0.0 =
 
