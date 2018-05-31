@@ -117,4 +117,27 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image ) );
 		}
 	}
+
+	public function test_get_attachment_image_src_by_size_array_without_rokka() {
+		$image_name = '2000x1500.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+		$large_filename = $attachment_meta['sizes']['large']['file'];
+		$expected_attachment_url = $this->get_default_wordpress_url( $large_filename );
+		$attachment_src = wp_get_attachment_image_src( $attachment_id, array( 1000, 750 ) );
+		$attachment_url = $attachment_src[0];
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
+
+	public function test_get_attachment_image_src_by_size_array() {
+		$this->enable_rokka();
+		$image_name = '2000x1500.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+		$large_filename = $attachment_meta['sizes']['large']['file'];
+		$expected_attachment_url = $this->get_rokka_url( $large_filename, $this->get_stack_name_from_size( 'large' ) );
+		$attachment_src = wp_get_attachment_image_src( $attachment_id, array( 1000, 750 ) );
+		$attachment_url = $attachment_src[0];
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
 }
