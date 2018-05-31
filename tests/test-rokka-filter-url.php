@@ -80,9 +80,9 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 
 			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huge-crop' );
 			$this->assertCount( 3, explode( ',', $attachment_image_srcset ) );
-			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $thumbnail_filename, $this->get_stack_name_from_size( 'thumbnail' ) ), $attachment_image_srcset ) );
-			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $medium_crop_filename, $this->get_stack_name_from_size( 'medium-crop' ) ), $attachment_image_srcset ) );
-			$this->assertEquals( 1, preg_match_all( $this->ger_rokka_url_regex_pattern( $large_crop_filename, $this->get_stack_name_from_size( 'large-crop' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $thumbnail_filename, $this->get_stack_name_from_size( 'thumbnail' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_crop_filename, $this->get_stack_name_from_size( 'medium-crop' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $large_crop_filename, $this->get_stack_name_from_size( 'large-crop' ) ), $attachment_image_srcset ) );
 		}
 	}
 
