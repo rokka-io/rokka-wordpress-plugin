@@ -789,9 +789,9 @@ class Rokka_Helper {
 			if ( $data['width'] >= $width && $data['height'] >= $height ) {
 				// If '0' is passed to either size, we test ratios against the original file.
 				if ( 0 === $width || 0 === $height ) {
-					$same_ratio = wp_image_matches_ratio( $data['width'], $data['height'], $imagedata['width'], $imagedata['height'] );
+					$same_ratio = $this->wp_image_matches_ratio( $data['width'], $data['height'], $imagedata['width'], $imagedata['height'] );
 				} else {
-					$same_ratio = wp_image_matches_ratio( $data['width'], $data['height'], $width, $height );
+					$same_ratio = $this->wp_image_matches_ratio( $data['width'], $data['height'], $width, $height );
 				}
 
 				if ( $same_ratio ) {
