@@ -161,4 +161,23 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 		$attachment_url = $attachment_src[0];
 		$this->assertEquals( $expected_attachment_url, $attachment_url );
 	}
+
+	public function test_get_attachment_image_src_by_unknown_size_without_rokka() {
+		$image_name = '2000x1500.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$expected_attachment_url = $this->get_default_wordpress_url( $image_name );
+		$attachment_src = wp_get_attachment_image_src( $attachment_id, 'unknown-size' );
+		$attachment_url = $attachment_src[0];
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
+
+	public function test_get_attachment_image_src_by_unknown_size() {
+		$this->enable_rokka();
+		$image_name = '2000x1500.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$expected_attachment_url = $this->get_rokka_url( $image_name, $this->get_stack_name_from_size( 'full' ) );
+		$attachment_src = wp_get_attachment_image_src( $attachment_id, 'unknown-size' );
+		$attachment_url = $attachment_src[0];
+		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
 }
