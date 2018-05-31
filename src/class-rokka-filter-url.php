@@ -231,15 +231,15 @@ class Rokka_Filter_Url {
 		}
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
+		$filename = $data['file'];
 
 		if ( is_array( $size ) ) {
 			$attachment_meta = wp_get_attachment_metadata( $post_id );
-			$size_name = $this->rokka_helper->get_size_by_image_url( $post_id, $data['url'], $attachment_meta );
+			$size_name = $this->rokka_helper->get_size_by_image_name( $post_id, $filename, $attachment_meta );
 		} else {
 			$size_name = $size;
 		}
 
-		$filename = $data['file'];
 		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
 		return $data;
 	}
