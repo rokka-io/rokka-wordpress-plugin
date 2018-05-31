@@ -170,7 +170,7 @@ class Rokka_Filter_Url {
 		// try for a new style intermediate size
 		// @codingStandardsIgnoreStart
 		if ( $intermediate = image_get_intermediate_size( $id, $size ) ) {
-			if ( has_filter( 'image_get_intermediate_size', array( $this, 'rewrite_intermediate_size_url' ) ) ) {
+			if ( $intermediate['_rokka_url_rewritten'] ) {
 				// If image_get_intermediate_size filter exists rokka url is already set in this filter.
 				$img_url = $intermediate['url'];
 			} else {
@@ -241,6 +241,8 @@ class Rokka_Filter_Url {
 		}
 
 		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
+		// Set flag that we can check in image_downsize filter if url has already been rewritten
+		$data['_rokka_url_rewritten'] = true;
 		return $data;
 	}
 
