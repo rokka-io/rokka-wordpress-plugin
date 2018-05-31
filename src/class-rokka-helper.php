@@ -853,6 +853,10 @@ class Rokka_Helper {
 	 * @return string
 	 */
 	public function get_size_by_image_url( $image_id, $image_url, $image_meta = array() ) {
+		if ( empty( $image_meta ) ) {
+			$image_meta = wp_get_attachment_metadata( $image_id );
+		}
+
 		$last_slash_pos = strrpos( $image_url, '/' );
 
 		if ( false === $last_slash_pos ) {
