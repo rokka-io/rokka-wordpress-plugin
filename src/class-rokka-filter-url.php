@@ -276,6 +276,7 @@ class Rokka_Filter_Url {
 		}
 		elseif ( ! is_array( $size ) ) {
 			// get size with same ratio if requested size is cropped
+			// we do not need to do this for the size array since this is already done in the image_get_intermediate_size() call
 			$available_sizes = $this->rokka_helper->get_available_image_sizes();
 			if ( array_key_exists( $size, $available_sizes ) ) {
 				$crop = $available_sizes[ $size ][2];
