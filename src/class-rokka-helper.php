@@ -821,29 +821,6 @@ class Rokka_Helper {
 	}
 
 	/**
-	 * Retrieves size name by given image name.
-	 *
-	 * @param int    $image_id ID of image.
-	 * @param string $image_name Name of image.
-	 * @param array  $image_meta Meta information of image.
-	 *
-	 * @return string
-	 */
-	public function get_size_by_image_name( $image_id, $image_name, $image_meta = array() ) {
-		if ( empty( $image_meta ) ) {
-			$image_meta = wp_get_attachment_metadata( $image_id );
-		}
-
-		foreach ( $image_meta['sizes'] as $name => $size ) {
-			if ( $image_name === $size['file'] ) {
-				return $name;
-			}
-		}
-
-		return $this->get_rokka_full_size_stack_name();
-	}
-
-	/**
 	 * Returns nearest matching image size name with same ratio.
 	 *
 	 * @param array        $available_sizes Available sizes of image (from meta data).
@@ -880,6 +857,29 @@ class Rokka_Helper {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves size name by given image name.
+	 *
+	 * @param int    $image_id ID of image.
+	 * @param string $image_name Name of image.
+	 * @param array  $image_meta Meta information of image.
+	 *
+	 * @return string
+	 */
+	public function get_size_by_image_name( $image_id, $image_name, $image_meta = array() ) {
+		if ( empty( $image_meta ) ) {
+			$image_meta = wp_get_attachment_metadata( $image_id );
+		}
+
+		foreach ( $image_meta['sizes'] as $name => $size ) {
+			if ( $image_name === $size['file'] ) {
+				return $name;
+			}
+		}
+
+		return $this->get_rokka_full_size_stack_name();
 	}
 
 	/**

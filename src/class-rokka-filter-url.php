@@ -123,7 +123,6 @@ class Rokka_Filter_Url {
 		}
 
 		return $resize_dimensions;
-
 	}
 
 	/**
