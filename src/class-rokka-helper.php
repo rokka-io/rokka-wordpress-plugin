@@ -764,7 +764,7 @@ class Rokka_Helper {
 		$sizes = $this->get_available_image_sizes();
 		foreach ( $sizes as $size_name => $size_values ) {
 			// If the image dimensions are within 1px of the expected size, use it.
-			if ( wp_image_matches_ratio( $width, $height, $size_values[0], $size_values[0] ) ) {
+			if ( $this->wp_image_matches_ratio( $width, $height, $size_values[0], $size_values[0] ) ) {
 				if ( $width <= $size_values[0] ) {
 					return $size_name;
 				}
@@ -1050,6 +1050,42 @@ class Rokka_Helper {
 	 */
 	public function get_delete_previous() {
 		return $this->delete_previous;
+	}
+
+	/**
+	 * This is a backport from WordPress 4.9.6 to make this function available in older versions of WordPress.
+	 *
+	 * Helper function to test if aspect ratios for two images match.
+	 *
+	 * @since 4.6.0
+	 *
+	 * @param int $source_width  Width of the first image in pixels.
+	 * @param int $source_height Height of the first image in pixels.
+	 * @param int $target_width  Width of the second image in pixels.
+	 * @param int $target_height Height of the second image in pixels.
+	 * @return bool True if aspect ratios match within 1px. False if not.
+	 */
+	public function wp_image_matches_ratio( $source_width, $source_height, $target_width, $target_height ) {
+		if ( function_exists( 'wp_image_matches_ratio' ) ) {
+			return wp_image_matches_ratio( $source_width, $source_height, $target_width, $target_height );
+		}
+
+		/*
+		 * To test for varying crops, we constrain the dimensions of the larger image
+		 * to the dimensions of the smaller image and see if they match.
+		 */
+		if ( $source_width > $target_width ) {
+			$constrained_size = wp_constrain_dimensions( $source_width, $source_height, $target_width );
+			$expected_size = array( $target_width, $target_height );
+		} else {
+			$constrained_size = wp_constrain_dimensions( $target_width, $target_height, $source_width );
+			$expected_size = array( $source_width, $source_height );
+		}
+
+		// If the image dimensions are within 1px of the expected size, we consider it a match.
+		$matched = ( abs( $constrained_size[0] - $expected_size[0] ) <= 1 && abs( $constrained_size[1] - $expected_size[1] ) <= 1 );
+
+		return $matched;
 	}
 
 }
