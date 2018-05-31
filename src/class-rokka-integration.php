@@ -42,7 +42,7 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $_version = '2.0.1';
+	public $_version = '2.0.2';
 
 	/**
 	 * The plugin token.
