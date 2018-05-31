@@ -867,7 +867,7 @@ class Rokka_Helper {
 			}
 		}
 
-		return $this->get_size_by_image_name( $image_id, $image_name, $image_meta);
+		return $this->get_size_by_image_name( $image_id, $image_name, $image_meta );
 	}
 
 	/**
