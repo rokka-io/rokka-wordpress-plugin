@@ -752,25 +752,72 @@ class Rokka_Helper {
 	}
 
 	/**
+	 * This is a copy of the original image_get_intermediate_size() function in WordPress core (wp-includes/media.php)
+	 * The function is only used in WordPress versions < 4.4. Otherwise we hook into the image_get_intermediate_size filter.
+	 *
 	 * Returns nearest matching image size name by given width and height.
 	 *
-	 * @param int $width  Width to get size name for.
-	 * @param int $height Height to get size name for.
+	 * @param int $image_id Id of image.
+	 * @param int $width    Width to get size name for.
+	 * @param int $height   Height to get size name for.
 	 *
 	 * @return string
 	 */
-	public function get_nearest_matching_image_size( $width, $height ) {
-		$sizes = $this->get_available_image_sizes();
-		foreach ( $sizes as $size_name => $size_values ) {
-			// If the image dimensions are within 1px of the expected size, use it.
-			if ( $this->wp_image_matches_ratio( $width, $height, $size_values[0], $size_values[0] ) ) {
-				if ( $width <= $size_values[0] ) {
-					return $size_name;
+	public function get_nearest_matching_image_size( $image_id, $width, $height ) {
+		// @codingStandardsIgnoreStart
+		if ( ! is_array( $imagedata = wp_get_attachment_metadata( $image_id ) ) || empty( $imagedata['sizes'] ) ) {
+			return $this->get_rokka_full_size_stack_name();
+		}
+		// @codingStandardsIgnoreEnd
+
+		$candidates = array();
+
+		if ( ! isset( $imagedata['file'] ) && isset( $imagedata['sizes']['full'] ) ) {
+			$imagedata['height'] = $imagedata['sizes']['full']['height'];
+			$imagedata['width']  = $imagedata['sizes']['full']['width'];
+		}
+
+		foreach ( $imagedata['sizes'] as $_size => $data ) {
+			// If there's an exact match to an existing image size, short circuit.
+			// @codingStandardsIgnoreStart
+			if ( $data['width'] == $width && $data['height'] == $height ) {
+				return $_size;
+			}
+			// @codingStandardsIgnoreEnd
+
+			// If it's not an exact match, consider larger sizes with the same aspect ratio.
+			if ( $data['width'] >= $width && $data['height'] >= $height ) {
+				// If '0' is passed to either size, we test ratios against the original file.
+				if ( 0 === $width || 0 === $height ) {
+					$same_ratio = wp_image_matches_ratio( $data['width'], $data['height'], $imagedata['width'], $imagedata['height'] );
+				} else {
+					$same_ratio = wp_image_matches_ratio( $data['width'], $data['height'], $width, $height );
+				}
+
+				if ( $same_ratio ) {
+					$candidates[ $data['width'] * $data['height'] ] = $_size;
 				}
 			}
 		}
 
-		return $this->get_rokka_full_size_stack_name();
+		if ( ! empty( $candidates ) ) {
+			// Sort the array by size if we have more than one candidate.
+			if ( 1 < count( $candidates ) ) {
+				ksort( $candidates );
+			}
+
+			$size = array_shift( $candidates );
+			return $size;
+		} elseif ( ! empty( $imagedata['sizes']['thumbnail'] ) && $imagedata['sizes']['thumbnail']['width'] >= $width && $imagedata['sizes']['thumbnail']['width'] >= $height ) {
+			/*
+			 * When the size requested is smaller than the thumbnail dimensions, we
+			 * fall back to the thumbnail size to maintain backwards compatibility with
+			 * pre 4.6 versions of WordPress.
+			 */
+			return 'thumbnail';
+		} else {
+			return $this->get_rokka_full_size_stack_name();
+		}
 	}
 
 	/**
@@ -824,8 +871,8 @@ class Rokka_Helper {
 	 */
 	public function get_rokka_url( $hash, $filename, $size = 'thumbnail' ) {
 		if ( is_array( $size ) ) {
-			// if size is requested as width / height array -> find nearest size
-			$stack = $this->get_nearest_matching_image_size( $size[0], $size[1] );
+			// If size is passed as array return full size (this should actually never happen)
+			$stack = $this->get_rokka_full_size_stack_name();
 		} else {
 			$stack = $size;
 		}

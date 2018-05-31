@@ -170,9 +170,18 @@ class Rokka_Filter_Url {
 		// try for a new style intermediate size
 		// @codingStandardsIgnoreStart
 		if ( $intermediate = image_get_intermediate_size( $id, $size ) ) {
-			// this is needed to overwrite the url before the image_get_intermediate_size filter was introduced in WP 4.4
-			// TODO do not call get_rokka_url twice
-			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $intermediate['file'], $size );
+			if ( has_filter( 'image_get_intermediate_size', array( $this, 'rewrite_intermediate_size_url' ) ) ) {
+				// If image_get_intermediate_size filter exists rokka url is already set in this filter.
+				$img_url = $intermediate['url'];
+			} else {
+				// This is needed to get the rokka url before the image_get_intermediate_size filter was introduced in WP 4.4
+				if ( is_array( $size ) ) {
+					$size_name = $this->rokka_helper->get_nearest_matching_image_size( $id, $size[0], $size[1] );
+				} else {
+					$size_name = $size;
+				}
+				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $intermediate['file'], $size_name );
+			}
 			$width = $intermediate['width'];
 			$height = $intermediate['height'];
 			$is_intermediate = true;
@@ -223,8 +232,15 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 
+		if ( is_array( $size ) ) {
+			$attachment_meta = wp_get_attachment_metadata( $post_id );
+			$size_name = $this->rokka_helper->get_size_by_image_url( $post_id, $data['url'], $attachment_meta );
+		} else {
+			$size_name = $size;
+		}
+
 		$filename = $data['file'];
-		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size );
+		$data['url'] = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $size_name );
 		return $data;
 	}
 
