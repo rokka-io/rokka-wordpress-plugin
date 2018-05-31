@@ -48,6 +48,10 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 				'width' => 2000,
 				'height' => 2000,
 			],
+			'huger' => [
+				'width' => 2500,
+				'height' => 2500,
+			],
 		];
 		$this->prepare_image_sizes();
 		// enhance max image width in srcset
@@ -56,7 +60,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	}
 
 	public function enhance_max_srcset_image_width() {
-		return 3000;
+		return 2300;
 	}
 
 	public function tearDown() {
@@ -126,6 +130,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		// add custom sizes
 		add_image_size( 'larger', $this->sizes['larger']['width'], $this->sizes['larger']['height'] );
 		add_image_size( 'huge', $this->sizes['huge']['width'], $this->sizes['huge']['height'] );
+		add_image_size( 'huger', $this->sizes['huger']['width'], $this->sizes['huger']['height'] );
 
 		// add cropped sizes
 		add_image_size( 'medium-crop', $this->sizes['medium']['width'], $this->sizes['medium']['height'], true );
