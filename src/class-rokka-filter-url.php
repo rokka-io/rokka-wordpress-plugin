@@ -264,12 +264,6 @@ class Rokka_Filter_Url {
 			$height = $intermediate['height'];
 			$is_intermediate = true;
 		}
-		elseif ( $size_with_same_ratio = $this->rokka_helper->get_smaller_image_size_with_same_ratio( $meta['sizes'], $size ) ) {
-			$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $meta['sizes'][ $size_with_same_ratio ]['file'], $size_with_same_ratio );
-			$width = $meta['sizes'][ $size_with_same_ratio ]['width'];
-			$height = $meta['sizes'][ $size_with_same_ratio ]['height'];
-			$is_intermediate = true;
-		}
 		elseif ( 'thumbnail' === $size  ) {
 			// fall back to the old thumbnail
 			if ( ( $thumb_file = wp_get_attachment_thumb_file( $id ) ) && $info = getimagesize( $thumb_file ) ) {
@@ -277,6 +271,30 @@ class Rokka_Filter_Url {
 				$img_url = $this->rokka_helper->get_rokka_url( $rokka_hash, $file_name, 'thumbnail' );
 				$width = $info[0];
 				$height = $info[1];
+				$is_intermediate = true;
+			}
+		}
+		else {
+			// get size with same ratio if size is passed as array or requested size is cropped
+			$size_with_same_ratio = false;
+			if ( is_array( $size ) ) {
+				$size_with_same_ratio = $this->rokka_helper->get_smaller_image_size_with_same_ratio( $meta, $width, $height );
+			} else {
+				$available_sizes = $this->rokka_helper->get_available_image_sizes();
+				if ( array_key_exists( $size, $available_sizes ) ) {
+					$crop = $available_sizes[ $size ][2];
+					if ( $crop ) {
+						$width = $available_sizes[ $size ][0];
+						$height = $available_sizes[ $size ][1];
+						$size_with_same_ratio = $this->rokka_helper->get_smaller_image_size_with_same_ratio( $meta, $width, $height );
+					}
+				}
+			}
+			
+			if ( $size_with_same_ratio ) {
+				$img_url         = $this->rokka_helper->get_rokka_url( $rokka_hash, $meta['sizes'][ $size_with_same_ratio ]['file'], $size_with_same_ratio );
+				$width           = $meta['sizes'][ $size_with_same_ratio ]['width'];
+				$height          = $meta['sizes'][ $size_with_same_ratio ]['height'];
 				$is_intermediate = true;
 			}
 		}
