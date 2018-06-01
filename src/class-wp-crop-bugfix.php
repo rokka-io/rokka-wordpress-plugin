@@ -54,6 +54,7 @@ class WP_Crop_Bugfix {
 	 */
 	public function image_resize_dimensions_enforce_ratio( $resize_dimensions, $orig_w, $orig_h, $dest_w, $dest_h, $crop ) {
 		if ( $crop ) {
+			// Bugfix start
 			$aspect_ratio = $orig_w / $orig_h;
 			if ( 0 === $dest_w || 0 === $dest_h ) {
 				$dest_ratio = $aspect_ratio;
@@ -79,6 +80,7 @@ class WP_Crop_Bugfix {
 				$new_w = $dest_w;
 				$new_h = $dest_h;
 			}
+			// Bugfix end
 
 			$size_ratio = max( $new_w / $orig_w, $new_h / $orig_h );
 
