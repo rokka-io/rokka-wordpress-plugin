@@ -100,6 +100,14 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 	protected function get_default_wordpress_url_regex_pattern( $filename ) {
 		return '/' . preg_quote( $this->get_default_wordpress_url( $filename ), '/' ) . '/';
 	}
+	
+	protected function get_ratio( $width, $height ) {
+		return $this->round_ratio( $width / $height );
+	}
+	
+	protected function round_ratio( $ratio ) {
+		return round( $ratio, 2 );
+	}
 
 	public function upload_attachment( $file_name ) {
 		return $this->attachment_create_upload_object( $this->features_dir . $file_name, 0 );
