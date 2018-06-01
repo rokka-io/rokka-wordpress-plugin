@@ -68,26 +68,33 @@ class Rokka_Filter_Url {
 	 */
 	public function image_resize_dimensions_enforce_ratio( $resize_dimensions, $orig_w, $orig_h, $dest_w, $dest_h, $crop ) {
 		// Overwrite resize dimensions if image needs to be cropped.
-		// This fixes the problem, that an image with a wrong ratio is generated.
+		// This fixes the problem, that an images with a wrong ratio are generated.
+		// It also generates the largest possible crop image if destination width and height are bigger than the original image.
 		if ( $crop ) {
-			if ( $dest_w > $orig_w || $dest_h > $orig_h ) {
-				// If the destination width or height is bigger than the original image skip this size
-				return false;
-			}
-
 			$aspect_ratio = $orig_w / $orig_h;
-
-			$new_w = $dest_w;
-			$new_h = $dest_h;
-
-			// If requested width was 0 (not defined) calculate new width with aspect ratio of the original image
-			if ( ! $new_w ) {
-				$new_w = (int) round( $new_h * $aspect_ratio );
+			if ( $dest_w === 0 || $dest_h === 0 ) {
+				$dest_ratio = $aspect_ratio;
+			} else {
+				$dest_ratio = $dest_w / $dest_h;
 			}
 
-			// If requested height was 0 (not defined) calculate new height with aspect ratio of the original image
-			if ( ! $new_h ) {
-				$new_h = (int) round( $new_w / $aspect_ratio );
+			if ( $dest_w > $orig_w && $dest_h <= $orig_h ) {
+				$new_w = $orig_w;
+				$new_h = (int) round( $orig_w / $dest_ratio );
+			} elseif ( $dest_w <= $orig_w && $dest_h > $orig_h ) {
+				$new_w = (int) round( $orig_h * $dest_ratio );
+				$new_h = $orig_h;
+			} elseif ( $dest_w > $orig_w && $dest_h > $orig_h ) {
+				if ( $orig_w / $dest_ratio > $orig_h ) {
+					$new_w = (int) round( $orig_h * $dest_ratio );
+					$new_h = $orig_h;
+				} else {
+					$new_w = $orig_w;
+					$new_h = (int) round( $orig_w / $dest_ratio );
+				}
+			} else {
+				$new_w = $dest_w;
+				$new_h = $dest_h;
 			}
 
 			$size_ratio = max( $new_w / $orig_w, $new_h / $orig_h );
