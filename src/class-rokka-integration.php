@@ -106,6 +106,7 @@ class Rokka_Integration {
 		require_once ROKKA_ABSPATH . 'src/class-rokka-rest.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-url.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-content.php';
+		require_once ROKKA_ABSPATH . 'src/class-wp-crop-bugfix.php';
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once ROKKA_ABSPATH . 'src/cli-command/class-rokka-wp-cli-command.php';
 		}
@@ -140,6 +141,7 @@ class Rokka_Integration {
 		$this->rokka_helper = new Rokka_Helper();
 
 		if ( $this->rokka_helper->is_rokka_enabled() ) {
+			new WP_Crop_Bugfix();
 			new Rokka_Filter_Url( $this->rokka_helper );
 			new Rokka_Attachment( $this->rokka_helper );
 			new Rokka_Rest( $this->rokka_helper );
