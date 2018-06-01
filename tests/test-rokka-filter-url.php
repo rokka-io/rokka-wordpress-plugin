@@ -79,21 +79,24 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 	public function test_get_attachment_image_srcset_too_small_image() {
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
 			$this->enable_rokka();
-			$image_name = '1500x1800.png';
+			$image_name = '1000x1800.png';
 			$attachment_id = $this->upload_attachment( $image_name );
 			$attachment_meta = wp_get_attachment_metadata( $attachment_id );
 			$thumbnail_filename = $attachment_meta['sizes']['thumbnail']['file'];
 			$medium_crop_filename = $attachment_meta['sizes']['medium-crop']['file'];
 			$large_crop_filename = $attachment_meta['sizes']['large-crop']['file'];
-			// the sizes larger-crop and huge-crop shouldn't be generated since it's bigger than the original image
-			$this->assertArrayNotHasKey( 'larger-crop', $attachment_meta['sizes'] );
-			$this->assertArrayNotHasKey( 'huge-crop', $attachment_meta['sizes'] );
+			// the sizes larger-crop and huge-crop are generated even if they are bigger than the original image
+			$larger_crop_filename = $attachment_meta['sizes']['larger-crop']['file'];
+			$huge_crop_filename = $attachment_meta['sizes']['huge-crop']['file'];
 
-			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huge-crop' );
+			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huger-crop' );
 			$this->assertCount( 3, explode( ',', $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $thumbnail_filename, $this->get_stack_name_from_size( 'thumbnail' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_crop_filename, $this->get_stack_name_from_size( 'medium-crop' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $large_crop_filename, $this->get_stack_name_from_size( 'large-crop' ) ), $attachment_image_srcset ) );
+			// the sizes larger-crop and huge-crop shouldn't be in the srcset since they have the same sice as the large-crop image
+			$this->assertEquals( 0, preg_match_all( $this->get_rokka_url_regex_pattern( $larger_crop_filename, $this->get_stack_name_from_size( 'larger-crop' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 0, preg_match_all( $this->get_rokka_url_regex_pattern( $huge_crop_filename, $this->get_stack_name_from_size( 'huge-crop' ) ), $attachment_image_srcset ) );
 		}
 	}
 
@@ -108,15 +111,15 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 		$attachment_image = wp_get_attachment_image( $attachment_id, 'medium' );
 
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
-			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image ) );
 			// the requested size appears in src attribute and in srcset attribute
 			$this->assertEquals( 2, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image ) );
 			$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image ) );
-
+			// the size huge shouldn't appear in srcset since it's the same size as the original image
 			$huge_filename = $attachment_meta['sizes']['huge']['file']; // huge size of the image only exists in newer versions of WordPress since the size is bigger than the image it wasn't added in old versions.
-			// the size huge shouldn't appear in srcset since it's bigger than max_srcset_image_width defined in WordPress
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $image_name ), $attachment_image ) );
 			$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image ) );
 		} else {
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image ) );
