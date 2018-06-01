@@ -282,4 +282,73 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 		$actual_ratio = $this->get_ratio( $attachment_meta['sizes'][$dest_size_name]['width'], $attachment_meta['sizes'][$dest_size_name]['height'] );
 		$this->assertEquals( $expected_ratio, $actual_ratio );
 	}
+
+	public function test_bugfix_cubic_dest_size_bigger_than_portrait_image() {
+		$this->enable_wp_crop_bugfix();
+		$dest_size_name = 'crop-size-bigger-than-image';
+		$dest_size_width = 3000;
+		$dest_size_height = 3000;
+		$dest_ratio = $dest_size_width / $dest_size_height; // ratio 1:1 (cubic)
+		add_image_size( $dest_size_name, $dest_size_width, $dest_size_height, 1 );
+
+		$image_name = '1000x2000.png'; // ratio 1:2 (portrait)
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// cropped image should use largest possible portion of original image with correct ratio
+		$expected_width = 1000;
+		$expected_height = (int) round( $expected_width / $dest_ratio );
+		$this->assertEquals($expected_width, $attachment_meta['sizes'][$dest_size_name]['width']);
+		$this->assertEquals($expected_height, $attachment_meta['sizes'][$dest_size_name]['height']);
+		// generated image should have same ratio as size
+		$expected_ratio = $this->round_ratio( $dest_ratio );
+		$actual_ratio = $this->get_ratio( $attachment_meta['sizes'][$dest_size_name]['width'], $attachment_meta['sizes'][$dest_size_name]['height'] );
+		$this->assertEquals( $expected_ratio, $actual_ratio );
+	}
+
+	public function test_bugfix_cubic_dest_size_bigger_than_landscape_image() {
+		$this->enable_wp_crop_bugfix();
+		$dest_size_name = 'crop-size-bigger-than-image';
+		$dest_size_width = 3000;
+		$dest_size_height = 3000;
+		$dest_ratio = $dest_size_width / $dest_size_height; // ratio 1:1 (cubic)
+		add_image_size( $dest_size_name, $dest_size_width, $dest_size_height, 1 );
+
+		$image_name = '2000x1000.png'; // ratio 2:1 (landscape)
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// cropped image should use largest possible portion of original image with correct ratio
+		$expected_height = 1000;
+		$expected_width = (int) round( $expected_height * $dest_ratio );
+		$this->assertEquals($expected_width, $attachment_meta['sizes'][$dest_size_name]['width']);
+		$this->assertEquals($expected_height, $attachment_meta['sizes'][$dest_size_name]['height']);
+		// generated image should have same ratio as size
+		$expected_ratio = $this->round_ratio( $dest_ratio );
+		$actual_ratio = $this->get_ratio( $attachment_meta['sizes'][$dest_size_name]['width'], $attachment_meta['sizes'][$dest_size_name]['height'] );
+		$this->assertEquals( $expected_ratio, $actual_ratio );
+	}
+
+	public function test_bugfix_cubic_dest_size_bigger_than_cubic_image() {
+		$this->enable_wp_crop_bugfix();
+		$dest_size_name = 'crop-size-bigger-than-image';
+		$dest_size_width = 3000;
+		$dest_size_height = 3000;
+		$dest_ratio = $dest_size_width / $dest_size_height; // ratio 1:1 (cubic)
+		add_image_size( $dest_size_name, $dest_size_width, $dest_size_height, 1 );
+
+		$image_name = '1000x1000.png'; // ratio 1:1 (cubic)
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// cropped image should use largest possible portion of original image with correct ratio
+		$expected_height = 1000;
+		$expected_width = (int) round( $expected_height * $dest_ratio );
+		$this->assertEquals($expected_width, $attachment_meta['sizes'][$dest_size_name]['width']);
+		$this->assertEquals($expected_height, $attachment_meta['sizes'][$dest_size_name]['height']);
+		// generated image should have same ratio as size
+		$expected_ratio = $this->round_ratio( $dest_ratio );
+		$actual_ratio = $this->get_ratio( $attachment_meta['sizes'][$dest_size_name]['width'], $attachment_meta['sizes'][$dest_size_name]['height'] );
+		$this->assertEquals( $expected_ratio, $actual_ratio );
+	}
 }
