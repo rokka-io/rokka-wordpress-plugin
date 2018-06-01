@@ -48,7 +48,7 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 	}
 
 	public function enhance_max_srcset_image_width() {
-		return 2300;
+		return 1800;
 	}
 
 	public function tearDown() {
