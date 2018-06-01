@@ -137,6 +137,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'large-crop', $this->sizes['large']['width'], $this->sizes['large']['height'], true );
 		add_image_size( 'larger-crop', $this->sizes['larger']['width'], $this->sizes['larger']['height'], true );
 		add_image_size( 'huge-crop', $this->sizes['huge']['width'], $this->sizes['huge']['height'], true );
+		add_image_size( 'huger-crop', $this->sizes['huger']['width'], $this->sizes['huger']['height'], true );
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {
