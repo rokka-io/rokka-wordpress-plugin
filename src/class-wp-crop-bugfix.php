@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Crop Bugfix
+ * WordPress crop bugfix
  *
  * @package rokka-integration
  */
@@ -24,7 +24,7 @@ class WP_Crop_Bugfix {
 	}
 
 	/**
-	 * Initializes media management.
+	 * Initializes WordPress crop bugfix
 	 */
 	public function init() {
 		add_filter( 'image_resize_dimensions', array( $this, 'image_resize_dimensions_enforce_ratio' ), 10, 6 );
