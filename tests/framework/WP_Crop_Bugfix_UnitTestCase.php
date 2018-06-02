@@ -17,6 +17,10 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 				'width' => 150,
 				'height' => 150,
 			],
+			'post-thumbnail' => [
+				'width' => 1200,
+				'height' => 0,
+			],
 			'medium' => [
 				'width' => 300,
 				'height' => 300,
@@ -42,6 +46,9 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 				'height' => 2500,
 			],
 		];
+		// explicitly enable post-thumbnail size (in WP <= 4.4 this size is enabled by default)
+		$this->enable_post_thumbnail_size();
+		// Prepare all image sizes
 		$this->prepare_image_sizes();
 		// enhance max image width in srcset
 		add_filter( 'max_srcset_image_width', array( $this, 'enhance_max_srcset_image_width'), 10, 0 );
@@ -49,6 +56,11 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 
 	public function enhance_max_srcset_image_width() {
 		return 1800;
+	}
+
+	public function enable_post_thumbnail_size() {
+		add_theme_support( 'post-thumbnails' );
+		set_post_thumbnail_size( $this->sizes['post-thumbnail']['width'], $this->sizes['post-thumbnail']['width'] );
 	}
 
 	public function tearDown() {
@@ -100,11 +112,11 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 	protected function get_default_wordpress_url_regex_pattern( $filename ) {
 		return '/' . preg_quote( $this->get_default_wordpress_url( $filename ), '/' ) . '/';
 	}
-	
+
 	protected function get_ratio( $width, $height ) {
 		return $this->round_ratio( $width / $height );
 	}
-	
+
 	protected function round_ratio( $ratio ) {
 		return round( $ratio, 2 );
 	}

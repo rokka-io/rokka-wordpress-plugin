@@ -28,6 +28,10 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 				'width' => 150,
 				'height' => 150,
 			],
+			'post-thumbnail' => [
+				'width' => 1200,
+				'height' => 0,
+			],
 			'medium' => [
 				'width' => 300,
 				'height' => 300,
@@ -53,6 +57,9 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 				'height' => 2500,
 			],
 		];
+		// explicitly enable post-thumbnail size (in WP <= 4.4 this size is enabled by default)
+		$this->enable_post_thumbnail_size();
+		// Prepare all image sizes
 		$this->prepare_image_sizes();
 		// enhance max image width in srcset
 		add_filter( 'max_srcset_image_width', array( $this, 'enhance_max_srcset_image_width'), 10, 0 );
@@ -61,6 +68,11 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 
 	public function enhance_max_srcset_image_width() {
 		return 2300;
+	}
+
+	public function enable_post_thumbnail_size() {
+		add_theme_support( 'post-thumbnails' );
+		set_post_thumbnail_size( $this->sizes['post-thumbnail']['width'], $this->sizes['post-thumbnail']['width'] );
 	}
 
 	public function tearDown() {

@@ -23,14 +23,16 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$image_name = '3000x2500.png';
 			$attachment_id = $this->upload_attachment( $image_name );
 			$attachment_meta = wp_get_attachment_metadata( $attachment_id );
-			$large_filename = $attachment_meta['sizes']['large']['file'];
+			$post_thumbnail_filename = $attachment_meta['sizes']['post-thumbnail']['file'];
 			$medium_filename = $attachment_meta['sizes']['medium']['file'];
+			$large_filename = $attachment_meta['sizes']['large']['file'];
 			$larger_filename = $attachment_meta['sizes']['larger']['file'];
 			$huge_filename = $attachment_meta['sizes']['huge']['file'];
 			$huger_filename = $attachment_meta['sizes']['huger']['file'];
 
 			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'large' );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $post_thumbnail_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image_srcset ) );
@@ -39,7 +41,7 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			if ( array_key_exists( 'medium_large', $attachment_meta['sizes'] ) ) {
 				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 				$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image_srcset ) );
-				$this->assertCount( 5, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
 			} else {
 				$this->assertCount( 4, explode( ',', $attachment_image_srcset ) );
 			}
@@ -51,14 +53,16 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$this->enable_rokka();
 			$image_name = '3000x2500.png';
 			$attachment_id = $this->upload_attachment( $image_name );
-			$attachment_meta       = wp_get_attachment_metadata( $attachment_id );
-			$large_filename        = $attachment_meta['sizes']['large']['file'];
-			$medium_filename       = $attachment_meta['sizes']['medium']['file'];
-			$larger_filename       = $attachment_meta['sizes']['larger']['file'];
-			$huge_filename         = $attachment_meta['sizes']['huge']['file'];
-			$huger_filename        = $attachment_meta['sizes']['huger']['file'];
+			$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+			$post_thumbnail_filename = $attachment_meta['sizes']['post-thumbnail']['file'];
+			$medium_filename = $attachment_meta['sizes']['medium']['file'];
+			$large_filename = $attachment_meta['sizes']['large']['file'];
+			$larger_filename = $attachment_meta['sizes']['larger']['file'];
+			$huge_filename = $attachment_meta['sizes']['huge']['file'];
+			$huger_filename = $attachment_meta['sizes']['huger']['file'];
 
 			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huge' );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $post_thumbnail_filename, $this->get_stack_name_from_size( 'post-thumbnail' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_filename, $this->get_stack_name_from_size( 'medium' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image_srcset ) );
@@ -69,7 +73,7 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 				// The size medium_large was added in WordPress 4.4
 				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 				$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image_srcset ) );
-				$this->assertCount( 5, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
 			} else {
 				$this->assertCount( 4, explode( ',', $attachment_image_srcset ) );
 			}
