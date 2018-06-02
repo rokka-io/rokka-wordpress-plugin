@@ -2,20 +2,29 @@
 
 class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 	public function test_bug_image_wrong_ratio() {
+		global $wp_version;
 		$image_name = '2000x1500.png';
 		$attachment_id = $this->upload_attachment( $image_name );
 		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
 		$this->assertArrayHasKey( 'medium-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'large-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'larger-crop', $attachment_meta['sizes'] );
-		$this->assertArrayHasKey( 'huge-crop', $attachment_meta['sizes'] );
+		// WordPress 4.0 doesn't generate a huge-crop size since it's the same as the original
+		if ( version_compare( $wp_version, '4.0', '>' ) ) {
+			$this->assertArrayHasKey( 'huge-crop', $attachment_meta['sizes'] );
+		}
 		// Size huger-crop doesn't exist without bugfix
 		$this->assertArrayNotHasKey( 'huger-crop', $attachment_meta['sizes'] );
 
 		// The huge-crop gets generated with a size of 2000x1500px because the maximum width and height are 2000px and the height of the image is only 1500px (=> Wrong ratio)
 		// This results in different ratios of the defined size and the generated image
-		$expected_ratio = $this->get_ratio( $this->sizes['huge']['width'], $this->sizes['huge']['height'] ); // -> ratio: 1
-		$actual_ratio = $this->get_ratio( $attachment_meta['sizes']['huge-crop']['width'], $attachment_meta['sizes']['huge-crop']['height'] ); // -> ratio: 1.3333
+		if ( version_compare( $wp_version, '4.0', '>' ) ) {
+			$expected_ratio = $this->get_ratio( $this->sizes['huge']['width'], $this->sizes['huge']['height'] ); // -> ratio: 1
+			$actual_ratio = $this->get_ratio( $attachment_meta['sizes']['huge-crop']['width'], $attachment_meta['sizes']['huge-crop']['height'] ); // -> ratio: 1.3333
+		} else {
+			$expected_ratio = $this->get_ratio( $this->sizes['larger']['width'], $this->sizes['larger']['height'] ); // -> ratio: 1
+			$actual_ratio = $this->get_ratio( $attachment_meta['sizes']['larger-crop']['width'], $attachment_meta['sizes']['larger-crop']['height'] ); // -> ratio: 1600:1500
+		}
 		$this->assertNotEquals( $expected_ratio, $actual_ratio ); // -> Ratios are not equal
 	}
 
@@ -65,6 +74,7 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 
 	public function test_bug_srcset_wrong_ratio() {
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			global $wp_version;
 			$image_name = '2000x1500.png';
 			$attachment_id = $this->upload_attachment( $image_name );
 
@@ -86,7 +96,10 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 			$medium_filename = $attachment_meta['sizes']['medium']['file'];
 			$large_filename = $attachment_meta['sizes']['large']['file'];
 			$larger_filename = $attachment_meta['sizes']['larger']['file'];
-			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $image_name ), $attachment_image_srcset ) );
+			// WordPress 4.4 doesn't add the original file to the srcset
+			if ( version_compare( $wp_version, '4.4', '>' ) ) {
+				$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $image_name ), $attachment_image_srcset ) );
+			}
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
