@@ -372,4 +372,28 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 		$actual_ratio = $this->get_ratio( $attachment_meta['sizes'][$dest_size_name]['width'], $attachment_meta['sizes'][$dest_size_name]['height'] );
 		$this->assertEquals( $expected_ratio, $actual_ratio );
 	}
+
+	public function test_zero_height_crop_with_bugfix() {
+		$this->enable_wp_crop_bugfix();
+		$image_name = '2000x1000.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// cropped image with a height of 0 should have original ratio (2:1)
+		$expected_ratio = $this->get_ratio( 2000, 1000 ); // ratio 2:1
+		$actual_ratio = $this->get_ratio( $attachment_meta['sizes']['zero-height-crop']['width'], $attachment_meta['sizes']['zero-height-crop']['height'] );
+		$this->assertEquals($expected_ratio, $actual_ratio);
+	}
+
+	public function test_zero_width_crop_with_bugfix() {
+		$this->enable_wp_crop_bugfix();
+		$image_name = '2000x1000.png';
+		$attachment_id = $this->upload_attachment( $image_name );
+		$attachment_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// cropped image with a width of 0 should have original ratio (2:1)
+		$expected_ratio = $this->get_ratio( 2000, 1000 ); // ratio 2:1
+		$actual_ratio = $this->get_ratio( $attachment_meta['sizes']['zero-width-crop']['width'], $attachment_meta['sizes']['zero-width-crop']['height'] );
+		$this->assertEquals($expected_ratio, $actual_ratio);
+	}
 }
