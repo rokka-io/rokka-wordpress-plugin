@@ -82,6 +82,14 @@ class WP_Crop_Bugfix {
 			}
 			// Bugfix end
 
+			if ( ! $new_w ) {
+				$new_w = (int) round( $new_h * $aspect_ratio );
+			}
+
+			if ( ! $new_h ) {
+				$new_h = (int) round( $new_w / $aspect_ratio );
+			}
+
 			$size_ratio = max( $new_w / $orig_w, $new_h / $orig_h );
 
 			$crop_w = round( $new_w / $size_ratio );
