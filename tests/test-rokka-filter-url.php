@@ -29,6 +29,8 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$larger_filename = $attachment_meta['sizes']['larger']['file'];
 			$huge_filename = $attachment_meta['sizes']['huge']['file'];
 			$huger_filename = $attachment_meta['sizes']['huger']['file'];
+			$zero_width_crop_filename = $attachment_meta['sizes']['zero-width-crop']['file'];
+			$zero_height_crop_filename = $attachment_meta['sizes']['zero-height-crop']['file'];
 
 			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'large' );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
@@ -36,14 +38,16 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $zero_width_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $zero_height_crop_filename ), $attachment_image_srcset ) );
 			// the size huger (2500px) shouldn't appear in srcset since it's bigger than the defined max_srcset_image_width (2300px)
 			$this->assertEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huger_filename ), $attachment_image_srcset ) );
 			if ( array_key_exists( 'medium_large', $attachment_meta['sizes'] ) ) {
 				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 				$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_large_filename ), $attachment_image_srcset ) );
-				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 8, explode( ',', $attachment_image_srcset ) );
 			} else {
-				$this->assertCount( 4, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
 			}
 		}
 	}
@@ -60,6 +64,8 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$larger_filename = $attachment_meta['sizes']['larger']['file'];
 			$huge_filename = $attachment_meta['sizes']['huge']['file'];
 			$huger_filename = $attachment_meta['sizes']['huger']['file'];
+			$zero_width_crop_filename = $attachment_meta['sizes']['zero-width-crop']['file'];
+			$zero_height_crop_filename = $attachment_meta['sizes']['zero-height-crop']['file'];
 
 			$attachment_image_srcset = wp_get_attachment_image_srcset( $attachment_id, 'huge' );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $post_thumbnail_filename, $this->get_stack_name_from_size( 'post-thumbnail' ) ), $attachment_image_srcset ) );
@@ -67,15 +73,17 @@ class Rokka_Filter_Url_Test extends Rokka_UnitTestCase {
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $large_filename, $this->get_stack_name_from_size( 'large' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $larger_filename, $this->get_stack_name_from_size( 'larger' ) ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $huge_filename, $this->get_stack_name_from_size( 'huge' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $zero_width_crop_filename, $this->get_stack_name_from_size( 'zero-width-crop' ) ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $zero_height_crop_filename, $this->get_stack_name_from_size( 'zero-height-crop' ) ), $attachment_image_srcset ) );
 			// the size huger (2500px) shouldn't appear in srcset since it's bigger than the defined max_srcset_image_width (2300px)
 			$this->assertEquals( 0, preg_match_all( $this->get_rokka_url_regex_pattern( $huger_filename, $this->get_stack_name_from_size( 'huger' ) ), $attachment_image_srcset ) );
 			if ( array_key_exists( 'medium_large', $attachment_meta['sizes'] ) ) {
 				// The size medium_large was added in WordPress 4.4
 				$medium_large_filename = $attachment_meta['sizes']['medium_large']['file'];
 				$this->assertEquals( 1, preg_match_all( $this->get_rokka_url_regex_pattern( $medium_large_filename, $this->get_stack_name_from_size( 'medium_large' ) ), $attachment_image_srcset ) );
-				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 8, explode( ',', $attachment_image_srcset ) );
 			} else {
-				$this->assertCount( 4, explode( ',', $attachment_image_srcset ) );
+				$this->assertCount( 6, explode( ',', $attachment_image_srcset ) );
 			}
 		}
 	}

@@ -45,6 +45,14 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 				'width' => 2500,
 				'height' => 2500,
 			],
+			'zero-height-crop' => [
+				'width' => 1100,
+				'height' => 0,
+			],
+			'zero-width-crop' => [
+				'width' => 0,
+				'height' => 1100,
+			],
 		];
 		// explicitly enable post-thumbnail size (in WP <= 4.4 this size is enabled by default)
 		$this->enable_post_thumbnail_size();
@@ -101,6 +109,8 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'larger-crop', $this->sizes['larger']['width'], $this->sizes['larger']['height'], true );
 		add_image_size( 'huge-crop', $this->sizes['huge']['width'], $this->sizes['huge']['height'], true );
 		add_image_size( 'huger-crop', $this->sizes['huger']['width'], $this->sizes['huger']['height'], true );
+		add_image_size( 'zero-height-crop', $this->sizes['zero-height-crop']['width'], $this->sizes['zero-height-crop']['height'], true );
+		add_image_size( 'zero-width-crop', $this->sizes['zero-width-crop']['width'], $this->sizes['zero-width-crop']['height'], true );
 	}
 
 	protected function get_default_wordpress_url( $filename ) {

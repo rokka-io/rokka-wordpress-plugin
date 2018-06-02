@@ -9,6 +9,8 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 		$this->assertArrayHasKey( 'medium-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'large-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'larger-crop', $attachment_meta['sizes'] );
+		$this->assertArrayHasKey( 'zero-height-crop', $attachment_meta['sizes'] );
+		$this->assertArrayHasKey( 'zero-width-crop', $attachment_meta['sizes'] );
 		// WordPress 4.0 doesn't generate a huge-crop size since it's the same as the original
 		if ( version_compare( $wp_version, '4.0', '>' ) ) {
 			$this->assertArrayHasKey( 'huge-crop', $attachment_meta['sizes'] );
@@ -38,6 +40,8 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 		$this->assertArrayHasKey( 'larger-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'huge-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'huger-crop', $attachment_meta['sizes'] );
+		$this->assertArrayHasKey( 'zero-height-crop', $attachment_meta['sizes'] );
+		$this->assertArrayHasKey( 'zero-width-crop', $attachment_meta['sizes'] );
 
 		// With the bugfix the huge-crop size gets generated with a size of 1500x1500px (=> Corret ratio)
 		// The ratio of the defined size and the generated image are now equal
@@ -96,6 +100,8 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 			$medium_filename = $attachment_meta['sizes']['medium']['file'];
 			$large_filename = $attachment_meta['sizes']['large']['file'];
 			$larger_filename = $attachment_meta['sizes']['larger']['file'];
+			$zero_height_crop_filename = $attachment_meta['sizes']['zero-height-crop']['file'];
+			$zero_width_crop_filename = $attachment_meta['sizes']['zero-width-crop']['file'];
 			// WordPress 4.4 doesn't add the original file to the srcset
 			if ( version_compare( $wp_version, '4.4', '>' ) ) {
 				$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $image_name ), $attachment_image_srcset ) );
@@ -103,6 +109,8 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_filename ), $attachment_image_srcset ) );
 			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $zero_height_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $zero_width_crop_filename ), $attachment_image_srcset ) );
 		}
 	}
 
@@ -121,10 +129,10 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 			$large_crop_filename = $attachment_meta['sizes']['large-crop']['file'];
 			$larger_crop_filename = $attachment_meta['sizes']['larger-crop']['file'];
 			$huge_crop_filename = $attachment_meta['sizes']['huge-crop']['file'];
-			$this->assertNotEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_crop_filename ), $attachment_image_srcset ) );
-			$this->assertNotEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_crop_filename ), $attachment_image_srcset ) );
-			$this->assertNotEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_crop_filename ), $attachment_image_srcset ) );
-			$this->assertNotEquals( 0, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $medium_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $large_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $larger_crop_filename ), $attachment_image_srcset ) );
+			$this->assertEquals( 1, preg_match_all( $this->get_default_wordpress_url_regex_pattern( $huge_crop_filename ), $attachment_image_srcset ) );
 		}
 	}
 
