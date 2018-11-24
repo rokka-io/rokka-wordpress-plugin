@@ -230,7 +230,7 @@ class Rokka_Media_Management {
 	 *                             to any posts. Default true.
 	 * @return array
 	 */
-	public function add_custom_media_columns( $posts_columns, $detached ) {
+	public function add_custom_media_columns( $posts_columns, $detached = true ) {
 		// add rokka column
 		$new_columns = array(
 			'rokka' => __( 'Rokka', 'rokka-integration' ),
