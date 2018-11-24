@@ -3,9 +3,9 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 4.9.4
+Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,10 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 2.0.3 =
+
+* [BUGFIX] Fix WordPress bug where $detached parameter in manage_media_columns filter is not set.
 
 = 2.0.2 =
 
