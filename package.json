@@ -1,10 +1,13 @@
 {
   "name": "rokka-wordpress-plugin",
-  "version": "1.2.3",
+  "version": "3.0.0",
   "description": "Rokka integration plugin for WordPress",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel watch assets/js/app.js -d assets/dist",
+    "watch": "parcel watch --no-hmr assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js -d assets/dist",
+    "build": "parcel build assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js -d assets/dist",
+    "lint": "eslint assets/js"
   },
   "repository": {
     "type": "git",
@@ -22,11 +25,11 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.5.0",
-    "gulp-uglify": "^2.1.2"
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "sass": "^1.15.1"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.10.3"
   }
 }
