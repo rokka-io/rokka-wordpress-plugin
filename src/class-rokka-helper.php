@@ -464,19 +464,25 @@ class Rokka_Helper {
 		$stack = new Stack( null, $name );
 		$mode = $crop ? 'fill' : 'box';
 		$stack->addStackOperation(
-			new StackOperation( 'resize', array(
-				'width' => $width,
-				'height' => $height,
-				'mode' => $mode,
-				'upscale' => false,
-			) )
+			new StackOperation(
+				'resize',
+				array(
+					'width' => $width,
+					'height' => $height,
+					'mode' => $mode,
+					'upscale' => false,
+				)
+			)
 		);
 		if ( $crop ) {
 			$stack->addStackOperation(
-				new StackOperation( 'crop', array(
-					'width' => $width,
-					'height' => $height,
-				) )
+				new StackOperation(
+					'crop',
+					array(
+						'width' => $width,
+						'height' => $height,
+					)
+				)
 			);
 		}
 		$stack->setStackOptions( [ 'autoformat' => $autoformat ] );
@@ -580,10 +586,13 @@ class Rokka_Helper {
 		 *
 		 * @var \Rokka\Client\Core\Stack[] $stacks_on_rokka
 		 */
-		$stacks_on_rokka = array_filter( $stack_collection->getStacks(), function ( $stack ) {
-			// filter out all non prefixed stacks
-			return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
-		} );
+		$stacks_on_rokka = array_filter(
+			$stack_collection->getStacks(),
+			function ( $stack ) {
+				// filter out all non prefixed stacks
+				return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
+			}
+		);
 
 		$stacks_to_sync = array();
 
