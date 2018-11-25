@@ -77,27 +77,27 @@ cd $GITPATH
 curl -s https://getcomposer.org/installer | php
 php composer.phar install --no-dev
 
-# Check if composer install was successfull
+# Check if composer install was successful
 composer_exitcode=$?
 if [ $composer_exitcode -ne 0 ]; then
 	echo "ERROR: There was an error installing composer packages. Aborting deployment..."
 	exit $composer_exitcode
 fi
 
-echo "Installing node modules"
-echo "Changing to $GITPATH to install node modules"
+echo "Installing yarn dependencies"
+echo "Changing to $GITPATH to install yarn dependencies"
 cd $GITPATH
-npm install --loglevel error
+yarn install
 
-# Check if npm install was successfull
-npm_exitcode=$?
-if [ $npm_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing node modules. Aborting deployment..."
-	exit $npm_exitcode
+# Check if yarn install was successful
+yarn_exitcode=$?
+if [ $yarn_exitcode -ne 0 ]; then
+	echo "ERROR: There was an error installing the yarn dependencies. Aborting deployment..."
+	exit $yarn_exitcode
 fi
 
-echo "Running gulp deploy task"
-$GITPATH/node_modules/.bin/gulp deploy
+echo "Building assets"
+yarn build
 
 echo "Compile translation files"
 for file in `find "$GITPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
@@ -108,7 +108,9 @@ cp $GITPATH/readme.txt $SVNPATH/trunk/
 cp $GITPATH/rokka-integration.php $SVNPATH/trunk/
 cp $GITPATH/screenshot* $SVNPATH/trunk/
 cp $GITPATH/uninstall.php $SVNPATH/trunk/
-cp -R $GITPATH/assets $SVNPATH/trunk/
+mkdir -p $SVNPATH/trunk/assets
+cp -R $GITPATH/assets/dist $SVNPATH/trunk/assets
+cp -R $GITPATH/assets/images $SVNPATH/trunk/assets
 cp -R $GITPATH/languages $SVNPATH/trunk/
 cp -R $GITPATH/src $SVNPATH/trunk/
 cp -R $GITPATH/vendor $SVNPATH/trunk/

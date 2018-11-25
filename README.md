@@ -40,12 +40,12 @@ This WordPress plugin integrates the rokka image service. All images from your i
 1. Install Node dependencies
 
     ```
-    $ npm install
+    $ yarn install
     ```
 
 ### Compile assets
 
-    $ node_modules/.bin/gulp deploy
+    $ yarn build
 
 ### Extract messages / Compile translation files
 
