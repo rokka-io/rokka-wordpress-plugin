@@ -83,10 +83,13 @@ class Rokka_Integration_Settings {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		// Add settings link to plugin list table
-		add_filter( 'plugin_action_links_' . plugin_basename( ROKKA_PLUGIN_FILE ), array(
-			$this,
-			'add_settings_link',
-		) );
+		add_filter(
+			'plugin_action_links_' . plugin_basename( ROKKA_PLUGIN_FILE ),
+			array(
+				$this,
+				'add_settings_link',
+			)
+		);
 
 		// Add endpoints for AJAX actions
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
@@ -181,10 +184,15 @@ class Rokka_Integration_Settings {
 		$section = 'default';
 
 		// Add section to page
-		add_settings_section( $section, __( 'Main settings', 'rokka-integration' ), array(
-			$this,
-			'settings_section',
-		), $this->menu_slug );
+		add_settings_section(
+			$section,
+			__( 'Main settings', 'rokka-integration' ),
+			array(
+				$this,
+				'settings_section',
+			),
+			$this->menu_slug
+		);
 
 		foreach ( $this->settings_fields as $field ) {
 			// Register field
@@ -597,9 +605,12 @@ class Rokka_Integration_Settings {
 	public function get_images_to_upload() {
 		$image_ids = $this->get_all_images();
 
-		$image_ids = array_filter( $image_ids, function ( $image_id ) {
-			return ! $this->rokka_helper->is_on_rokka( $image_id );
-		} );
+		$image_ids = array_filter(
+			$image_ids,
+			function ( $image_id ) {
+				return ! $this->rokka_helper->is_on_rokka( $image_id );
+			}
+		);
 		// reset keys to get a proper array to send to javascript (not an associative array)
 		$image_ids = array_values( $image_ids );
 
@@ -614,9 +625,12 @@ class Rokka_Integration_Settings {
 	public function get_images_to_delete() {
 		$image_ids = $this->get_all_images();
 
-		$image_ids = array_filter( $image_ids, function ( $image_id ) {
-			return $this->rokka_helper->is_on_rokka( $image_id );
-		} );
+		$image_ids = array_filter(
+			$image_ids,
+			function ( $image_id ) {
+				return $this->rokka_helper->is_on_rokka( $image_id );
+			}
+		);
 		// reset keys to get a proper array to send to javascript (not an associative array)
 		$image_ids = array_values( $image_ids );
 

@@ -20,7 +20,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ### Requirements
 
-* Node.js >=7.10.0 (https://nodejs.org/)
+* Node.js >=10.x (https://nodejs.org/)
 * gettext (https://www.gnu.org/software/gettext/)
 * WordPress >= 4.0
 * PHP >= 5.6
@@ -45,7 +45,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ### Compile assets
 
-    $ node_modules/.bin/gulp deploy
+    $ npm run build
 
 ### Extract messages / Compile translation files
 
@@ -69,7 +69,7 @@ To run the unit tests you need to setup your local WordPress testing environment
 
 To run the tests use the following script:
 
-    $ scripts/unit-tests.sh
+    $ scripts/phpunit.sh
 
 ### Code Sniffer
 

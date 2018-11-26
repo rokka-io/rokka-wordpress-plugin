@@ -19,9 +19,9 @@ php composer.phar install --no-dev
 
 echo "Installing node modules"
 
-npm install --loglevel error
-echo "Running gulp deploy task"
-node_modules/.bin/gulp deploy
+npm install
+echo "Building assets"
+npm run build
 
 #echo "Compile translation files"
 #for file in `find "languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done

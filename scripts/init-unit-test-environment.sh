@@ -18,7 +18,7 @@ mysql_user=${mysql_user:-root}
 read -sp 'Please enter the MySQL password []: ' mysql_password
 echo
 
-read -p 'Please enter the WordPress version which should be used. (Versions can be found here: https://develop.svn.wordpress.org/tags/) [latest]: ' wordpress_version
+read -p 'Please enter the WordPress version which should be used. (Versions can be found here: https://develop.svn.wordpress.org/tags/ / or enter "nightly" to get the latest nightly build) [latest]: ' wordpress_version
 wordpress_version=${wordpress_version:-latest}
 
 scripts/install-wp-tests.sh wordpress_test $mysql_user "$mysql_password" $mysql_host $wordpress_version

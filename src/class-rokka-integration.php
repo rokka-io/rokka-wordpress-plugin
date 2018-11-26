@@ -42,7 +42,7 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $_version = '2.0.3';
+	public $_version = '3.0.0';
 
 	/**
 	 * The plugin token.
@@ -106,6 +106,7 @@ class Rokka_Integration {
 		require_once ROKKA_ABSPATH . 'src/class-rokka-rest.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-url.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-content.php';
+		require_once ROKKA_ABSPATH . 'src/class-wp-crop-bugfix.php';
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once ROKKA_ABSPATH . 'src/cli-command/class-rokka-wp-cli-command.php';
 		}
@@ -140,6 +141,7 @@ class Rokka_Integration {
 		$this->rokka_helper = new Rokka_Helper();
 
 		if ( $this->rokka_helper->is_rokka_enabled() ) {
+			new WP_Crop_Bugfix();
 			new Rokka_Filter_Url( $this->rokka_helper );
 			new Rokka_Attachment( $this->rokka_helper );
 			new Rokka_Rest( $this->rokka_helper );
@@ -170,10 +172,10 @@ class Rokka_Integration {
 	 * @param string $hook Current page hook.
 	 */
 	public function admin_enqueue_assets( $hook ) {
-		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
+		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.css', array(), $this->_version );
 		wp_enqueue_style( $this->_token . '-admin' );
 
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin.min.js', array( 'jquery' ), $this->_version, true );
+		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.js', array( 'jquery' ), $this->_version, true );
 		wp_enqueue_script( $this->_token . '-admin' );
 
 		$rokka_admin = array(
@@ -183,17 +185,17 @@ class Rokka_Integration {
 		);
 		wp_localize_script( $this->_token . '-admin', 'rokkaAdmin', $rokka_admin );
 
-		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'js/rokka-subject-area.min.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
+		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'dist/rokka-subject-area.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
 		wp_enqueue_script( $this->_token . '-subject-area' );
 
 		// Load only on rokka settings page
 		if ( 'settings_page_' . $this->settings->menu_slug === $hook ) {
-			wp_register_script( $this->_token . '-settings-js', $this->assets_url . 'js/settings.min.js', array( 'jquery' ), $this->_version, true );
+			wp_register_script( $this->_token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-settings-js' );
 
 			// add progessbar for mass upload
 			wp_enqueue_script( 'jquery-ui-progressbar' );
-			wp_register_style( $this->_token . '-jquery-ui', esc_url( $this->assets_url ) . '/css/jquery-ui.min.css', array(), '1.12.1' );
+			wp_register_style( $this->_token . '-jquery-ui', esc_url( $this->assets_url ) . 'dist/jquery-ui.min.css', array(), '1.12.1' );
 			wp_enqueue_style( $this->_token . '-jquery-ui' );
 		}
 	}

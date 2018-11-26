@@ -464,19 +464,25 @@ class Rokka_Helper {
 		$stack = new Stack( null, $name );
 		$mode = $crop ? 'fill' : 'box';
 		$stack->addStackOperation(
-			new StackOperation( 'resize', array(
-				'width' => $width,
-				'height' => $height,
-				'mode' => $mode,
-				'upscale' => false,
-			) )
+			new StackOperation(
+				'resize',
+				array(
+					'width' => $width,
+					'height' => $height,
+					'mode' => $mode,
+					'upscale' => false,
+				)
+			)
 		);
 		if ( $crop ) {
 			$stack->addStackOperation(
-				new StackOperation( 'crop', array(
-					'width' => $width,
-					'height' => $height,
-				) )
+				new StackOperation(
+					'crop',
+					array(
+						'width' => $width,
+						'height' => $height,
+					)
+				)
 			);
 		}
 		$stack->setStackOptions( [ 'autoformat' => $autoformat ] );
@@ -580,10 +586,13 @@ class Rokka_Helper {
 		 *
 		 * @var \Rokka\Client\Core\Stack[] $stacks_on_rokka
 		 */
-		$stacks_on_rokka = array_filter( $stack_collection->getStacks(), function ( $stack ) {
-			// filter out all non prefixed stacks
-			return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
-		} );
+		$stacks_on_rokka = array_filter(
+			$stack_collection->getStacks(),
+			function ( $stack ) {
+				// filter out all non prefixed stacks
+				return substr( $stack->name, 0, strlen( $this->get_stack_prefix() ) ) === $this->get_stack_prefix();
+			}
+		);
 
 		$stacks_to_sync = array();
 
@@ -818,6 +827,37 @@ class Rokka_Helper {
 		} else {
 			return $this->get_rokka_full_size_stack_name();
 		}
+	}
+
+	/**
+	 * Returns nearest matching image size name with same ratio.
+	 *
+	 * @param array $image_meta Meta data of requested image.
+	 * @param int   $width      Requested width.
+	 * @param int   $height      Requested height.
+	 *
+	 * @return string|bool
+	 */
+	public function get_smaller_image_size_with_same_ratio( $image_meta, $width, $height ) {
+		if ( ! isset( $image_meta['file'] ) && isset( $image_meta['sizes']['full'] ) ) {
+			$image_meta['height'] = $image_meta['sizes']['full']['height'];
+			$image_meta['width']  = $image_meta['sizes']['full']['width'];
+		}
+
+		foreach ( $image_meta['sizes'] as $size_name => $size_values ) {
+			$same_ratio = false;
+			if ( 0 === $width || 0 === $height ) {
+				$same_ratio = $this->wp_image_matches_ratio( $size_values['width'], $size_values['height'], $image_meta['width'], $image_meta['height'] );
+			} elseif ( $size_values['width'] <= $width ) {
+				// If the image dimensions are within 1px of the expected size, use it.
+				$same_ratio = $this->wp_image_matches_ratio( $size_values['width'], $size_values['height'], $width, $height );
+			}
+
+			if ( $same_ratio ) {
+				return $size_name;
+			}
+		}
+		return false;
 	}
 
 	/**

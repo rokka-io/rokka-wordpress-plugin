@@ -1,21 +1,10 @@
 <?php namespace Tests\Rokka_Integration;
-/**
- * Created by PhpStorm.
- * User: work
- * Date: 26.01.18
- * Time: 09:12
- */
 
-use Rokka_Integration\Rokka_Integration;
+use Rokka_Integration\WP_Crop_Bugfix;
 
-class Rokka_UnitTestCase extends \WP_UnitTestCase {
+class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 	protected $_plugin_dir;
 	protected $features_dir;
-	protected $rokka_company_name = 'dummy_company_name';
-	protected $rokka_api_key = 'dummy_api_key';
-	protected $rokka_url = '';
-	protected $stack_prefix = 'wp-';
-	protected $rokka_hash = 'my_random_rokka_hash_123';
 	protected $sizes = [];
 
 	public function setUp() {
@@ -71,11 +60,10 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		$this->prepare_image_sizes();
 		// enhance max image width in srcset
 		add_filter( 'max_srcset_image_width', array( $this, 'enhance_max_srcset_image_width'), 10, 0 );
-		$this->rokka_url = 'https://' . $this->rokka_company_name . '.rokka.io';
 	}
 
 	public function enhance_max_srcset_image_width() {
-		return 2300;
+		return 1800;
 	}
 
 	public function enable_post_thumbnail_size() {
@@ -90,47 +78,10 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Simulates backend environment (is_admin() === true)
+	 * Enables WordPress crop bugfix
 	 */
-	protected function enable_backend() {
-		// enable backend
-		set_current_screen( 'edit-post' );
-	}
-
-	/**
-	 * Enables rokka integration
-	 */
-	protected function enable_rokka() {
-		// Set rokka options
-		update_option( 'rokka_api_key', $this->rokka_api_key );
-		update_option( 'rokka_company_name', $this->rokka_company_name );
-		update_option( 'rokka_rokka_enabled', true );
-
-		// Reload plugin to enable rokka
-		Rokka_Integration::instance()->init_plugin();
-
-		// Mock rokka client library
-		$rokka_client_mock = $this->createMock( \Rokka\Client\Image::class );
-		$source_image_collection_mock = $this->createMock( \Rokka\Client\Core\SourceImageCollection::class );
-		$source_images = array(
-			(object) array(
-				'format' => '',
-				'organization' => $this->rokka_company_name,
-				'link' => '',
-				'created' => '',
-				'hash' => $this->rokka_hash,
-			)
-		);
-
-		$source_image_collection_mock->method( 'getSourceImages' )
-		                             ->willReturn( $source_images );
-
-		// Configure the stub.
-		$rokka_client_mock->method( 'uploadSourceImage' )
-		                  ->willReturn( $source_image_collection_mock );
-
-		$rokka_integration_plugin = Rokka_Integration::instance();
-		$rokka_integration_plugin->rokka_helper->rokka_set_client( $rokka_client_mock );
+	protected function enable_wp_crop_bugfix() {
+		new WP_Crop_Bugfix();
 	}
 
 	protected function prepare_image_sizes() {
@@ -162,14 +113,6 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'zero-width-crop', $this->sizes['zero-width-crop']['width'], $this->sizes['zero-width-crop']['height'], true );
 	}
 
-	protected function add_rokka_hash( $attachment_id ) {
-		add_post_meta( $attachment_id, 'rokka_hash', $this->get_rokka_hash(), true );
-	}
-
-	protected function remove_rokka_hash( $attachment_id ) {
-		delete_post_meta( $attachment_id, 'rokka_hash' );
-	}
-
 	protected function get_default_wordpress_url( $filename ) {
 		// we can't use wp_get_upload_dir() here since this method was introduced in WordPress 4.5.
 		$current_upload_dir = wp_upload_dir( null, false );
@@ -180,23 +123,12 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		return '/' . preg_quote( $this->get_default_wordpress_url( $filename ), '/' ) . '/';
 	}
 
-	protected function get_rokka_url( $filename, $stack, $rokka_url = '' ) {
-		if ( empty( $rokka_url ) ) {
-			$rokka_url = $this->rokka_url;
-		}
-		return $rokka_url . '/' . $stack . '/' . $this->get_rokka_hash() . '/' . $filename;
+	protected function get_ratio( $width, $height ) {
+		return $this->round_ratio( $width / $height );
 	}
 
-	protected function get_rokka_url_regex_pattern( $filename, $stack ) {
-		return '/' . preg_quote( $this->get_rokka_url( $filename, $stack ), '/' ) . '/';
-	}
-
-	protected function get_rokka_hash() {
-		return $this->rokka_hash;
-	}
-
-	protected function get_stack_name_from_size( $size ) {
-		return $this->stack_prefix . $size;
+	protected function round_ratio( $ratio ) {
+		return round( $ratio, 2 );
 	}
 
 	public function upload_attachment( $file_name ) {

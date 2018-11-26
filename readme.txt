@@ -5,7 +5,7 @@ Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
 Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 2.0.3
+Stable tag: 3.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,20 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 3.0.0 =
+
+This release fixes an issue in WordPress where srcsets are generated with images of a ratio that doesn't match the ratio of the requested image size.
+This happens when the requested size is larger than the original image.
+When requesting an image size with a fixed ratio and the original image is smaller than this size you would expect to get all smaller sizes of the same ratio.
+
+To achieve this behavior this release changes the way images are downsized by WordPress.
+*This means that you need to regenerate the thumbnails when you activate and deactivate this plugin.*
+This can be done for example with the following plugin: https://wordpress.org/plugins/regenerate-thumbnails/
+Everything works fine if you don't do it but the fix will then only apply to new images.
+
+* [BUGFIX] Fix WordPress bug where srcsets are generated with images of a wrong ratio.
+* [UPDATE] Updated rokka-client-php to v1.8.0
 
 = 2.0.3 =
 
