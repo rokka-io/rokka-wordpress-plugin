@@ -84,6 +84,7 @@ This can be done for example with the following plugin: https://wordpress.org/pl
 Everything works fine if you don't do it but the fix will then only apply to new images.
 
 * [BUGFIX] Fix WordPress bug where srcsets are generated with images of a wrong ratio.
+* [UPDATE] Updated rokka-client-php to v1.8.0
 
 = 2.0.3 =
 
