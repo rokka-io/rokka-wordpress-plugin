@@ -20,7 +20,7 @@ This WordPress plugin integrates the rokka image service. All images from your i
 
 ### Requirements
 
-* Node.js >=7.10.0 (https://nodejs.org/)
+* Node.js >=10.x (https://nodejs.org/)
 * gettext (https://www.gnu.org/software/gettext/)
 * WordPress >= 4.0
 * PHP >= 5.6
@@ -40,12 +40,12 @@ This WordPress plugin integrates the rokka image service. All images from your i
 1. Install Node dependencies
 
     ```
-    $ yarn install
+    $ npm install
     ```
 
 ### Compile assets
 
-    $ yarn build
+    $ npm run build
 
 ### Extract messages / Compile translation files
 

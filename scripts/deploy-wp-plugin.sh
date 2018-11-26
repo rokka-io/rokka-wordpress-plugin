@@ -84,20 +84,20 @@ if [ $composer_exitcode -ne 0 ]; then
 	exit $composer_exitcode
 fi
 
-echo "Installing yarn dependencies"
-echo "Changing to $GITPATH to install yarn dependencies"
+echo "Installing npm dependencies"
+echo "Changing to $GITPATH to install npm dependencies"
 cd $GITPATH
-yarn install
+npm install
 
-# Check if yarn install was successful
-yarn_exitcode=$?
-if [ $yarn_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing the yarn dependencies. Aborting deployment..."
-	exit $yarn_exitcode
+# Check if npm install was successful
+npm_exitcode=$?
+if [ $npm_exitcode -ne 0 ]; then
+	echo "ERROR: There was an error installing the npn dependencies. Aborting deployment..."
+	exit $npm_exitcode
 fi
 
 echo "Building assets"
-yarn build
+npm run build
 
 echo "Compile translation files"
 for file in `find "$GITPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done

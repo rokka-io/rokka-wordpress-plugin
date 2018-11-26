@@ -19,9 +19,9 @@ php composer.phar install --no-dev
 
 echo "Installing node modules"
 
-yarn install
+npm install
 echo "Building assets"
-yarn build
+npm run build
 
 #echo "Compile translation files"
 #for file in `find "languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
