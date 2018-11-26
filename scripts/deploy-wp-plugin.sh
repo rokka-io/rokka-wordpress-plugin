@@ -87,12 +87,12 @@ fi
 echo "Installing npm dependencies"
 echo "Changing to $GITPATH to install npm dependencies"
 cd $GITPATH
-npm install
+npm install --loglevel error
 
 # Check if npm install was successful
 npm_exitcode=$?
 if [ $npm_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing the npn dependencies. Aborting deployment..."
+	echo "ERROR: There was an error installing the npm dependencies. Aborting deployment..."
 	exit $npm_exitcode
 fi
 
