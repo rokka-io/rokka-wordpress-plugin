@@ -21,11 +21,18 @@ matrix:
     - php: 7.2
       env: WP_VERSION=4.0
 
+before_install:
+  - nvm install 10.13.0
+
+install:
+  - composer install
+  - npm install
+
 before_script:
   - bash scripts/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - composer install
   - bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 
 script:
   - scripts/phpcodesniffer.sh
   - scripts/phpunit.sh
+  - npm run lint

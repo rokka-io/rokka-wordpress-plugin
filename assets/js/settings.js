@@ -1,11 +1,11 @@
 jQuery(document).ready(function ($) {
 	function getCurrentDateTime() {
 		var currentdate = new Date();
-		return '[' + ('0' + currentdate.getDate()).slice(-2) + "."
-		+ ('0' + (currentdate.getMonth()+1)).slice(-2)  + "."
-		+ currentdate.getFullYear() + " "
-		+ ('0' + (currentdate.getHours()+1)).slice(-2) + ":"
-		+ ('0' + (currentdate.getMinutes()+1)).slice(-2) + ":"
+		return '[' + ('0' + currentdate.getDate()).slice(-2) + '.'
+		+ ('0' + (currentdate.getMonth()+1)).slice(-2)  + '.'
+		+ currentdate.getFullYear() + ' '
+		+ ('0' + (currentdate.getHours()+1)).slice(-2) + ':'
+		+ ('0' + (currentdate.getMinutes()+1)).slice(-2) + ':'
 		+ ('0' + (currentdate.getSeconds()+1)).slice(-2) + ']';
 	}
 

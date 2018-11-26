@@ -1,0 +1,9 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "quotes": ["error", "single"]
+    }
+}
