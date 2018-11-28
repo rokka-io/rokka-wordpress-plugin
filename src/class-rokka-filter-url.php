@@ -78,8 +78,7 @@ class Rokka_Filter_Url {
 		}
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-		$attachment_meta = wp_get_attachment_metadata( $post_id );
-		$filename = wp_basename( $attachment_meta['file'] );
+		$filename = get_attached_file( $post_id );
 
 		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $this->rokka_helper->get_rokka_full_size_stack_name() );
 
@@ -101,11 +100,11 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 		$attachment_meta = wp_get_attachment_metadata( $post_id );
-		if ( array_key_exists( 'thumbnail', $attachment_meta['sizes'] ) ) {
+		if ( ! empty ( $attachment_meta ) && array_key_exists( 'thumbnail', $attachment_meta['sizes'] ) ) {
 			$filename = $attachment_meta['sizes']['thumbnail']['file'];
 		} else {
 			// if size is not available in meta data use original filename
-			$filename = wp_basename( $attachment_meta['file'] );
+			$filename = get_attached_file( $post_id );
 		}
 
 		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, 'thumbnail' );
