@@ -74,31 +74,28 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 = 3.0.0 =
 
-This release fixes an issue in WordPress where srcsets are generated with images of a ratio that doesn't match the ratio of the requested image size.
-This happens when the requested size is larger than the original image.
-When requesting an image size with a fixed ratio and the original image is smaller than this size you would expect to get all smaller sizes of the same ratio.
+This release fixes an issue in WordPress where srcsets are generated with images of a ratio that doesn't match the ratio of the requested image size. This happens when the requested size is larger than the original image. When requesting an image size with a fixed ratio and the original image is smaller than this size you would expect to get all smaller sizes of the same ratio.
 
-To achieve this behavior this release changes the way images are downsized by WordPress.
-*This means that you need to regenerate the thumbnails when you activate and deactivate this plugin.*
-This can be done for example with the following plugin: https://wordpress.org/plugins/regenerate-thumbnails/
-Everything works fine if you don't do it but the fix will then only apply to new images.
+To achieve this behavior this release changes the way images are downsized by WordPress. **This means that you need to regenerate the thumbnails when you activate and deactivate this plugin.** This can be done for example with the following plugin: [https://wordpress.org/plugins/regenerate-thumbnails/](https://wordpress.org/plugins/regenerate-thumbnails/)
+
+Everything works fine if you don't do it but the fix will then only apply to newly uploaded images.
 
 * [BUGFIX] Fix WordPress bug where srcsets are generated with images of a wrong ratio.
 * [BUGFIX] Fix warning in media library if attachment metadata is not yet generated after file upload.
-* [UPDATE] Updated rokka-client-php to v1.8.0
+* [UPDATE] Update rokka-client-php to v1.8.0
 
 = 2.0.3 =
 
-* [BUGFIX] Fix WordPress bug where $detached parameter in manage_media_columns filter is not set.
+* [BUGFIX] Fix WordPress bug where `$detached` parameter in `manage_media_columns`-filter is not set.
 
 = 2.0.2 =
 
-* [BUGFIX] Fetch image meta data if not passed to get_size_by_image_url()
+* [BUGFIX] Fetch image meta data if not passed to `get_size_by_image_url()`
 
 = 2.0.1 =
 
 * [BUGFIX] Autoformat option was not set when syncing stacks for the first time.
-* [BUGFIX] Backport wp_image_matches_ratio function to be compatible with older WordPress versions than 4.6.0
+* [BUGFIX] Backport `wp_image_matches_ratio` function to be compatible with older WordPress versions than 4.6.0
 * [BUGFIX] Fix finding of nearest matching size if image is requested with a width/height array instead of a size string
 
 = 2.0.0 =
@@ -107,21 +104,21 @@ This is a huge rewrite of the plugin but there shouldn't be any breaking changes
 
 * [FEATURE] Support attachments which are uploaded through the WordPress REST API (This ensures compatibility to the new Gutenberg editor)
 * [FEATURE] Auto disable rokka integration if settings are incomplete
-* [UPDATE] Updated rokka-client-php to v1.2.0
-* [CHANGE] Improved unit test coverage
+* [UPDATE] Update rokka-client-php to v1.2.0
+* [CHANGE] Improve unit test coverage
 
 = 1.2.3 =
 
 * [FEATURE] Add unit tests to test url filtering
-* [UPDATE] Updated rokka-client-php to v1.0.0
+* [UPDATE] Update rokka-client-php to v1.0.0
 * [FIX] Fix URL filtering when creating srcset
 * [FIX] Use correct filenames for different sizes
 * [FIX] There shouldn't be an upload error when it's not needed to upload an attachment to rokka
 
 = 1.2.2 =
 
-* [UPDATE] Updated rokka-client-php to v0.10.0
-* [CHANGE] Improved generation of prefixed stack names
+* [UPDATE] Update rokka-client-php to v0.10.0
+* [CHANGE] Improve generation of prefixed stack names
 
 = 1.2.1 =
 
@@ -132,7 +129,7 @@ This is a huge rewrite of the plugin but there shouldn't be any breaking changes
 
 * [FEATURE] Add possibility to define options with constants. Available constants are: `ROKKA_COMPANY_NAME`, `ROKKA_API_KEY` and `ROKKA_STACK_PREFIX`
 * [FEATURE] Add possibility to overwrite base settings with constants. Available constants are: `ROKKA_DOMAIN` (default: `rokka.io`) and `ROKKA_SCHEME` (default: `https`)
-* [REMOVE] Removed rokka api secret option since it's not used anymore
+* [REMOVE] Remove rokka api secret option since it's not used anymore
 
 = 1.1.3 =
 
@@ -150,7 +147,7 @@ This is a huge rewrite of the plugin but there shouldn't be any breaking changes
 
 = 1.1.0 =
 
-* [FEATURE] Added option to define if previous image should be deleted on rokka if metadata changes
+* [FEATURE] Add option to define if previous image should be deleted on rokka if metadata changes
 
 = 1.0.0 =
 
