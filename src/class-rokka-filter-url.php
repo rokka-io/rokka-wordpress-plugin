@@ -78,7 +78,7 @@ class Rokka_Filter_Url {
 		}
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
-		$filename = get_attached_file( $post_id );
+		$filename = wp_basename( get_attached_file( $post_id ) );
 
 		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, $this->rokka_helper->get_rokka_full_size_stack_name() );
 
@@ -104,7 +104,7 @@ class Rokka_Filter_Url {
 			$filename = $attachment_meta['sizes']['thumbnail']['file'];
 		} else {
 			// if size is not available in meta data use original filename
-			$filename = get_attached_file( $post_id );
+			$filename = wp_basename( get_attached_file( $post_id ) );
 		}
 
 		$url = $this->rokka_helper->get_rokka_url( $rokka_hash, $filename, 'thumbnail' );
