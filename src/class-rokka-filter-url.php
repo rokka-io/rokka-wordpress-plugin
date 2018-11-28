@@ -100,7 +100,7 @@ class Rokka_Filter_Url {
 
 		$rokka_hash = get_post_meta( $post_id, 'rokka_hash', true );
 		$attachment_meta = wp_get_attachment_metadata( $post_id );
-		if ( ! empty ( $attachment_meta ) && array_key_exists( 'thumbnail', $attachment_meta['sizes'] ) ) {
+		if ( ! empty( $attachment_meta ) && array_key_exists( 'thumbnail', $attachment_meta['sizes'] ) ) {
 			$filename = $attachment_meta['sizes']['thumbnail']['file'];
 		} else {
 			// if size is not available in meta data use original filename
