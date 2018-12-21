@@ -114,9 +114,17 @@
 
   button#check-rokka-credentials,
   button#sync-rokka-stacks,
+  #reload-sync-stacks-page,
   button#mass-upload-everything,
   button#mass-delete-everything {
     margin-bottom: 15px;
+  }
+  #reload-sync-stacks-page {
+    display: none;
+
+    &.show {
+      display: inline-block;
+    }
   }
   #progress-info-stacks {
     .loading-indicator {

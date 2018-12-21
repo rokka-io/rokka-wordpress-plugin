@@ -151,6 +151,8 @@ jQuery(document).ready(function ($) {
 			}
 		}).done(function() {
 			$('#progress-info-stacks').html('<div class="notice notice-success"><p>' + rokkaSettings.labels.syncStacksSuccess + '</p></div>');
+			$('#sync-rokka-stacks').hide();
+			$('#reload-sync-stacks-page').addClass('show');
 		}).fail(function( res ) {
 			$('#progress-info-stacks').html('<div class="notice notice-error"><p>' + rokkaSettings.labels.syncStacksFail + ' ' + res.responseJSON.data + '</p></div>');
 		});

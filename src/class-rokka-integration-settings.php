@@ -355,7 +355,8 @@ class Rokka_Integration_Settings {
 										<?php endforeach; ?>
 										</tbody>
 									</table>
-									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
+									<button class="button button-primary" id="sync-rokka-stacks"><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
+									<a class="button button-primary" id="reload-sync-stacks-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 									<div id="progress-info-stacks"></div>
 								<?php else : ?>
 									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
