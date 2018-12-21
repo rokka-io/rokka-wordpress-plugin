@@ -3,7 +3,7 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 5.0
+Tested up to: 5.0.2
 Requires PHP: 5.6
 Stable tag: 3.0.0
 License: GPLv2
