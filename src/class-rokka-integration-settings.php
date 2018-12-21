@@ -397,6 +397,7 @@ class Rokka_Integration_Settings {
 								echo '</ul>'
 								?>
 								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka', 'rokka-integration' ); ?></button>
+								<a class="button button-primary" id="reload-mass-upload-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
@@ -422,6 +423,7 @@ class Rokka_Integration_Settings {
 								echo '</ul>';
 								?>
 								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka', 'rokka-integration' ); ?></button>
+								<a class="button button-primary" id="reload-mass-delete-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">

@@ -116,10 +116,14 @@
   button#sync-rokka-stacks,
   #reload-sync-stacks-page,
   button#mass-upload-everything,
-  button#mass-delete-everything {
+  button#mass-delete-everything,
+  #reload-mass-upload-page,
+  #reload-mass-delete-page {
     margin-bottom: 15px;
   }
-  #reload-sync-stacks-page {
+  #reload-sync-stacks-page,
+  #reload-mass-upload-page,
+  #reload-mass-delete-page {
     display: none;
 
     &.show {
