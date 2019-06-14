@@ -300,7 +300,7 @@ class Rokka_Integration_Settings {
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></h2>
 							<p>
 								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.', 'rokka-integration' ); ?>
@@ -378,7 +378,7 @@ class Rokka_Integration_Settings {
 							<?php } ?>
 
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
+							<p><?php esc_html_e( 'Please add your rokka credentials first (in main settings).', 'rokka-integration' ); ?></p>
 						<?php endif; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
