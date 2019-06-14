@@ -6,6 +6,11 @@ php:
   - 7.2
   - 7.3
 
+dist: xenial
+
+services:
+  - mysql
+
 env:
   - WP_VERSION=4.0 # Minimum required version
   - WP_VERSION=4.4 # Introduction of Responsive Images
