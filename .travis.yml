@@ -6,15 +6,24 @@ php:
   - 7.2
   - 7.3
 
+dist: xenial
+
+services:
+  - mysql
+
 env:
-  - WP_VERSION=4.0 # Minimum required version
-  - WP_VERSION=4.4 # Introduction of Responsive Images
-  - WP_VERSION=4.7 # Introduction of REST API
-  - WP_VERSION=4.9 # Last 4.x version
-  - WP_VERSION=latest
+  global:
+    - secure: kVZ5N9HL3O1waaiCSwkXQj2/usnqljSwE94bzW7JCUUqwGRg0IT4kLo0nm75Unsy8MXHWowdjU2UEofCpVCeFj7RROr7cpa/Dn3oB6HXGcyZSddYYhCoQYvaQWVpespDG88/wt4k4XxmLGiGv/tb5DUOSCBl7BW0MtwXcgUj7TYR+2JtHwq1wxCRM3stONjArl3mfnquQ/p/RfV8mTU6J6yg98ZV3UP3ar2AlHhlIgWotHRQExNBV5xRYWq+CQTTV1f6irpowKUN3UrSaz7W0CpqDaX/+VV9rJpJFH+UPizBbYNSNUYZ6K1O5Q3AJbsfsP8E1efAgW1u5gsGn9bYiHiyI67+7/cSUq/uJvUwQ6yhOpwTUAoYNH4Axjo9csS6VnezV9ICnoJ8IFPo1UaJ3SeY9CFVQvkE0tBoSWcmGRK7OEh6p/x41TFCNP8bDdzMhc6mBMlZP8m81T+IrwOepGXy8yCEuWdo6GbkLkzlq9b13EJf/pioVEfRmO/iNZ/xYnXOBpDIMFCLm2rZhohAH9LrLnFrznhNIXi/+tVi1mIPqztc7zUDfqB/Gmu+pRJX+1Z18BsG0/ZojsYpq5ge5NVrv7MqMAYd4VxhqIK+0ggqb/g2ymsaCfw2/wGwQIXleWtzgTtSrc3aInEGGFDIROh1Pb6ffZVyuQswBvOw8zc=
+  matrix:
+    - WP_VERSION=4.0 # Minimum required version
+    - WP_VERSION=4.4 # Introduction of Responsive Images
+    - WP_VERSION=4.7 # Introduction of REST API
+    - WP_VERSION=4.9.10 # Last 4.x version
+    - WP_VERSION=5.0 # Introduction of Gutenberg
+    - WP_VERSION=latest
 
 matrix:
-  exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error:  'break' not in the 'loop' or 'switch' context
+  exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error: 'break' not in the 'loop' or 'switch' context
     - php: 7.0
       env: WP_VERSION=4.0
     - php: 7.1
@@ -28,7 +37,7 @@ matrix:
     - php: 7.3
       env: WP_VERSION=4.7
     - php: 7.3
-      env: WP_VERSION=4.9
+      env: WP_VERSION=4.9.10
 
 before_install:
   - nvm install 10.13.0
@@ -38,10 +47,19 @@ install:
   - npm install
 
 before_script:
-  - bash scripts/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - bash scripts/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
   - bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 
 script:
   - scripts/phpcodesniffer.sh
   - scripts/phpunit.sh
   - npm run lint
+
+deploy:
+  provider: script
+  script: scripts/deploy-wp-plugin.sh
+  on:
+    php: 7.2
+    condition: "$WP_VERSION = latest"
+    tags: true
+    all_branches: true

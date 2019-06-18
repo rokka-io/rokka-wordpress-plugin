@@ -60,7 +60,7 @@ Update all .po files with newly extracted messages from .pot file:
 To compile all .po files to .mo files use the following script:
 
     $ scripts/translations/compile_translation_files.sh
-    
+
 ### Unit tests
 
 To run the unit tests you need to setup your local WordPress testing environment (PHP / MySQL required). Use the following script for this:

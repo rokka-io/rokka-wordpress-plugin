@@ -300,7 +300,7 @@ class Rokka_Integration_Settings {
 				</div>
 				<?php if ( 'stacks' === $current_tab ) : ?>
 					<div class="tab-content">
-						<?php if ( $this->rokka_helper->is_rokka_enabled() ) : ?>
+						<?php if ( $this->rokka_helper->are_settings_complete() ) : ?>
 							<h2><?php esc_html_e( 'Sync stacks', 'rokka-integration' ); ?></h2>
 							<p>
 								<?php esc_html_e( 'Stacks are a set of operations on rokka which represent the image sizes as they are defined in WordPress. If you change the image sizes in WordPress, execute this command again in order to reflect pass the size changes to the stacks on rokka.', 'rokka-integration' ); ?>
@@ -355,7 +355,8 @@ class Rokka_Integration_Settings {
 										<?php endforeach; ?>
 										</tbody>
 									</table>
-									<button class="button button-primary" id="sync-rokka-stacks" ><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
+									<button class="button button-primary" id="sync-rokka-stacks"><?php esc_html_e( 'Sync stacks with rokka', 'rokka-integration' ); ?></button>
+									<a class="button button-primary" id="reload-sync-stacks-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=stacks' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 									<div id="progress-info-stacks"></div>
 								<?php else : ?>
 									<p><?php esc_html_e( 'There are no image sizes defined in WordPress.', 'rokka-integration' ); ?></p>
@@ -377,7 +378,7 @@ class Rokka_Integration_Settings {
 							<?php } ?>
 
 						<?php else : ?>
-							<p><?php esc_html_e( 'Please enable rokka first (in main settings).', 'rokka-integration' ); ?></p>
+							<p><?php esc_html_e( 'Please add your rokka credentials first (in main settings).', 'rokka-integration' ); ?></p>
 						<?php endif; ?>
 					</div>
 				<?php elseif ( 'upload' === $current_tab ) : ?>
@@ -396,6 +397,7 @@ class Rokka_Integration_Settings {
 								echo '</ul>'
 								?>
 								<button class="button button-primary" id="mass-upload-everything"><?php esc_attr_e( 'Upload all images to rokka', 'rokka-integration' ); ?></button>
+								<a class="button button-primary" id="reload-mass-upload-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 								<div id="upload-progress-info"></div>
 								<div id="upload-progressbar"></div>
 								<div id="upload-progress-log-wrapper">
@@ -421,6 +423,7 @@ class Rokka_Integration_Settings {
 								echo '</ul>';
 								?>
 								<button class="button delete" id="mass-delete-everything"><?php esc_attr_e( 'Remove all images from rokka', 'rokka-integration' ); ?></button>
+								<a class="button button-primary" id="reload-mass-delete-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
 								<div id="delete-progress-info"></div>
 								<div id="delete-progressbar"></div>
 								<div id="delete-progress-log-wrapper">

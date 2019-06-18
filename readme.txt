@@ -3,9 +3,9 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 5.0.2
+Tested up to: 5.2.1
 Requires PHP: 5.6
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,11 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 3.0.1 =
+
+* [IMPROVEMENT] Improve admin settings
+* [UPDATE] Update rokka-client-php to v1.10.0
 
 = 3.0.0 =
 

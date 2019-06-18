@@ -11,20 +11,18 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
-# Set SVNPASSWORD environment variable to not promt password during deployment
+# Set SVNPASSWORD environment variable to not prompt password during deployment
 PLUGINSLUG="rokka-integration"
-GITPATH="/tmp/$PLUGINSLUG-git"
-SVNPATH="/tmp/$PLUGINSLUG-svn"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 SVNUSER=liip
 SOURCEPATH="$HERE/.." # this file should be in the base of your git repository
+BUILDPATH="$SOURCEPATH/build"
 MAINFILE="$PLUGINSLUG.php"
 
 echo "Deploy with following configuration"
 echo
 echo "Slug: $PLUGINSLUG"
-echo "Temporary git path: $GITPATH"
-echo "Temporary svn path: $SVNPATH"
+echo "Build path: $BUILDPATH"
 echo "Remote SVN repo: $SVNURL"
 echo "SVN username: $SVNUSER"
 echo "Source path: $SOURCEPATH"
@@ -56,37 +54,30 @@ fi
 
 echo
 echo "Creating local copy of SVN repo trunk ..."
-svn checkout $SVNURL $SVNPATH --depth immediates
-svn update --quiet $SVNPATH/trunk --set-depth infinity
+svn checkout $SVNURL $BUILDPATH --depth immediates
+svn update --quiet $BUILDPATH/trunk --set-depth infinity
 echo "Clearing SVN repo trunk so we can overwrite it"
-rm -rf $SVNPATH/trunk/*
+rm -rf $BUILDPATH/trunk/*
 
 echo "Ignoring os specific files"
 svn propset svn:ignore ".DS_Store
-Thumbs.db" "$SVNPATH/trunk/"
+Thumbs.db" "$BUILDPATH/trunk/"
 
-echo "Changing to $SOURCEPATH to run git command"
+echo "Installing composer dependencies"
+echo "Changing to $SOURCEPATH to install composer dependencies"
 cd $SOURCEPATH
-
-echo "Exporting the HEAD of master from git to the temporary GIT directory"
-git checkout-index -a -f --prefix=$GITPATH/
-
-echo "Installing composer packages"
-echo "Changing to $GITPATH to install composer packages"
-cd $GITPATH
-curl -s https://getcomposer.org/installer | php
-php composer.phar install --no-dev
+composer install --no-dev
 
 # Check if composer install was successful
 composer_exitcode=$?
 if [ $composer_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing composer packages. Aborting deployment..."
+	echo "ERROR: There was an error installing composer dependencies. Aborting deployment..."
 	exit $composer_exitcode
 fi
 
 echo "Installing npm dependencies"
-echo "Changing to $GITPATH to install npm dependencies"
-cd $GITPATH
+echo "Changing to $SOURCEPATH to install npm dependencies"
+cd $SOURCEPATH
 npm install --loglevel error
 
 # Check if npm install was successful
@@ -100,71 +91,74 @@ echo "Building assets"
 npm run build
 
 echo "Compile translation files"
-for file in `find "$GITPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
+for file in `find "$SOURCEPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
 
 echo "Copying required plugin files to SVN trunk"
-cp $GITPATH/index.php $SVNPATH/trunk/
-cp $GITPATH/readme.txt $SVNPATH/trunk/
-cp $GITPATH/rokka-integration.php $SVNPATH/trunk/
-cp $GITPATH/screenshot* $SVNPATH/trunk/
-cp $GITPATH/uninstall.php $SVNPATH/trunk/
-mkdir -p $SVNPATH/trunk/assets
-cp -R $GITPATH/assets/dist $SVNPATH/trunk/assets
-cp -R $GITPATH/assets/images $SVNPATH/trunk/assets
-cp -R $GITPATH/languages $SVNPATH/trunk/
-cp -R $GITPATH/src $SVNPATH/trunk/
-cp -R $GITPATH/vendor $SVNPATH/trunk/
+cp $SOURCEPATH/index.php $BUILDPATH/trunk/
+cp $SOURCEPATH/readme.txt $BUILDPATH/trunk/
+cp $SOURCEPATH/rokka-integration.php $BUILDPATH/trunk/
+cp $SOURCEPATH/screenshot* $BUILDPATH/trunk/
+cp $SOURCEPATH/uninstall.php $BUILDPATH/trunk/
+mkdir -p $BUILDPATH/trunk/assets
+cp -R $SOURCEPATH/assets/dist $BUILDPATH/trunk/assets
+cp -R $SOURCEPATH/assets/images $BUILDPATH/trunk/assets
+cp -R $SOURCEPATH/languages $BUILDPATH/trunk/
+cp -R $SOURCEPATH/src $BUILDPATH/trunk/
+cp -R $SOURCEPATH/vendor $BUILDPATH/trunk/
 
 echo "Changing directory to SVN and committing to trunk"
-cd $SVNPATH/trunk/
+cd $BUILDPATH/trunk/
+
 # Delete all files that should not now be added.
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
 # Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
+
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release"
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
 else
-	svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
+	svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release" --no-auth-cache
 fi
 
 # Update WordPress plugin assets
 # Make the directory if it doesn't already exist
-mkdir -p $SVNPATH/assets/
-svn update --quiet $SVNPATH/assets --set-depth infinity
+mkdir -p $BUILDPATH/assets/
+svn update --quiet $BUILDPATH/assets --set-depth infinity
 echo "Clearing SVN repo assets so we can overwrite it"
-rm -rf $SVNPATH/assets/*
+rm -rf $BUILDPATH/assets/*
 echo "Copying assets fiels to SVN assets"
-cp -R $GITPATH/wp-assets/* $SVNPATH/assets/
+cp -R $SOURCEPATH/wp-assets/* $BUILDPATH/assets/
 
 echo "Updating WordPress plugin assets and committing"
-cd $SVNPATH/assets/
+cd $BUILDPATH/assets/
 # Delete all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-#svn update --accept mine-full $SVNPATH/assets/*
+#svn update --accept mine-full $BUILDPATH/assets/*
 # Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
+
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets"
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets" --no-auth-cache
 else
-	svn commit --username=$SVNUSER -m "Updating assets"
+	svn commit --username=$SVNUSER -m "Updating assets" --no-auth-cache
 fi
 
 echo "Creating new SVN tag and committing it"
-cd $SVNPATH
-svn update --quiet $SVNPATH/tags/$PLUGINVERSION
+cd $BUILDPATH
+svn update --quiet $BUILDPATH/tags/$PLUGINVERSION
 
 # if tag already exists update sources otherwise create new
-if [ -d "$SVNPATH/tags/$PLUGINVERSION/" ]; then
-	cd $SVNPATH/tags/$PLUGINVERSION
-	cp -R $SVNPATH/trunk/* $SVNPATH/tags/$PLUGINVERSION/
+if [ -d "$BUILDPATH/tags/$PLUGINVERSION/" ]; then
+	cd $BUILDPATH/tags/$PLUGINVERSION
+	cp -R $BUILDPATH/trunk/* $BUILDPATH/tags/$PLUGINVERSION/
 	# Delete all files that should not now be added.
 	svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 	# Add all new files that are not set to be ignored
@@ -172,23 +166,17 @@ if [ -d "$SVNPATH/tags/$PLUGINVERSION/" ]; then
 	# Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 	svn propset svn:mime-type image/png *.png
 else
-	svn copy --quiet $SVNPATH/trunk/ $SVNPATH/tags/$PLUGINVERSION/
-	cd $SVNPATH/tags/$PLUGINVERSION
+	svn copy --quiet $BUILDPATH/trunk/ $BUILDPATH/tags/$PLUGINVERSION/
+	cd $BUILDPATH/tags/$PLUGINVERSION
 fi
 
 # Commit plugin version
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION"
+	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
 else
-	svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
+	svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION" --no-auth-cache
 fi
-
-echo "Removing temporary directories $SVNPATH and $GITPATH"
-cd $SVNPATH
-cd ..
-rm -rf $SVNPATH/
-rm -rf $GITPATH/
 
 echo "Successfully released v$PLUGINVERSION of the $PLUGINSLUG plugin!"
 echo

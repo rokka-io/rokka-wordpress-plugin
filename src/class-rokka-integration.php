@@ -21,7 +21,7 @@ class Rokka_Integration {
 	 *
 	 * @var Rokka_Integration
 	 */
-	protected static $_instance = null;
+	protected static $instance = null;
 
 	/**
 	 * Rokka_Helper instance.
@@ -42,14 +42,14 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $_version = '3.0.0';
+	public $version = '3.0.1';
 
 	/**
 	 * The plugin token.
 	 *
 	 * @var string
 	 */
-	public $_token = 'rokka-integration';
+	public $token = 'rokka-integration';
 
 	/**
 	 * The plugin assets directory.
@@ -155,7 +155,7 @@ class Rokka_Integration {
 				new Rokka_Media_Management( $this->rokka_helper );
 			}
 
-			$this->settings = new Rokka_Integration_Settings( $this->rokka_helper, $this->_token, $this->assets_url );
+			$this->settings = new Rokka_Integration_Settings( $this->rokka_helper, $this->token, $this->assets_url );
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -172,31 +172,31 @@ class Rokka_Integration {
 	 * @param string $hook Current page hook.
 	 */
 	public function admin_enqueue_assets( $hook ) {
-		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-admin' );
+		wp_register_style( $this->token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-admin' );
 
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.js', array( 'jquery' ), $this->_version, true );
-		wp_enqueue_script( $this->_token . '-admin' );
+		wp_register_script( $this->token . '-admin', esc_url( $this->assets_url ) . 'dist/admin.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->token . '-admin' );
 
 		$rokka_admin = array(
 			'labels' => array(
 				'deleteImageConfirm' => esc_html__( 'Do you really want to delete this image from rokka? Please be aware that all stored meta information (eg. subject area) will be deleted as well.', 'rokka-integration' ),
 			),
 		);
-		wp_localize_script( $this->_token . '-admin', 'rokkaAdmin', $rokka_admin );
+		wp_localize_script( $this->token . '-admin', 'rokkaAdmin', $rokka_admin );
 
-		wp_register_script( $this->_token . '-subject-area', esc_url( $this->assets_url ) . 'dist/rokka-subject-area.js', array( 'jquery', 'imgareaselect' ), $this->_version, false );
-		wp_enqueue_script( $this->_token . '-subject-area' );
+		wp_register_script( $this->token . '-subject-area', esc_url( $this->assets_url ) . 'dist/rokka-subject-area.js', array( 'jquery', 'imgareaselect' ), $this->version, false );
+		wp_enqueue_script( $this->token . '-subject-area' );
 
 		// Load only on rokka settings page
 		if ( 'settings_page_' . $this->settings->menu_slug === $hook ) {
-			wp_register_script( $this->_token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->_version, true );
-			wp_enqueue_script( $this->_token . '-settings-js' );
+			wp_register_script( $this->token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_script( $this->token . '-settings-js' );
 
 			// add progessbar for mass upload
 			wp_enqueue_script( 'jquery-ui-progressbar' );
-			wp_register_style( $this->_token . '-jquery-ui', esc_url( $this->assets_url ) . 'dist/jquery-ui.min.css', array(), '1.12.1' );
-			wp_enqueue_style( $this->_token . '-jquery-ui' );
+			wp_register_style( $this->token . '-jquery-ui', esc_url( $this->assets_url ) . 'dist/jquery-ui.min.css', array(), '1.12.1' );
+			wp_enqueue_style( $this->token . '-jquery-ui' );
 		}
 	}
 
@@ -236,25 +236,25 @@ class Rokka_Integration {
 	 * @return Rokka_Integration Rokka_Integration instance
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
 
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->_version ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->version ) );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->_version ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->version ) );
 	}
 
 	/**
@@ -263,9 +263,9 @@ class Rokka_Integration {
 	 * This check is done on all requests and runs if the versions do not match.
 	 */
 	public function check_version() {
-		if ( ! defined( 'IFRAME_REQUEST' ) && get_option( $this->_token . '_version' ) !== $this->_version ) {
+		if ( ! defined( 'IFRAME_REQUEST' ) && get_option( $this->token . '_version' ) !== $this->version ) {
 			$this->log_version_number();
-			do_action( $this->_token . '_updated' );
+			do_action( $this->token . '_updated' );
 		}
 	}
 
@@ -273,8 +273,8 @@ class Rokka_Integration {
 	 * Log the plugin version number in database.
 	 */
 	protected function log_version_number() {
-		delete_option( $this->_token . '_version' );
-		update_option( $this->_token . '_version', $this->_version );
+		delete_option( $this->token . '_version' );
+		update_option( $this->token . '_version', $this->version );
 	}
 
 }
