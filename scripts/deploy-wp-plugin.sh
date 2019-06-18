@@ -11,7 +11,7 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
-# Set SVNPASSWORD environment variable to not promt password during deployment
+# Set SVNPASSWORD environment variable to not prompt password during deployment
 PLUGINSLUG="rokka-integration"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 SVNUSER=liip
@@ -63,10 +63,9 @@ echo "Ignoring os specific files"
 svn propset svn:ignore ".DS_Store
 Thumbs.db" "$BUILDPATH/trunk/"
 
-echo "Changing to $SOURCEPATH to run git command"
-cd $SOURCEPATH
-
 echo "Installing composer dependencies"
+echo "Changing to $SOURCEPATH to install composer dependencies"
+cd $SOURCEPATH
 composer install --no-dev
 
 # Check if composer install was successful
@@ -118,7 +117,7 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs sv
 svn propset svn:mime-type image/png *.png
 
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
 	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
 else
@@ -145,7 +144,7 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs sv
 svn propset svn:mime-type image/png *.png
 
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
 	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets" --no-auth-cache
 else
@@ -172,7 +171,7 @@ else
 fi
 
 # Commit plugin version
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise promt password
+# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
 if [ ! -z "$SVNPASSWORD" ]; then
 	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
 else
