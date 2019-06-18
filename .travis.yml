@@ -37,7 +37,7 @@ matrix:
     - php: 7.3
       env: WP_VERSION=4.7
     - php: 7.3
-      env: WP_VERSION=4.9
+      env: WP_VERSION=4.9.10
 
 before_install:
   - nvm install 10.13.0
