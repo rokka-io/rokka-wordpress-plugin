@@ -61,5 +61,5 @@ deploy:
   on:
     php: 7.2
     condition: "$WP_VERSION = latest"
-    #tags: true
+    tags: true
     all_branches: true
