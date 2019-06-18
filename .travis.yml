@@ -51,3 +51,12 @@ script:
   - scripts/phpcodesniffer.sh
   - scripts/phpunit.sh
   - npm run lint
+
+deploy:
+  provider: script
+  script: scripts/deploy-wp-plugin.sh
+  on:
+    php: 7.2
+    condition: $WP_VERSION = latest
+    tags: true
+    all_branches: true
