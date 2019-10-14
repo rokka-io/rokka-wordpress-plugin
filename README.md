@@ -2,10 +2,11 @@
 
 [![Build Status](https://travis-ci.org/rokka-io/rokka-wordpress-plugin.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-wordpress-plugin)
 
-WordPress plugin to integrate the rokka image service (https://rokka.io).
+WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 
-The [rokka image converter](https://rokka.io) supports you in storing your digital images – easy and neat. Whether for handling image formats, SEO attributes or the lightning fast delivery, rokka is just the right tool for your digital images.
-This WordPress plugin integrates the rokka image service. All images from your image libary will be synchronized to your rokka account and be served directly through rokka.
+[rokka](https://rokka.io)  is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
+
+Free account plans are available. Just install the plugin, register and use it.
 
 ## Further Information
 
