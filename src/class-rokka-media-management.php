@@ -252,7 +252,7 @@ class Rokka_Media_Management {
 				if ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_delete_image&image_id=' . $post_id ), 'rokka_delete_image_' . $post_id ) ) . '" class="button delete rokka-delete-image" title="' . esc_html__( 'Remove image from rokka', 'rokka-integration' ) . '"><span class="dashicons dashicons-trash"></span></a></p>';
 				} else {
-					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button button-primary" title="' . esc_attr__( 'Upload image to rokka', 'rokka-integration' ) . '"><span class="dashicons dashicons-upload"></span></a></p>';
+					$output .= '<p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?action=rokka_upload_image&image_id=' . $post_id ), 'rokka_upload_image_' . $post_id ) ) . '" class="button" title="' . esc_attr__( 'Upload image to rokka', 'rokka-integration' ) . '"><span class="dashicons dashicons-upload"></span></a></p>';
 				}
 			} else {
 				$output .= esc_html__( 'MIME type not supported', 'rokka-integration' );
