@@ -70,13 +70,13 @@ To run the unit tests you need to setup your local WordPress testing environment
 
 To run the tests use the following script:
 
-    $ scripts/phpunit.sh
+    $ composer test
 
 ### Code Sniffer
 
 Execute the code sniffer by executing the following command from the plugin root:
 
-    $ scripts/phpcodesniffer.sh
+    $ composer lint
 
 Fix the errors in prior to commit. Commit when fixed, so the build will pass on [Travis CI](https://travis-ci.org/rokka-io/rokka-wordpress-plugin).
 

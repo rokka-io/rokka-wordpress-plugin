@@ -51,8 +51,8 @@ before_script:
   - bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 
 script:
-  - scripts/phpcodesniffer.sh
-  - scripts/phpunit.sh
+  - composer lint
+  - composer test
   - npm run lint
 
 deploy:
