@@ -33,7 +33,6 @@ class Rokka_Base_Test extends Rokka_UnitTestCase {
 		$this->assertEquals( $expected_attachment_url, $attachment_url );
 	}
 
-	
 	/**
 	 * Test unsupported mime type
 	 */
@@ -45,6 +44,19 @@ class Rokka_Base_Test extends Rokka_UnitTestCase {
 		$expected_attachment_url = $this->get_rokka_url( $expected_file_name, $this->get_stack_name_from_size( 'full' ) );
 		$attachment_url = wp_get_attachment_url( $attachment_id );
 		$this->assertEquals( $expected_attachment_url, $attachment_url );
+	}
+
+	/**
+	 * Test disabled big image size threshold
+	 * (Introduced in WordPress 5.3)
+	 */
+	public function test_disabled_big_image_size_threshold() {
+		$this->enable_rokka();
+		$file_name = '3200x2400.png'; // Upload image bigger than default threshold (2560px)
+		$attachment_id = $this->upload_attachment( $file_name );
+		$image_meta = wp_get_attachment_metadata( $attachment_id );
+		// When threshold was not applied there shouldn't be an original_image entry in the meta data.
+		$this->assertFalse( array_key_exists( 'original_image', $image_meta ) );
 	}
 
 	/**

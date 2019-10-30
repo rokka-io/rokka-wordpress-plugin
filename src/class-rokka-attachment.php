@@ -41,6 +41,9 @@ class Rokka_Attachment {
 		add_action( 'add_attachment', array( $this, 'rokka_upload' ), 10, 1 );
 		add_filter( 'update_attached_file', array( $this, 'rokka_update' ), 10, 2 );
 		add_action( 'delete_attachment', array( $this, 'rokka_delete' ), 10, 1 );
+
+		// Disable big image size threshold (introduced in WordPress 5.3)
+		add_filter( 'big_image_size_threshold', '__return_false', 9999 );
 	}
 
 	/**
