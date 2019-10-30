@@ -4,7 +4,7 @@
 
 WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 
-[rokka](https://rokka.io)  is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
+[rokka](https://rokka.io) is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
 
 Free account plans are available. Just install the plugin, register and use it.
 
