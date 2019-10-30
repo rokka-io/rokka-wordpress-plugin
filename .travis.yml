@@ -18,7 +18,7 @@ env:
     - WP_VERSION=4.0 # Minimum required version
     - WP_VERSION=4.4 # Introduction of Responsive Images
     - WP_VERSION=4.7 # Introduction of REST API
-    - WP_VERSION=4.9.10 # Last 4.x version
+    - WP_VERSION=4.9.12 # Last 4.x version
     - WP_VERSION=5.0 # Introduction of Gutenberg
     - WP_VERSION=latest
 
@@ -37,10 +37,10 @@ matrix:
     - php: 7.3
       env: WP_VERSION=4.7
     - php: 7.3
-      env: WP_VERSION=4.9.10
+      env: WP_VERSION=4.9.12
 
 before_install:
-  - nvm install 10.13.0
+  - nvm install 12.13.0
 
 install:
   - composer install
@@ -48,11 +48,10 @@ install:
 
 before_script:
   - bash scripts/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
-  - bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 
 script:
-  - scripts/phpcodesniffer.sh
-  - scripts/phpunit.sh
+  - composer lint
+  - composer test
   - npm run lint
 
 deploy:

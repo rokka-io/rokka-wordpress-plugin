@@ -3,16 +3,16 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 5.2.1
+Tested up to: 5.3.0
 Requires PHP: 5.6
-Stable tag: 3.0.1
+Stable tag: 3.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress plugin to integrate the [rokka image service](https://rokka.io).
+WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 
 == Description ==
-The [rokka image converter](https://rokka.io) supports you in storing your digital images – easy and neat. Whether for handling image formats, SEO attributes or the lightning fast delivery, rokka is just the right tool for your digital images.
+[rokka](https://rokka.io) is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
 This WordPress plugin integrates the rokka image service. All images from your image libary will be synchronized to your rokka account and be served directly through rokka.
 
 = Requirements =
@@ -71,6 +71,13 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 3.1.0 =
+
+This release fixes some compatibility issues with WordPress 5.3. The new version of WordPress introduces a `big_image_size_threshold` filter (see: https://make.wordpress.org/core/2019/10/09/introducing-handling-of-big-images-in-wordpress-5-3/) which limits the image size of new uploaded images. Since this could lead to unexpected behaviour when loading bigger image sizes we disable this filter when the rokka plugin is enabled.
+
+* [FIX] Fix styling issues with WordPress 5.3.
+* [NOTICE] Disable new `big_image_size_threshold` filter which was introduced in WordPress 5.3.
 
 = 3.0.1 =
 

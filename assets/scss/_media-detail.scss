@@ -1,0 +1,29 @@
+.compat-field-rokka_hash {
+  input {
+    width: 100%;
+  }
+}
+
+.subjectarea-wrap {
+  position: relative;
+  img {
+    max-width: 400px;
+    max-height: 400px;
+  }
+}
+.subjectarea-sel {
+  input[type="text"] {
+    width: 70px;
+  }
+}
+
+// Hide subject area in modal view
+.media-modal-content .compat-field-rokka_subject_area {
+  display: none;
+}
+
+// Hide edit attachment button since this is not yet supported
+.wp-core-ui .button.edit-attachment,
+.wp_attachment_image p .button {
+  display: none;
+}

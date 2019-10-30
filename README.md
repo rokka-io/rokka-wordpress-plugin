@@ -4,7 +4,7 @@
 
 WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 
-[rokka](https://rokka.io)  is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
+[rokka](https://rokka.io) is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This Wordpress plugin automatically uploads your pictures to rokka and delivers them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
 
 Free account plans are available. Just install the plugin, register and use it.
 
@@ -35,7 +35,6 @@ Free account plans are available. Just install the plugin, register and use it.
     ```
     $ curl -s https://getcomposer.org/installer | php
     $ php composer.phar install
-    $ bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
     ```
 
 1. Install Node dependencies
@@ -70,13 +69,13 @@ To run the unit tests you need to setup your local WordPress testing environment
 
 To run the tests use the following script:
 
-    $ scripts/phpunit.sh
+    $ php composer.phar test
 
 ### Code Sniffer
 
 Execute the code sniffer by executing the following command from the plugin root:
 
-    $ scripts/phpcodesniffer.sh
+    $ php composer.phar lint
 
 Fix the errors in prior to commit. Commit when fixed, so the build will pass on [Travis CI](https://travis-ci.org/rokka-io/rokka-wordpress-plugin).
 

@@ -1,0 +1,14 @@
+.fixed .column-rokka {
+  width: 10%;
+}
+.column-rokka,
+#rokka-integration_settings {
+  .button.delete {
+    color: #b52727;
+    border-color: #b52727;
+  }
+
+  .button .dashicons {
+    line-height: 1.3;
+  }
+}

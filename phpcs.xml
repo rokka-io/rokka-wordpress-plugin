@@ -2,6 +2,12 @@
 <ruleset name="rokka-integration">
 	<description>Coding standards for rokka-integration</description>
 
+	<arg value="ps"/>
+	<arg name="extensions" value="php"/>
+
+	<file>./rokka-integration.php</file>
+	<file>./src</file>
+
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>assets/*</exclude-pattern>
@@ -16,5 +22,4 @@
 		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
 	</rule>
-
 </ruleset>
