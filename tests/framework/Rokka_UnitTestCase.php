@@ -64,6 +64,15 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 				'width' => 0,
 				'height' => 1100,
 			],
+			// Introduced in WordPress 5.3
+			'1536x1536' => [
+				'width' => 1536,
+				'height' => 1536,
+			],
+			'2048x2048' => [
+				'width' => 2048,
+				'height' => 2048,
+			],
 		];
 		// explicitly enable post-thumbnail size (in WP <= 4.4 this size is enabled by default)
 		$this->enable_post_thumbnail_size();
