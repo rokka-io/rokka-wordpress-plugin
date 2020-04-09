@@ -5,7 +5,7 @@
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
 echo
-echo "WordPress Plugin Git to SVN release script - v1.0.0"
+echo "WordPress Plugin Git to SVN release script - v1.1.0"
 echo
 
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -16,13 +16,18 @@ PLUGINSLUG="rokka-integration"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 SVNUSER=liip
 SOURCEPATH="$HERE/.." # this file should be in the base of your git repository
-BUILDPATH="$SOURCEPATH/build"
+RELEASEPATH="$SOURCEPATH/release"
 MAINFILE="$PLUGINSLUG.php"
+DRYRUN="false"
 
-echo "Deploy with following configuration"
+if [[ "${DRYRUN}" == "false" ]] ; then
+  echo "Deploy with following configuration"
+else
+  echo "[DRYRUN] Deploy with following configuration"
+fi
 echo
 echo "Slug: $PLUGINSLUG"
-echo "Build path: $BUILDPATH"
+echo "Release path: $RELEASEPATH"
 echo "Remote SVN repo: $SVNURL"
 echo "SVN username: $SVNUSER"
 echo "Source path: $SOURCEPATH"
@@ -54,14 +59,14 @@ fi
 
 echo
 echo "Creating local copy of SVN repo trunk ..."
-svn checkout $SVNURL $BUILDPATH --depth immediates
-svn update --quiet $BUILDPATH/trunk --set-depth infinity
+svn checkout $SVNURL $RELEASEPATH --depth immediates
+svn update --quiet $RELEASEPATH/trunk --set-depth infinity
 echo "Clearing SVN repo trunk so we can overwrite it"
-rm -rf $BUILDPATH/trunk/*
+rm -rf $RELEASEPATH/trunk/*
 
 echo "Ignoring os specific files"
 svn propset svn:ignore ".DS_Store
-Thumbs.db" "$BUILDPATH/trunk/"
+Thumbs.db" "$RELEASEPATH/trunk/"
 
 echo "Installing composer dependencies"
 echo "Changing to $SOURCEPATH to install composer dependencies"
@@ -94,20 +99,20 @@ echo "Compile translation files"
 for file in `find "$SOURCEPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
 
 echo "Copying required plugin files to SVN trunk"
-cp $SOURCEPATH/index.php $BUILDPATH/trunk/
-cp $SOURCEPATH/readme.txt $BUILDPATH/trunk/
-cp $SOURCEPATH/rokka-integration.php $BUILDPATH/trunk/
-cp $SOURCEPATH/screenshot* $BUILDPATH/trunk/
-cp $SOURCEPATH/uninstall.php $BUILDPATH/trunk/
-mkdir -p $BUILDPATH/trunk/assets
-cp -R $SOURCEPATH/assets/dist $BUILDPATH/trunk/assets
-cp -R $SOURCEPATH/assets/images $BUILDPATH/trunk/assets
-cp -R $SOURCEPATH/languages $BUILDPATH/trunk/
-cp -R $SOURCEPATH/src $BUILDPATH/trunk/
-cp -R $SOURCEPATH/vendor $BUILDPATH/trunk/
+cp $SOURCEPATH/index.php $RELEASEPATH/trunk/
+cp $SOURCEPATH/readme.txt $RELEASEPATH/trunk/
+cp $SOURCEPATH/rokka-integration.php $RELEASEPATH/trunk/
+cp $SOURCEPATH/screenshot* $RELEASEPATH/trunk/
+cp $SOURCEPATH/uninstall.php $RELEASEPATH/trunk/
+mkdir -p $RELEASEPATH/trunk/assets
+cp -R $SOURCEPATH/assets/dist $RELEASEPATH/trunk/assets
+cp -R $SOURCEPATH/assets/images $RELEASEPATH/trunk/assets
+cp -R $SOURCEPATH/languages $RELEASEPATH/trunk/
+cp -R $SOURCEPATH/src $RELEASEPATH/trunk/
+cp -R $SOURCEPATH/vendor $RELEASEPATH/trunk/
 
 echo "Changing directory to SVN and committing to trunk"
-cd $BUILDPATH/trunk/
+cd $RELEASEPATH/trunk/
 
 # Delete all files that should not now be added.
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
@@ -118,47 +123,55 @@ svn propset svn:mime-type image/png *.png
 
 # Commit all changes
 # If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
-if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+if [[ "${DRYRUN}" == "false" ]] ; then
+  if [ ! -z "$SVNPASSWORD" ]; then
+    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+  else
+    svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+  fi
 else
-	svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+  echo "[DRYRUN] Skipping commit to SVN repository!"
 fi
 
 # Update WordPress plugin assets
 # Make the directory if it doesn't already exist
-mkdir -p $BUILDPATH/assets/
-svn update --quiet $BUILDPATH/assets --set-depth infinity
+mkdir -p $RELEASEPATH/assets/
+svn update --quiet $RELEASEPATH/assets --set-depth infinity
 echo "Clearing SVN repo assets so we can overwrite it"
-rm -rf $BUILDPATH/assets/*
+rm -rf $RELEASEPATH/assets/*
 echo "Copying assets fiels to SVN assets"
-cp -R $SOURCEPATH/wp-assets/* $BUILDPATH/assets/
+cp -R $SOURCEPATH/wp-assets/* $RELEASEPATH/assets/
 
 echo "Updating WordPress plugin assets and committing"
-cd $BUILDPATH/assets/
+cd $RELEASEPATH/assets/
 # Delete all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-#svn update --accept mine-full $BUILDPATH/assets/*
+#svn update --accept mine-full $RELEASEPATH/assets/*
 # Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
 
 # Commit all changes
 # If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
-if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets" --no-auth-cache
+if [[ "${DRYRUN}" == "false" ]] ; then
+  if [ ! -z "$SVNPASSWORD" ]; then
+    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets" --no-auth-cache
+  else
+    svn commit --username=$SVNUSER -m "Updating assets" --no-auth-cache
+  fi
 else
-	svn commit --username=$SVNUSER -m "Updating assets" --no-auth-cache
+  echo "[DRYRUN] Skipping commit to SVN repository!"
 fi
 
 echo "Creating new SVN tag and committing it"
-cd $BUILDPATH
-svn update --quiet $BUILDPATH/tags/$PLUGINVERSION
+cd $RELEASEPATH
+svn update --quiet $RELEASEPATH/tags/$PLUGINVERSION
 
 # if tag already exists update sources otherwise create new
-if [ -d "$BUILDPATH/tags/$PLUGINVERSION/" ]; then
-	cd $BUILDPATH/tags/$PLUGINVERSION
-	cp -R $BUILDPATH/trunk/* $BUILDPATH/tags/$PLUGINVERSION/
+if [ -d "$RELEASEPATH/tags/$PLUGINVERSION/" ]; then
+	cd $RELEASEPATH/tags/$PLUGINVERSION
+	cp -R $RELEASEPATH/trunk/* $RELEASEPATH/tags/$PLUGINVERSION/
 	# Delete all files that should not now be added.
 	svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 	# Add all new files that are not set to be ignored
@@ -166,16 +179,20 @@ if [ -d "$BUILDPATH/tags/$PLUGINVERSION/" ]; then
 	# Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 	svn propset svn:mime-type image/png *.png
 else
-	svn copy --quiet $BUILDPATH/trunk/ $BUILDPATH/tags/$PLUGINVERSION/
-	cd $BUILDPATH/tags/$PLUGINVERSION
+	svn copy --quiet $RELEASEPATH/trunk/ $RELEASEPATH/tags/$PLUGINVERSION/
+	cd $RELEASEPATH/tags/$PLUGINVERSION
 fi
 
 # Commit plugin version
 # If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
-if [ ! -z "$SVNPASSWORD" ]; then
-	svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
+if [[ "${DRYRUN}" == "false" ]] ; then
+  if [ ! -z "$SVNPASSWORD" ]; then
+    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
+  else
+    svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION" --no-auth-cache
+  fi
 else
-	svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION" --no-auth-cache
+  echo "[DRYRUN] Skipping commit to SVN repository!"
 fi
 
 echo "Successfully released v$PLUGINVERSION of the $PLUGINSLUG plugin!"

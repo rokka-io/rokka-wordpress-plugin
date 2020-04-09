@@ -7,3 +7,4 @@ node_modules/
 /.cache
 /assets/dist/
 /languages/*.mo
+/release
