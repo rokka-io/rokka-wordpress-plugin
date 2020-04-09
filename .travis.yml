@@ -20,6 +20,7 @@ env:
     - WP_VERSION=4.7 # Introduction of REST API
     - WP_VERSION=4.9.13 # Last 4.x version
     - WP_VERSION=5.0 # Introduction of Gutenberg
+    - WP_VERSION=5.3 # Changes in generating srcset
     - WP_VERSION=latest
 
 matrix:
