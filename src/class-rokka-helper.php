@@ -721,7 +721,7 @@ class Rokka_Helper {
 		$stack_options = $stack->stackOptions;
 		// @codingStandardsIgnoreEnd
 		if ( array_key_exists( 'autoformat', $stack_options ) ) {
-				return $stack_options['autoformat'] !== $this->get_autoformat();
+			return $stack_options['autoformat'] !== $this->get_autoformat();
 		} else {
 			return $this->get_autoformat();
 		}
