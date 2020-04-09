@@ -11,8 +11,12 @@ class WP_Crop_Bugfix_Test extends WP_Crop_Bugfix_UnitTestCase {
 		$this->assertArrayHasKey( 'larger-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'zero-height-crop', $attachment_meta['sizes'] );
 		$this->assertArrayHasKey( 'zero-width-crop', $attachment_meta['sizes'] );
-		// WordPress doesn't generate a huge-crop size since it's the same as the original
-		$this->assertArrayNotHasKey( 'huge-crop', $attachment_meta['sizes'] );
+		// WordPress 4.0 and WordPress 5.3+ don't generate a huge-crop size since it's the same as the original
+		if ( version_compare( $wp_version, '4.0', '>' ) && version_compare( $wp_version, '5.3', '<' ) ) {
+			$this->assertArrayHasKey( 'huge-crop', $attachment_meta['sizes'] );
+		} else {
+			$this->assertArrayNotHasKey( 'huge-crop', $attachment_meta['sizes'] );
+		}
 		// Size huger-crop doesn't exist without bugfix
 		$this->assertArrayNotHasKey( 'huger-crop', $attachment_meta['sizes'] );
 
