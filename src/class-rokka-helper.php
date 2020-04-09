@@ -24,7 +24,7 @@ class Rokka_Helper {
 	 *
 	 * @var array
 	 */
-	const ALLOWED_MIME_TYPES = [ 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' ];
+	const ALLOWED_MIME_TYPES = array( 'image/gif', 'image/jpg', 'image/jpeg', 'image/png' );
 
 	/**
 	 * Constant name of rokka domain.
@@ -485,9 +485,9 @@ class Rokka_Helper {
 				)
 			);
 		}
-		$stack->setStackOptions( [ 'autoformat' => $autoformat ] );
+		$stack->setStackOptions( array( 'autoformat' => $autoformat ) );
 
-		$client->saveStack( $stack, [ 'overwrite' => $overwrite ] );
+		$client->saveStack( $stack, array( 'overwrite' => $overwrite ) );
 	}
 
 	/**
@@ -501,7 +501,7 @@ class Rokka_Helper {
 	public function create_noop_stack( $name, $overwrite = true ) {
 		$client = $this->rokka_get_client();
 		$stack = new Stack( null, $name );
-		$client->saveStack( $stack, [ 'overwrite' => $overwrite ] );
+		$client->saveStack( $stack, array( 'overwrite' => $overwrite ) );
 	}
 
 	/**
