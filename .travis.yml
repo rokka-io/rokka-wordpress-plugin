@@ -18,7 +18,7 @@ env:
     - WP_VERSION=4.0 # Minimum required version
     - WP_VERSION=4.4 # Introduction of Responsive Images
     - WP_VERSION=4.7 # Introduction of REST API
-    - WP_VERSION=4.9.12 # Last 4.x version
+    - WP_VERSION=4.9.13 # Last 4.x version
     - WP_VERSION=5.0 # Introduction of Gutenberg
     - WP_VERSION=latest
 
@@ -37,7 +37,7 @@ matrix:
     - php: 7.3
       env: WP_VERSION=4.7
     - php: 7.3
-      env: WP_VERSION=4.9.12
+      env: WP_VERSION=4.9.13
 
 before_install:
   - nvm install 12.13.0
