@@ -28,13 +28,13 @@ class Rokka_Block_Editor {
 	 */
 	public function init() {
 		// Disable image editing
-		add_filter( 'block_editor_settings', array( $this, 'disable_image_editing' ), 10, 1);
+		add_filter( 'block_editor_settings', array( $this, 'disable_image_editing' ), 10, 1 );
 	}
 
 	/**
 	 * Disable image editing in block editor.
 	 *
-	 * @param array   $editor_settings Editor settings.
+	 * @param array $editor_settings Editor settings.
 	 * @return array
 	 */
 	public function disable_image_editing( $editor_settings ) {
