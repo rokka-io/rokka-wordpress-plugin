@@ -3,7 +3,7 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.6
 Stable tag: 3.2.0
 License: GPLv2
@@ -71,6 +71,11 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 3.2.0 =
+
+* [NOTICE] Tested with WordPress 5.5.
+* [FIX] Disabled image editing in block editor.
 
 = 3.1.1 =
 
