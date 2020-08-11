@@ -1,6 +1,6 @@
 {
   "name": "rokka-wordpress-plugin",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Rokka integration plugin for WordPress",
   "main": "index.js",
   "scripts": {
@@ -25,12 +25,10 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "autoprefixer": "^9.7.6",
+    "autoprefixer": "^9.8.6",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
-    "sass": "^1.26.3"
-  },
-  "dependencies": {
+    "eslint": "^7.6.0",
+    "sass": "^1.26.10",
     "parcel-bundler": "^1.12.4"
   }
 }

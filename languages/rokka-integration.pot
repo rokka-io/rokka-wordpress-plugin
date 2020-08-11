@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: rokka-integration 3.1.1\n"
+"Project-Id-Version: rokka-integration 3.2.0\n"
 "Report-Msgid-Bugs-To: contact@liip.ch\n"
 "POT-Creation-Date: 2019-10-30 13:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

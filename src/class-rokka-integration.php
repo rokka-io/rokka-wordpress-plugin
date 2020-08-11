@@ -42,7 +42,7 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $version = '3.1.1';
+	public $version = '3.2.0';
 
 	/**
 	 * The plugin token.
@@ -103,6 +103,7 @@ class Rokka_Integration {
 		require_once ROKKA_ABSPATH . 'src/class-rokka-integration-settings.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-helper.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-media-management.php';
+		require_once ROKKA_ABSPATH . 'src/class-rokka-block-editor.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-rest.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-url.php';
 		require_once ROKKA_ABSPATH . 'src/class-rokka-filter-content.php';
@@ -153,6 +154,7 @@ class Rokka_Integration {
 		if ( is_admin() ) {
 			if ( $this->rokka_helper->is_rokka_enabled() ) {
 				new Rokka_Media_Management( $this->rokka_helper );
+				new Rokka_Block_Editor();
 			}
 
 			$this->settings = new Rokka_Integration_Settings( $this->rokka_helper, $this->token, $this->assets_url );
