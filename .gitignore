@@ -5,6 +5,15 @@ node_modules/
 /bin/
 /composer.phar
 /.cache
-/assets/dist/
+/assets/dist/admin.css
+/assets/dist/admin.css.map
+/assets/dist/admin.js
+/assets/dist/admin.js.map
+/assets/dist/rokka-subject-area.js
+/assets/dist/rokka-subject-area.js.map
+/assets/dist/settings.js
+/assets/dist/settings.js.map
 /languages/*.mo
 /release
+
+.parcel-cache/
