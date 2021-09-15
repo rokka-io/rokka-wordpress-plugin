@@ -441,12 +441,18 @@ class Rokka_Integration_Settings {
 							<?php endif; ?>
 
 							<h2><?php esc_html_e( 'Danger zone - Remove rokka hashes from all files', 'rokka-integration' ); ?></h2>
-							<?php
-							echo '<p>' . esc_html__( 'This will remove the rokka hash from all files. This can be useful after copying a database from one environment to another.', 'rokka-integration' ) . '</p>';
-							?>
-							<button class="button delete" id="remove-hashes"><?php esc_attr_e( 'Remove rokka hashes from all files', 'rokka-integration' ); ?></button>
-							<a class="button button-primary" id="reload-remove-hashes-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
-							<div id="remove-hashes-progress-info"></div>
+							<?php if ( ! empty( $images_to_delete ) ) : ?>
+								<?php
+								echo '<p>' . esc_html__( 'This will remove the rokka hash from all files. This can be useful after copying a database from one environment to another.', 'rokka-integration' ) . '</p>';
+								?>
+								<button class="button delete" id="remove-hashes"><?php esc_attr_e( 'Remove rokka hashes from all files', 'rokka-integration' ); ?></button>
+								<a class="button button-primary" id="reload-remove-hashes-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
+								<div id="remove-hashes-progress-info"></div>
+							<?php else : ?>
+								<p>
+									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.', 'rokka-integration' ); ?>
+								</p>
+							<?php endif; ?>
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-integration' ); ?></p>
 						<?php endif; ?>
