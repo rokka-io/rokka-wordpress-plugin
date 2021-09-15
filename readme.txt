@@ -3,9 +3,9 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
-Tested up to: 5.5
+Tested up to: 5.8.1
 Requires PHP: 5.6
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,12 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 3.3.0 =
+
+* [FEATURE] Add possibility to remove all rokka hashes from files. This can be useful after copying a database from one environment to another.
+* [FIX] Use new `block_editor_settings_all` filter instead of deprecated `block_editor_settings` to disable image editing (WP >= 5.8).
+* [NOTICE] Tested with WordPress 5.8.1.
 
 = 3.2.0 =
 
