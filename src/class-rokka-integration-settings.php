@@ -94,6 +94,7 @@ class Rokka_Integration_Settings {
 		// Add endpoints for AJAX actions
 		add_action( 'wp_ajax_rokka_upload_image', array( $this, 'ajax_rokka_upload_image' ) );
 		add_action( 'wp_ajax_rokka_delete_image', array( $this, 'ajax_rokka_delete_image' ) );
+		add_action( 'wp_ajax_rokka_remove_hashes', array( $this, 'ajax_rokka_remove_hashes' ) );
 		add_action( 'wp_ajax_rokka_sync_stacks', array( $this, 'ajax_rokka_sync_stacks' ) );
 		add_action( 'wp_ajax_rokka_check_credentials', array( $this, 'ajax_rokka_check_credentials' ) );
 	}
@@ -285,6 +286,9 @@ class Rokka_Integration_Settings {
 				'deleteImagesSuccess' => esc_html__( 'All images have been removed!', 'rokka-integration' ),
 				'deleteImagesFail' => esc_html__( 'There was an error during the removal of the images!', 'rokka-integration' ),
 				'deleteImagesNoImage' => esc_html__( 'Nothing to process here, there are no images on rokka yet.', 'rokka-integration' ),
+				'removeHashesConfirm' => esc_html__( 'Do you really want to delete remove all rokka hashes?', 'rokka-integration' ),
+				'removeHashesSuccess' => esc_html__( 'All rokka hashes have been removed!', 'rokka-integration' ),
+				'removeHashesFail' => esc_html__( 'There was an error during the removal of the rokka hashes!', 'rokka-integration' ),
 			),
 		);
 		wp_localize_script( $this->plugin_token . '-settings-js', 'rokkaSettings', $rokka_settings );
@@ -435,6 +439,14 @@ class Rokka_Integration_Settings {
 									<?php esc_html_e( 'There are no images on rokka yet. Please upload them first.', 'rokka-integration' ); ?>
 								</p>
 							<?php endif; ?>
+
+							<h2><?php esc_html_e( 'Danger zone - Remove rokka hashes from all files', 'rokka-integration' ); ?></h2>
+							<?php
+							echo '<p>' . esc_html__( 'This will remove the rokka hash from all files. This can be useful after copying a database from one environment to another.', 'rokka-integration' ) . '</p>';
+							?>
+							<button class="button delete" id="remove-hashes"><?php esc_attr_e( 'Remove rokka hashes from all files', 'rokka-integration' ); ?></button>
+							<a class="button button-primary" id="reload-remove-hashes-page" href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=' . $this->menu_slug . '&tab=upload' ), 'rokka-settings-tab' ) ); ?>"><?php esc_html_e( 'Reload page', 'rokka-integration' ); ?></a>
+							<div id="remove-hashes-progress-info"></div>
 						<?php else : ?>
 							<p><?php esc_html_e( 'Please enable rokka first (in main settings)', 'rokka-integration' ); ?></p>
 						<?php endif; ?>
@@ -727,6 +739,23 @@ class Rokka_Integration_Settings {
 		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
+
+		wp_die();
+	}
+
+	/**
+	 * Remove rokka hashes from images (rokka_remove_hashes ajax endpoint)
+	 */
+	public function ajax_rokka_remove_hashes() {
+		$nonce_valid = check_ajax_referer( 'rokka-settings', 'nonce', false );
+
+		if ( ! $nonce_valid ) {
+			wp_send_json_error( __( 'Permission denied! There was something wrong with the nonce.', 'rokka-integration' ), 403 );
+			wp_die();
+		}
+
+		$success = delete_metadata( 'post', 0, 'rokka_hash', '', true );
+		$success ? wp_send_json_success() : wp_send_json_error( null, 400 );
 
 		wp_die();
 	}
