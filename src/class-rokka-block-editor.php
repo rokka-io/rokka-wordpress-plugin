@@ -28,7 +28,12 @@ class Rokka_Block_Editor {
 	 */
 	public function init() {
 		// Disable image editing
-		add_filter( 'block_editor_settings', array( $this, 'disable_image_editing' ), 10, 1 );
+		if ( class_exists( 'WP_Block_Editor_Context' ) ) {
+			// Class WP_Block_Editor_Context does only exist in WP >= 5.8
+			add_filter( 'block_editor_settings_all', array( $this, 'disable_image_editing' ), 10, 1 );
+		} else {
+			add_filter( 'block_editor_settings', array( $this, 'disable_image_editing' ), 10, 1 );
+		}
 	}
 
 	/**
