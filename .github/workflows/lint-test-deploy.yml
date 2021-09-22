@@ -97,7 +97,7 @@ jobs:
           composer install
 
       - name: Setup WordPress
-        run: bash scripts/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wp-versions }}
+        run: bash scripts/install-wp-tests.sh wordpress_test root root mysql ${{ matrix.wp-versions }}
 
       - name: Running PHP tests
         run: composer test
