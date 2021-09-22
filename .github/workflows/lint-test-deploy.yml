@@ -47,12 +47,12 @@ jobs:
     strategy:
       matrix:
         php-versions: [
-            #'5.6',
+            '5.6',
             '7.0',
-            #'7.1',
-            #'7.2',
-            #'7.3',
-            #'7.4'
+            '7.1',
+            '7.2',
+            '7.3',
+            '7.4'
         ]
         wp-versions: [
             '4.0', # Minimum required version
