@@ -21,7 +21,7 @@ Free account plans are available. Just install the plugin, register and use it.
 
 ### Requirements
 
-* Node.js >=10.x (https://nodejs.org/)
+* Node.js >= 16 (https://nodejs.org/)
 * gettext (https://www.gnu.org/software/gettext/)
 * WordPress >= 4.0
 * PHP >= 5.6
