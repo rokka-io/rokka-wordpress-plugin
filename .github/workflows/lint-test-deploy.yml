@@ -1,0 +1,95 @@
+name: Lint Test Deploy
+
+on: [push]
+
+jobs:
+  lint:
+    name: Lint
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          composer install
+
+      - name: Run linter
+        run: |
+          npm run lint
+          composer lint
+
+  tests:
+    name: Tests
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-versions: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+        wp-versions: [
+            '4.0', # Minimum required version
+            '4.4', # Introduction of Responsive Images
+            '4.7', # Introduction of REST API
+            '4.9.18', # Last 4.x version
+            '5.0', # Introduction of Gutenberg
+            '5.3', # Changes in generating srcset
+            'latest'
+        ]
+        exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error: 'break' not in the 'loop' or 'switch' context
+          - php-versions: 7.0
+            wp-versions: 4.0
+          - php-versions: 7.1
+            wp-versions: 4.0
+          - php-versions: 7.2
+            wp-versions: 4.0
+          - php-versions: 7.3
+            wp-versions: 4.0
+          - php-versions: 7.4
+            wp-versions: 4.0
+          - php-versions: 7.3
+            wp-versions: 4.4
+          - php-versions: 7.3
+            wp-versions: 4.7
+          - php-versions: 7.3
+            wp-versions: 4.9.18
+          - php-versions: 7.4
+            wp-versions: 4.4
+          - php-versions: 7.4
+            wp-versions: 4.7
+          - php-versions: 7.4
+            wp-versions: 4.9.18
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - env:
+          WP_VERSION: ${{ matrix.wp-versions }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          composer install
+
+      - name: Setup WordPress
+        run: bash scripts/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
+
+      - name: Running PHP tests
+        run: composer test
