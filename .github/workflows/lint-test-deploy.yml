@@ -70,9 +70,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - env:
-          WP_VERSION: ${{ matrix.wp-versions }}
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -89,7 +86,7 @@ jobs:
           composer install
 
       - name: Setup WordPress
-        run: bash scripts/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
+        run: bash scripts/install-wp-tests.sh wordpress_test root '' 127.0.0.1 ${{ matrix.wp-versions }}
 
       - name: Running PHP tests
         run: composer test
