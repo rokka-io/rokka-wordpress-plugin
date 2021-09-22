@@ -80,24 +80,6 @@ if [ $composer_exitcode -ne 0 ]; then
 	exit $composer_exitcode
 fi
 
-echo "Installing npm dependencies"
-echo "Changing to $SOURCEPATH to install npm dependencies"
-cd $SOURCEPATH
-npm install --loglevel error
-
-# Check if npm install was successful
-npm_exitcode=$?
-if [ $npm_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing the npm dependencies. Aborting deployment..."
-	exit $npm_exitcode
-fi
-
-echo "Building assets"
-npm run build
-
-echo "Compile translation files"
-for file in `find "$SOURCEPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
-
 echo "Copying required plugin files to SVN trunk"
 cp $SOURCEPATH/index.php $RELEASEPATH/trunk/
 cp $SOURCEPATH/readme.txt $RELEASEPATH/trunk/
