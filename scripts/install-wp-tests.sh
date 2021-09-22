@@ -108,7 +108,6 @@ install_test_suite() {
 }
 
 install_db() {
-
 	if [ ${SKIP_DB_CREATE} = "true" ]; then
 		return 0
 	fi
@@ -133,7 +132,7 @@ install_db() {
 	mysql --user="$DB_USER" --password="$DB_PASS" $EXTRA -e "drop database if exists $DB_NAME"
 
 	# create database
-	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS" $EXTRA
 }
 
 install_wp
