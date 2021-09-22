@@ -35,10 +35,11 @@ jobs:
       mysql:
         image: mysql:latest
         ports:
-          - 3306
+          - 3306/tcp
         env:
           MYSQL_DATABASE: wordpress_test
           MYSQL_ROOT_PASSWORD: root
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     strategy:
       matrix:
@@ -83,6 +84,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          extensions: mysql
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
