@@ -94,7 +94,7 @@ jobs:
           extensions: mysql
 
       - name: Check mysql
-        run: mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES"
+        run: scripts/install-wp-tests-clone.sh 127.0.0.1
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
@@ -107,7 +107,7 @@ jobs:
           composer install
 
       - name: Setup WordPress
-        run: bash scripts/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wp-versions }}
+        run: bash scripts/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 ${{ matrix.wp-versions }}
 
       - name: Running PHP tests
         run: composer test
