@@ -11,14 +11,14 @@ echo
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # All paths have to be absolute!
-# Set SVNPASSWORD environment variable to not prompt password during deployment
+# Set SVN_PASSWORD environment variable to not prompt password during deployment
 PLUGINSLUG="rokka-integration"
 SVNURL="https://plugins.svn.wordpress.org/$PLUGINSLUG"
-SVNUSER=liip
+SVN_USERNAME=liip
 SOURCEPATH="$HERE/.." # this file should be in the base of your git repository
 RELEASEPATH="$SOURCEPATH/release"
 MAINFILE="$PLUGINSLUG.php"
-DRYRUN="false"
+DRYRUN=${DRYRUN:-"false"}
 
 if [[ "${DRYRUN}" == "false" ]] ; then
   echo "Deploy with following configuration"
@@ -29,7 +29,7 @@ echo
 echo "Slug: $PLUGINSLUG"
 echo "Release path: $RELEASEPATH"
 echo "Remote SVN repo: $SVNURL"
-echo "SVN username: $SVNUSER"
+echo "SVN username: $SVN_USERNAME"
 echo "Source path: $SOURCEPATH"
 echo "Main file: $MAINFILE"
 echo
@@ -80,24 +80,6 @@ if [ $composer_exitcode -ne 0 ]; then
 	exit $composer_exitcode
 fi
 
-echo "Installing npm dependencies"
-echo "Changing to $SOURCEPATH to install npm dependencies"
-cd $SOURCEPATH
-npm install --loglevel error
-
-# Check if npm install was successful
-npm_exitcode=$?
-if [ $npm_exitcode -ne 0 ]; then
-	echo "ERROR: There was an error installing the npm dependencies. Aborting deployment..."
-	exit $npm_exitcode
-fi
-
-echo "Building assets"
-npm run build
-
-echo "Compile translation files"
-for file in `find "$SOURCEPATH/languages" -name "*.po"` ; do msgfmt -o ${file/.po/.mo} $file ; done
-
 echo "Copying required plugin files to SVN trunk"
 cp $SOURCEPATH/index.php $RELEASEPATH/trunk/
 cp $SOURCEPATH/readme.txt $RELEASEPATH/trunk/
@@ -122,12 +104,12 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs sv
 svn propset svn:mime-type image/png *.png
 
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
+# If password is set as environment variable ($SVN_PASSWORD) use it otherwise prompt password
 if [[ "${DRYRUN}" == "false" ]] ; then
-  if [ ! -z "$SVNPASSWORD" ]; then
-    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+  if [ ! -z "$SVN_PASSWORD" ]; then
+    svn commit --username=$SVN_USERNAME --password=$SVN_PASSWORD -m "Preparing for $PLUGINVERSION release" --no-auth-cache
   else
-    svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release" --no-auth-cache
+    svn commit --username=$SVN_USERNAME -m "Preparing for $PLUGINVERSION release" --no-auth-cache
   fi
 else
   echo "[DRYRUN] Skipping commit to SVN repository!"
@@ -139,7 +121,7 @@ mkdir -p $RELEASEPATH/assets/
 svn update --quiet $RELEASEPATH/assets --set-depth infinity
 echo "Clearing SVN repo assets so we can overwrite it"
 rm -rf $RELEASEPATH/assets/*
-echo "Copying assets fiels to SVN assets"
+echo "Copying assets files to SVN assets"
 cp -R $SOURCEPATH/wp-assets/* $RELEASEPATH/assets/
 
 echo "Updating WordPress plugin assets and committing"
@@ -148,17 +130,17 @@ cd $RELEASEPATH/assets/
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-#svn update --accept mine-full $RELEASEPATH/assets/*
+
 # Fix image mime-types (see: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
 svn propset svn:mime-type image/png *.png
 
 # Commit all changes
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
+# If password is set as environment variable ($SVN_PASSWORD) use it otherwise prompt password
 if [[ "${DRYRUN}" == "false" ]] ; then
-  if [ ! -z "$SVNPASSWORD" ]; then
-    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Updating assets" --no-auth-cache
+  if [ ! -z "$SVN_PASSWORD" ]; then
+    svn commit --username=$SVN_USERNAME --password=$SVN_PASSWORD -m "Updating assets" --no-auth-cache
   else
-    svn commit --username=$SVNUSER -m "Updating assets" --no-auth-cache
+    svn commit --username=$SVN_USERNAME -m "Updating assets" --no-auth-cache
   fi
 else
   echo "[DRYRUN] Skipping commit to SVN repository!"
@@ -184,12 +166,12 @@ else
 fi
 
 # Commit plugin version
-# If password is set as environment variable ($SVNPASSWORD) use it otherwise prompt password
+# If password is set as environment variable ($SVN_PASSWORD) use it otherwise prompt password
 if [[ "${DRYRUN}" == "false" ]] ; then
-  if [ ! -z "$SVNPASSWORD" ]; then
-    svn commit --username=$SVNUSER --password=$SVNPASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
+  if [ ! -z "$SVN_PASSWORD" ]; then
+    svn commit --username=$SVN_USERNAME --password=$SVN_PASSWORD -m "Tagging version $PLUGINVERSION" --no-auth-cache
   else
-    svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION" --no-auth-cache
+    svn commit --username=$SVN_USERNAME -m "Tagging version $PLUGINVERSION" --no-auth-cache
   fi
 else
   echo "[DRYRUN] Skipping commit to SVN repository!"

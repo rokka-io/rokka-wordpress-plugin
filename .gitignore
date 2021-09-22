@@ -5,6 +5,7 @@ node_modules/
 /bin/
 /composer.phar
 /.cache
-/assets/dist/
-/languages/*.mo
+/assets/dist/*.map
 /release
+
+.parcel-cache/

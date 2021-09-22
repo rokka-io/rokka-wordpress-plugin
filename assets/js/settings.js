@@ -68,6 +68,7 @@ jQuery(document).ready(function ($) {
 
 					$('#mass-delete-everything').hide();
 					$('#mass-upload-everything').hide();
+					$('#remove-hashes').hide();
 					$('#reload-mass-upload-page').addClass('show');
 				}
 			}
@@ -139,12 +140,42 @@ jQuery(document).ready(function ($) {
 
 					$('#mass-delete-everything').hide();
 					$('#mass-upload-everything').hide();
+					$('#remove-hashes').hide();
 					$('#reload-mass-delete-page').addClass('show');
 				}
 			}
 		} else {
 			deleteProgresInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.deleteImagesNoImage + '</p></div>');
 		}
+	});
+
+	$('#remove-hashes').click(function (e) {
+		var removeHashesProgressInfo = $('#remove-hashes-progress-info');
+
+		if ( confirm( rokkaSettings.labels.removeHashesConfirm ) !== true) {
+			return;
+		}
+
+		removeHashesProgressInfo.html('');
+
+		$.ajax({
+			type: 'POST',
+			url: ajaxurl,
+			dataType: 'json',
+			data: {
+				action: 'rokka_remove_hashes',
+				nonce: rokkaSettings.nonce
+			}
+		}).done(function() {
+			removeHashesProgressInfo.html('<div class="notice notice-success"><p>' + rokkaSettings.labels.removeHashesSuccess + '</p></div>')
+		}).fail(function( res ) {
+			removeHashesProgressInfo.html('<div class="notice notice-error"><p>' + rokkaSettings.labels.removeHashesFail + '</p></div>')
+		}).always(function() {
+			$('#mass-delete-everything').hide();
+			$('#mass-upload-everything').hide();
+			$('#remove-hashes').hide();
+			$('#reload-remove-hashes-page').addClass('show');
+		});
 	});
 
 	$('#sync-rokka-stacks').click(function (e) {

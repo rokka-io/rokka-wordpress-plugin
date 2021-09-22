@@ -1,6 +1,6 @@
 # Rokka integration plugin for WordPress
 
-[![Build Status](https://travis-ci.org/rokka-io/rokka-wordpress-plugin.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-wordpress-plugin)
+[![Build Status](https://github.com/rokka-io/rokka-wordpress-plugin/workflows/Lint%20Test%20Deploy/badge.svg?branch=master)](https://github.com/rokka-io/rokka-wordpress-plugin/actions?query=workflow%3A%22Lint+Test+Deploy%22+branch%3Amaster)
 
 WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 
@@ -21,7 +21,7 @@ Free account plans are available. Just install the plugin, register and use it.
 
 ### Requirements
 
-* Node.js >=10.x (https://nodejs.org/)
+* Node.js >= 16 (https://nodejs.org/)
 * gettext (https://www.gnu.org/software/gettext/)
 * WordPress >= 4.0
 * PHP >= 5.6

@@ -59,13 +59,16 @@
   #reload-sync-stacks-page,
   button#mass-upload-everything,
   button#mass-delete-everything,
+  button#remove-hashes,
   #reload-mass-upload-page,
-  #reload-mass-delete-page {
+  #reload-mass-delete-page,
+  #reload-remove-hashes-page {
     margin-bottom: 15px;
   }
   #reload-sync-stacks-page,
   #reload-mass-upload-page,
-  #reload-mass-delete-page {
+  #reload-mass-delete-page,
+  #reload-remove-hashes-page {
     display: none;
 
     &.show {
