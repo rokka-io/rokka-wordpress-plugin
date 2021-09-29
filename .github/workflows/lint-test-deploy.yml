@@ -84,7 +84,7 @@ jobs:
         run: |
           echo "{\n\t\"core\": \"WordPress/WordPress#${{ matrix.wp-versions }}\",\n\t\"phpVersion\": \"${{ matrix.php-version }}\"\n}" > ./.wp-env.override.json
 
-- name: Install WordPress
+      - name: Install WordPress
         run: |
           chmod -R 767 ./ # TODO: Possibly integrate in wp-env
           npm run wp-env start
