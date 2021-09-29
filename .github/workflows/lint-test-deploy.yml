@@ -31,19 +31,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      WP_VERSION: ${{ matrix.wp-versions }}
-
-    services:
-      mysql:
-        image: mysql:5.7
-        ports:
-          - 3306
-        env:
-          MYSQL_DATABASE: wordpress_test
-          MYSQL_ROOT_PASSWORD: root
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     strategy:
       matrix:
         php-versions: [
@@ -83,12 +70,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: mysql
-
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
@@ -99,11 +80,17 @@ jobs:
           npm ci
           composer install
 
-      - name: Setup WordPress
-        run: scripts/install-wp-tests.sh wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }} $WP_VERSION
+      - name: "Configure environment with WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-version }}"
+        run: |
+          echo "{\n\t\"core\": \"WordPress/WordPress#${{ matrix.wp-versions }}\",\n\t\"phpVersion\": \"${{ matrix.php-version }}\"\n}" > ./.wp-env.override.json
 
-      - name: Running PHP tests
-        run: composer test
+- name: Install WordPress
+        run: |
+          chmod -R 767 ./ # TODO: Possibly integrate in wp-env
+          npm run wp-env start
+
+      - name: Running PHP unit tests
+        run: npm run test:unit:php:ci
 
   deploy-dry-run:
     name: '[DRY RUN] Deploy'
