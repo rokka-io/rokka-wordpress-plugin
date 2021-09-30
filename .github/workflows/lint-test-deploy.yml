@@ -47,7 +47,7 @@ jobs:
             '4.9.18', # Last 4.x version
             '5.0', # Introduction of Gutenberg
             '5.3', # Changes in generating srcset
-            'latest'
+            '5.8.1' # Latest
         ]
         exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error: 'break' not in the 'loop' or 'switch' context
           - php-versions: 7.0
@@ -83,7 +83,6 @@ jobs:
       - name: "Configure environment with WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}"
         run: |
           echo -e '{\n\t"core": "WordPress/WordPress#${{ matrix.wp-versions }}",\n\t"phpVersion": "${{ matrix.php-versions }}"\n}' > ./.wp-env.override.json
-          cat ./.wp-env.override.json
 
       - name: Install WordPress
         run: |
