@@ -75,7 +75,6 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 = 3.3.1 =
 
 * [FIX] The autoformat option wasn't respected in the stack synchronization for the no-operation (full) stack.
-* [NOTICE] Tested with WordPress 5.8.1.
 
 = 3.3.0 =
 
