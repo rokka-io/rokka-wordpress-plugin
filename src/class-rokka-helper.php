@@ -495,27 +495,15 @@ class Rokka_Helper {
 	 *
 	 * @param string $name Stack name.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
+	 * @param bool   $autoformat Enable autoformat on stack. Default false.
 	 *
 	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
-	public function create_noop_stack( $name, $overwrite = true ) {
+	public function create_noop_stack( $name, $overwrite = true, $autoformat = false ) {
 		$client = $this->rokka_get_client();
 		$stack = new Stack( null, $name );
+		$stack->setStackOptions( array( 'autoformat' => $autoformat ) );
 		$client->saveStack( $stack, array( 'overwrite' => $overwrite ) );
-	}
-
-	/**
-	 * Updates stack on rokka.
-	 *
-	 * @param string $name Stack name.
-	 * @param int    $width Width of resize operation.
-	 * @param int    $height Height of resize operation.
-	 * @param bool   $crop If crop stack operation should be added. Default false.
-	 *
-	 * @throws \Exception Throws exception if there was something wrong with the request.
-	 */
-	public function update_stack( $name, $width, $height, $crop = false ) {
-		$this->create_stack( $name, $width, $height, $crop, true, $this->get_autoformat() );
 	}
 
 	/**
@@ -541,16 +529,14 @@ class Rokka_Helper {
 		foreach ( $stacks_to_sync as $stack ) {
 			// handle full size stack specially
 			if ( $stack['name'] === $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() ) ) {
-				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
-					$this->create_noop_stack( $stack['name'] );
+				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] || self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
+					$this->create_noop_stack( $stack['name'], true, $this->get_autoformat() );
 				}
 				continue;
 			}
 
-			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] ) {
+			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] || self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
 				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], true, $this->get_autoformat() );
-			} elseif ( self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
-				$this->update_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'] );
 			} elseif ( self::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) {
 				$this->delete_stack( $stack['name'] );
 			}
@@ -599,7 +585,7 @@ class Rokka_Helper {
 		// Create a noop stack (full size stack) if it not exists already
 		$noop_stackname = $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() );
 		try {
-			$client->getStack( $noop_stackname );
+			$noop_stack = $client->getStack( $noop_stackname );
 			$stacks_to_sync[ $noop_stackname ] = array(
 				'name' => $noop_stackname,
 				'width' => '0',
@@ -607,6 +593,11 @@ class Rokka_Helper {
 				'crop' => false,
 				'operation' => self::STACK_SYNC_OPERATION_KEEP,
 			);
+
+			// set sync operation to update if autoformat option changed
+			if ( $this->autoformat_changed( $noop_stack ) ) {
+				$stacks_to_sync[ $noop_stackname ]['operation'] = self::STACK_SYNC_OPERATION_UPDATE;
+			}
 		} catch ( \Exception $e ) {
 			$stacks_to_sync[ $noop_stackname ] = array(
 				'name' => $noop_stackname,

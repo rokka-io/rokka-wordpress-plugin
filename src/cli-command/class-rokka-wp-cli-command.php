@@ -85,19 +85,27 @@ class Rokka_WP_CLI_Command extends \WP_CLI_Command {
 	 * --name=<stack-name>
 	 * : The name of the stack to create.
 	 *
+	 * [--autoformat]
+	 * : Whether or not autoformat should be enabled on the stack.
+	 * ---
+	 * default: false
+	 * ---
+	 *
 	 * ## EXAMPLE
-	 *      wp rokka create_noop_stack --name=full
+	 *      wp rokka create_noop_stack --name=full --autoformat
 	 *
 	 * @param array $args Arguments from cli-command.
 	 * @param array $assoc_args Associative arguments from cli-command.
 	 */
 	public function create_noop_stack( $args, $assoc_args ) {
 		if ( isset( $assoc_args['name'] ) && ! empty( $assoc_args['name'] ) ) {
+			$autoformat = (bool) key_exists( 'autoformat', $assoc_args ) ? $assoc_args['autoformat'] : false;
+
 			try {
 				$rokka_helper = new Rokka_Helper();
 				if ( $rokka_helper->are_settings_complete() ) {
 					\WP_CLI::line( sprintf( 'Creating noop stack %1$s...', $assoc_args['name'] ) );
-					$rokka_helper->create_noop_stack( $assoc_args['name'] );
+					$rokka_helper->create_noop_stack( $assoc_args['name'], true, $autoformat );
 					\WP_CLI::success( 'Stack successfully created or updated.' );
 				} else {
 					\WP_CLI::warning( 'Please configure rokka in settings before creating noop stack.' );
