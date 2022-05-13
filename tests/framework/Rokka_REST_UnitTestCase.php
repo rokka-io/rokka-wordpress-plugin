@@ -15,7 +15,7 @@ class Rokka_REST_UnitTestCase extends Rokka_UnitTestCase {
 	/**
 	 * Setup our test server.
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		/** @var \WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
@@ -25,7 +25,7 @@ class Rokka_REST_UnitTestCase extends Rokka_UnitTestCase {
 	/**
 	 * Unset the server.
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		global $wp_rest_server;
 		$wp_rest_server = null;

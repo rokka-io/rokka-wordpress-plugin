@@ -37,13 +37,13 @@ jobs:
             '7.1',
             '7.2',
             '7.3',
-            '7.4'
-            #'8.0',
-            #'8.1'
+            '7.4',
+            '8.0',
+            '8.1'
         ]
         wp-versions: [
             #'4.0', # Minimum required version
-            #'4.4' # Introduction of Responsive Images
+            #'4.4', # Introduction of Responsive Images
             #'4.7', # Introduction of REST API
             #'4.9.18', # Last 4.x version
             #'5.0', # Introduction of Gutenberg
