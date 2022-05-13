@@ -2,9 +2,7 @@
 .idea/
 vendor/
 node_modules/
-/bin/
 /composer.phar
-/.cache
 /assets/dist/*.map
 /release
 
