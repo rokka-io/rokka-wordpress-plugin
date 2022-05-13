@@ -42,11 +42,11 @@ jobs:
             '8.1'
         ]
         wp-versions: [
-            '4.0', # Minimum required version
-            '4.4', # Introduction of Responsive Images
-            '4.7', # Introduction of REST API
-            '4.9.20', # Last 4.x version
-            '5.0', # Introduction of Gutenberg
+            #'4.0', # Minimum required version
+            #'4.4', # Introduction of Responsive Images
+            #'4.7', # Introduction of REST API
+            #'4.9.20', # Last 4.x version
+            #'5.0', # Introduction of Gutenberg
             '5.3', # Changes in generating srcset
             '5.9.3' # Latest
         ]
