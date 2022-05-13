@@ -42,29 +42,61 @@ jobs:
             '8.1'
         ]
         wp-versions: [
-            #'4.0', # Minimum required version
-            #'4.4', # Introduction of Responsive Images
-            #'4.7', # Introduction of REST API
-            #'4.9.18', # Last 4.x version
-            #'5.0', # Introduction of Gutenberg
-            #'5.3', # Changes in generating srcset
+            '4.0', # Minimum required version
+            '4.4', # Introduction of Responsive Images
+            '4.7', # Introduction of REST API
+            '4.9.20', # Last 4.x version
+            '5.0', # Introduction of Gutenberg
+            '5.3', # Changes in generating srcset
             '5.9.3' # Latest
         ]
-        exclude: # exclude PHP >= 7 and WP 4.0 combinations because of PHP Fatal error: 'break' not in the 'loop' or 'switch' context
-          - php-versions: 7.1
-            wp-versions: 4.0
-          - php-versions: 7.2
-            wp-versions: 4.0
-          - php-versions: 7.3
-            wp-versions: 4.0
-          - php-versions: 7.4
-            wp-versions: 4.0
-          - php-versions: 7.3
-            wp-versions: 4.4
-          - php-versions: 7.3
-            wp-versions: 4.7
-          - php-versions: 7.3
-            wp-versions: 4.9.18
+        exclude: # exclude unsupported PHP/WordPress combinations
+          - wp-versions: 4.0
+            php-versions: 7.1
+          - wp-versions: 4.0
+            php-versions: 7.2
+          - wp-versions: 4.0
+            php-versions: 7.3
+          - wp-versions: 4.0
+            php-versions: 7.4
+          - wp-versions: 4.0
+            php-versions: 8.0
+          - wp-versions: 4.0
+            php-versions: 8.1
+          - wp-versions: 4.4
+            php-versions: 7.3
+          - wp-versions: 4.4
+            php-versions: 7.4
+          - wp-versions: 4.4
+            php-versions: 8.0
+          - wp-versions: 4.4
+            php-versions: 8.1
+          - wp-versions: 4.7
+            php-versions: 7.3
+          - wp-versions: 4.7
+            php-versions: 7.4
+          - wp-versions: 4.7
+            php-versions: 8.0
+          - wp-versions: 4.7
+            php-versions: 8.1
+          - wp-versions: 4.9.20
+            php-versions: 7.3
+          - wp-versions: 4.9.20
+            php-versions: 7.4
+          - wp-versions: 4.9.20
+            php-versions: 8.0
+          - wp-versions: 4.9.20
+            php-versions: 8.1
+          - wp-versions: 5.0
+            php-versions: 7.4
+          - wp-versions: 5.0
+            php-versions: 8.0
+          - wp-versions: 5.0
+            php-versions: 8.1
+          - wp-versions: 5.3
+            php-versions: 8.0
+          - wp-versions: 5.3
+            php-versions: 8.1
 
     steps:
       - uses: actions/checkout@v3
