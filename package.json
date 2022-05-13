@@ -27,12 +27,14 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.0-rc.0",
-    "@wordpress/env": "^4.1.1",
-    "autoprefixer": "^10.3.4",
+    "@parcel/transformer-sass": "^2.5.0",
+    "@wordpress/env": "^4.6.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
-    "parcel": "^2.0.0-rc.0",
-    "sass": "^1.41.0"
+    "parcel": "^2.5.0",
+    "sass": "^1.51.0"
+  },
+  "dependencies": {
+    "jquery-ui": "^1.13.1"
   }
 }
