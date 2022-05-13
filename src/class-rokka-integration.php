@@ -192,13 +192,13 @@ class Rokka_Integration {
 
 		// Load only on rokka settings page
 		if ( 'settings_page_' . $this->settings->menu_slug === $hook ) {
-			wp_register_script( $this->token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->version, true );
-			wp_enqueue_script( $this->token . '-settings-js' );
-
 			// add progessbar for mass upload
 			wp_enqueue_script( 'jquery-ui-progressbar' );
-			wp_register_style( $this->token . '-jquery-ui', esc_url( $this->assets_url ) . 'dist/jquery-ui.min.css', array(), '1.12.1' );
-			wp_enqueue_style( $this->token . '-jquery-ui' );
+			wp_register_style( $this->token . '-settings-css', esc_url( $this->assets_url ) . 'dist/settings.css', array(), $this->version );
+			wp_enqueue_style( $this->token . '-settings-css' );
+
+			wp_register_script( $this->token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_script( $this->token . '-settings-js' );
 		}
 	}
 

@@ -1,3 +1,5 @@
+import 'jquery-ui/themes/base/progressbar.css';
+
 jQuery(document).ready(function ($) {
 	function getCurrentDateTime() {
 		var currentdate = new Date();
