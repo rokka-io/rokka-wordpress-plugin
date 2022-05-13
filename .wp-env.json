@@ -1,4 +1,7 @@
 {
-	"core": "WordPress/WordPress#5.8",
-	"plugins": [ "." ]
+  "core": "https://wordpress.org/wordpress-6.0-RC2.zip",
+	"plugins": [ "." ],
+  "themes": [
+    "./test-themes/rokka-integration"
+  ]
 }
