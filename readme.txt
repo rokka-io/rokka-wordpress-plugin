@@ -4,7 +4,7 @@ Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.0
 Tested up to: 5.8.1
-Requires PHP: 5.6
+Requires PHP: 7.1
 Stable tag: 3.3.1
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

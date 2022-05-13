@@ -1,5 +1,6 @@
 {
   "core": "https://wordpress.org/wordpress-6.0-RC2.zip",
+  "phpVersion": "7.1",
 	"plugins": [ "." ],
   "themes": [
     "./test-themes/rokka-integration"
