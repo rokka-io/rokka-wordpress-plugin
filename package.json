@@ -27,9 +27,8 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.10",
+    "@babel/core": "^7.17.12",
     "@babel/eslint-parser": "^7.17.0",
-    "@babel/preset-env": "^7.17.10",
     "@parcel/transformer-sass": "^2.5.0",
     "@wordpress/env": "^4.6.0",
     "eslint": "^8.15.0",
