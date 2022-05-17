@@ -41,12 +41,14 @@
     }
   },
   "require-dev": {
-    "wp-coding-standards/wpcs": "^2.3.0",
+    "wp-coding-standards/wpcs": "dev-develop",
     "squizlabs/php_codesniffer": "^3.6.2",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "wp-phpunit/wp-phpunit": "^5.9",
     "yoast/phpunit-polyfills": "^1.0"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "scripts": {
     "lint": "phpcs --standard=phpcs.xml",
     "test": "phpunit"
