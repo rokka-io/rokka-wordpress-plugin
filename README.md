@@ -23,8 +23,8 @@ Free account plans are available. Just install the plugin, register and use it.
 
 * Node.js >= 16 (https://nodejs.org/)
 * gettext (https://www.gnu.org/software/gettext/)
-* WordPress >= 4.0
-* PHP >= 5.6
+* WordPress >= 4.7
+* PHP >= 7.1
 
 ### Installation
 
@@ -32,57 +32,70 @@ Free account plans are available. Just install the plugin, register and use it.
 
 1. Install composer dependencies
 
-    ```
-    $ curl -s https://getcomposer.org/installer | php
-    $ php composer.phar install
+    ```bash
+    curl -s https://getcomposer.org/installer | php
+    php composer.phar install
     ```
 
 1. Install Node dependencies
 
-    ```
-    $ npm install
+    ```bash
+    npm install
     ```
 
 ### Compile assets
 
-    $ npm run build
+* `npm run dev`: Builds assets in development mode and watches for any changes and reports back any errors in your code.
+* `npm run lint`: Lints JavaScript & PHP files.
+* `npm run build`: Build production code into `assets/dist` folder.
 
 ### Extract messages / Compile translation files
 
-Run the following script to extract messages from PHP-files and generate a new rokka-wordpress-plugin.pot file:
+1. To extract the labels and generate the `languages/rokka-integration.pot` file run the following command:
 
-    $ scripts/translations/extract_messages.sh
+    ```bash
+    ./scripts/translations/extract-messages.sh
+   ```
 
-Update all .po files with newly extracted messages from .pot file:
+2. To update the translation files (`*.po`) run the following command:
 
-    $ scripts/translations/update_translation_files.sh
+    ```bash
+    ./scripts/translations/update-translation-files.sh
+   ```
 
-To compile all .po files to .mo files use the following script:
+1. To generate the `*.mo` translation files run the following command:
 
-    $ scripts/translations/compile_translation_files.sh
+   ```bash
+   ./scripts/translations/compile-translation-files.sh
+   ```
+
+### Setup local dev environment
+
+The following commands can be used to set up a local dev environment. See the official [documentation of `@wordpress/env`](https://developer.wordpress.org/block-editor/packages/packages-env/#command-reference) for a complete list of commands.
+
+* `npm run wp-env start`: Starts the Docker containers.
+* `npm run wp-env stop`: Stops the Docker containers.
 
 ### Unit tests
 
-To run the unit tests you need to setup your local WordPress testing environment (PHP / MySQL required). Use the following script for this:
+To run the tests use the following command:
 
-    $ scripts/init-unit-test-environment.sh
+```bash
+npm run test:unit:php
+```
 
-To run the tests use the following script:
+or the following command to run a specific test:
 
-    $ php composer.phar test
-
-### Code Sniffer
-
-Execute the code sniffer by executing the following command from the plugin root:
-
-    $ php composer.phar lint
-
-Fix the errors in prior to commit. Commit when fixed, so the build will pass on [Travis CI](https://travis-ci.org/rokka-io/rokka-wordpress-plugin).
+```bash
+npm run test:unit:php -- --filter 'my_test'
+```
 
 ## Release new plugin version
 
 To release a new version to the WordPress plugin repository use the following script:
 
-    $ scripts/deploy-wp-plugin.sh
+```bash
+./scripts/deploy-wp-plugin.sh
+```
 
 This command will automatically release the latest git tag as a version in the plugin repository.

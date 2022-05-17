@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "parcel watch --no-hmr assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js --dist-dir assets/dist",
     "build": "parcel build assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js --dist-dir assets/dist",
-    "lint": "eslint assets/js",
     "wp-env": "wp-env",
+    "lint": "npm run lint:js && npm run lint:php",
+    "lint:js": "eslint assets/js",
     "lint:php": "npm run wp-env run composer run-script lint",
     "test:unit:php": "npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/rokka-integration/phpunit.xml --verbose'",
     "test:unit:php:ci": "npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/rokka-wordpress-plugin/phpunit.xml --verbose'"
