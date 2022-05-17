@@ -108,14 +108,14 @@ class Rokka_Integration_Settings {
 				'id'          => 'company_name',
 				'label'       => __( 'Company name', 'rokka-integration' ),
 				'type'        => 'text',
-				'placeholder' => __( 'my-company' ),
+				'placeholder' => __( 'my-company', 'rokka-integration' ),
 				'constant_name' => Rokka_Helper::OPTION_COMPANY_NAME_CONSTANT_NAME,
 			),
 			array(
 				'id'          => 'api_key',
 				'label'       => __( 'API Key', 'rokka-integration' ),
 				'type'        => 'text',
-				'placeholder' => __( 'My API Key' ),
+				'placeholder' => __( 'My API Key', 'rokka-integration' ),
 				'constant_name' => Rokka_Helper::OPTION_API_KEY_CONSTANT_NAME,
 			),
 			array(

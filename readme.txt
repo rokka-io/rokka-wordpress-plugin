@@ -2,10 +2,10 @@
 Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
-Requires at least: 4.0
-Tested up to: 5.8.1
-Requires PHP: 5.6
-Stable tag: 3.3.1
+Requires at least: 4.7
+Tested up to: 6.0
+Requires PHP: 7.1
+Stable tag: 4.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,8 +16,8 @@ WordPress plugin to integrate the [rokka.io](https://rokka.io) image service.
 This WordPress plugin integrates the rokka image service. All images from your image libary will be synchronized to your rokka account and be served directly through rokka.
 
 = Requirements =
-* WordPress >= 4.0
-* PHP >= 5.6
+* WordPress >= 4.7
+* PHP >= 7.1
 
 = Further Information =
 
@@ -71,6 +71,14 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 4.0.0 =
+
+Starting with this version the plugin only supports WordPress version >= 4.7 and PHP versions >= 7.1.
+This step was needed to be compatible with the latest rokka PHP client library.
+
+* **[COMPATIBILITY] Dropped support for WordPress < 4.7 and PHP < 7.1**. Please update your website if you still would like to receive updates for this plugin.
+* [COMPATIBILITY] Tested with WordPress 6.0.
 
 = 3.3.1 =
 

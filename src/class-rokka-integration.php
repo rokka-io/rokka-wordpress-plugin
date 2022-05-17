@@ -42,7 +42,7 @@ class Rokka_Integration {
 	 *
 	 * @var string
 	 */
-	public $version = '3.3.1';
+	public $version = '4.0.0';
 
 	/**
 	 * The plugin token.
@@ -192,13 +192,13 @@ class Rokka_Integration {
 
 		// Load only on rokka settings page
 		if ( 'settings_page_' . $this->settings->menu_slug === $hook ) {
-			wp_register_script( $this->token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->version, true );
-			wp_enqueue_script( $this->token . '-settings-js' );
-
 			// add progessbar for mass upload
 			wp_enqueue_script( 'jquery-ui-progressbar' );
-			wp_register_style( $this->token . '-jquery-ui', esc_url( $this->assets_url ) . 'dist/jquery-ui.min.css', array(), '1.12.1' );
-			wp_enqueue_style( $this->token . '-jquery-ui' );
+			wp_register_style( $this->token . '-settings-css', esc_url( $this->assets_url ) . 'dist/settings.css', array(), $this->version );
+			wp_enqueue_style( $this->token . '-settings-css' );
+
+			wp_register_script( $this->token . '-settings-js', $this->assets_url . 'dist/settings.js', array( 'jquery' ), $this->version, true );
+			wp_enqueue_script( $this->token . '-settings-js' );
 		}
 	}
 
@@ -249,14 +249,14 @@ class Rokka_Integration {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->version ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'rokka-integration' ), esc_attr( $this->version ) );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?' ), esc_attr( $this->version ) );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'rokka-integration' ), esc_attr( $this->version ) );
 	}
 
 	/**

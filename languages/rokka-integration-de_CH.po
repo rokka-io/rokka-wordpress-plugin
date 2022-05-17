@@ -5,9 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: rokka-integration 3.3.1\n"
-"Report-Msgid-Bugs-To: contact@liip.ch\n"
-"POT-Creation-Date: 2021-09-15 22:00+0200\n"
+"Project-Id-Version: rokka-integration 4.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/rokka-"
+"integration\n"
+"POT-Creation-Date: 2022-05-17T09:17:47+00:00\n"
 "PO-Revision-Date: 2017-04-04 11:53+0200\n"
 "Last-Translator: Juerg Hunziker <juerg.hunziker@liip.ch>\n"
 "Language-Team: German\n"
@@ -17,8 +18,68 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Plugin Name of the plugin
+msgid "Rokka Integration"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/rokka-io/rokka-wordpress-plugin"
+msgstr ""
+
+#. Description of the plugin
+msgid "Rokka image processing and cdn plugin for WordPress."
+msgstr ""
+
+#. Author of the plugin
+msgid "Liip AG"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.liip.ch"
+msgstr ""
+
+#. translators: %s contains image id
+#: src/class-rokka-attachment.php:60 src/class-rokka-media-management.php:318
+#: src/class-rokka-media-management.php:375
+msgctxt "%s contains image id"
+msgid "There was an error uploading image %s to rokka."
+msgstr ""
+
+#. translators: %1$s contains image id, %2$s contains error message
+#: src/class-rokka-attachment.php:64 src/class-rokka-media-management.php:322
+#: src/class-rokka-media-management.php:379
+msgctxt "%1$s contains image id, %2$s contains error message"
+msgid "There was an error uploading image %1$s to rokka. Message: %2$s"
+msgstr ""
+
+#. translators: %s contains image id
+#: src/class-rokka-attachment.php:88 src/class-rokka-attachment.php:96
+msgctxt "%s contains image id"
+msgid "There was an error updating image %s on rokka."
+msgstr ""
+
+#. translators: %1$s contains image id, %2$s contains error message
+#: src/class-rokka-attachment.php:100
+msgctxt "%1$s contains image id, %2$s contains error message"
+msgid "There was an error updating image %1$s on rokka. Message: %2$s"
+msgstr ""
+
+#. translators: %s contains image id
+#: src/class-rokka-attachment.php:123 src/class-rokka-media-management.php:287
+#: src/class-rokka-media-management.php:417
+msgctxt "%s contains image id"
+msgid "There was an error deleting image %s from rokka."
+msgstr ""
+
+#. translators: %1$s contains image id, %2$s contains error message
+#: src/class-rokka-attachment.php:128 src/class-rokka-media-management.php:291
+#: src/class-rokka-media-management.php:421
+msgctxt "%1$s contains image id, %2$s contains error message"
+msgid "There was an error deleting image %1$s from rokka. Message: %2$s"
+msgstr ""
+
+#. translators: %s contains file path
 #: src/class-rokka-helper.php:415
-#, php-format
 msgctxt "%s contains file path"
 msgid "File %s does not exist"
 msgstr ""
@@ -43,8 +104,8 @@ msgstr ""
 msgid "Stack Prefix"
 msgstr ""
 
+#. translators: %s contains default stack prefix
 #: src/class-rokka-integration-settings.php:125
-#, php-format
 msgctxt "%s contains default stack prefix"
 msgid ""
 "You can use this prefix to create unique stacknames on rokka. So that your "
@@ -269,8 +330,8 @@ msgstr ""
 msgid "There are no image sizes defined in WordPress."
 msgstr ""
 
-#: src/class-rokka-integration-settings.php:374
-#, php-format
+#. translators: %s contains the error from rokka
+#: src/class-rokka-integration-settings.php:373
 msgctxt "%s contains the error from rokka"
 msgid "There was an error listing the stacks from rokka. %s"
 msgstr ""
@@ -287,9 +348,9 @@ msgstr ""
 msgid "The following images will be uploaded to rokka:"
 msgstr ""
 
+#. translators: %1$s contains image id. %2$s contains image path.
 #: src/class-rokka-integration-settings.php:399
 #: src/class-rokka-integration-settings.php:425
-#, php-format
 msgctxt "%1$s contains image id. %2$s contains image path."
 msgid "ID: %1$s / Path: %2$s"
 msgstr ""
@@ -383,44 +444,14 @@ msgstr ""
 msgid "Whops! Something is wrong with your rokka credentials."
 msgstr ""
 
-#: src/class-rokka-attachment.php:60 src/class-rokka-media-management.php:318
-#: src/class-rokka-media-management.php:375
-#, php-format
-msgctxt "%s contains image id"
-msgid "There was an error uploading image %s to rokka."
+#: src/class-rokka-integration.php:185
+msgid ""
+"Do you really want to delete this image from rokka? Please be aware that all "
+"stored meta information (eg. subject area) will be deleted as well."
 msgstr ""
 
-#: src/class-rokka-attachment.php:64 src/class-rokka-media-management.php:322
-#: src/class-rokka-media-management.php:379
-#, php-format
-msgctxt "%1$s contains image id, %2$s contains error message"
-msgid "There was an error uploading image %1$s to rokka. Message: %2$s"
-msgstr ""
-
-#: src/class-rokka-attachment.php:88 src/class-rokka-attachment.php:96
-#, php-format
-msgctxt "%s contains image id"
-msgid "There was an error updating image %s on rokka."
-msgstr ""
-
-#: src/class-rokka-attachment.php:100
-#, php-format
-msgctxt "%1$s contains image id, %2$s contains error message"
-msgid "There was an error updating image %1$s on rokka. Message: %2$s"
-msgstr ""
-
-#: src/class-rokka-attachment.php:123 src/class-rokka-media-management.php:287
-#: src/class-rokka-media-management.php:417
-#, php-format
-msgctxt "%s contains image id"
-msgid "There was an error deleting image %s from rokka."
-msgstr ""
-
-#: src/class-rokka-attachment.php:128 src/class-rokka-media-management.php:291
-#: src/class-rokka-media-management.php:421
-#, php-format
-msgctxt "%1$s contains image id, %2$s contains error message"
-msgid "There was an error deleting image %1$s from rokka. Message: %2$s"
+#: src/class-rokka-integration.php:252 src/class-rokka-integration.php:259
+msgid "Cheatin&#8217; huh?"
 msgstr ""
 
 #: src/class-rokka-media-management.php:75
@@ -443,8 +474,8 @@ msgstr ""
 msgid "Rokka Subject Area"
 msgstr ""
 
+#. translators: %s contains error message
 #: src/class-rokka-media-management.php:218
-#, php-format
 msgctxt "%s contains error message"
 msgid "There was an error saving the subject area. Message: %s"
 msgstr ""
@@ -465,14 +496,14 @@ msgstr ""
 msgid "MIME type not supported"
 msgstr ""
 
+#. translators: %s contains image id
 #: src/class-rokka-media-management.php:284
-#, php-format
 msgctxt "%s contains image id"
 msgid "Image %s was successfully deleted from rokka."
 msgstr ""
 
+#. translators: %s contains image id
 #: src/class-rokka-media-management.php:315
-#, php-format
 msgctxt "%s contains image id"
 msgid "Image %s was successfully uploaded to rokka."
 msgstr ""
@@ -485,46 +516,36 @@ msgstr ""
 msgid "Delete from rokka"
 msgstr ""
 
+#. translators: %s contains image id
 #: src/class-rokka-media-management.php:363
-#, php-format
 msgctxt "%s contains image id"
 msgid "The mime type of attachment %s is not supported on rokka."
 msgstr ""
 
+#. translators: %s contains image id
 #: src/class-rokka-media-management.php:367
-#, php-format
 msgctxt "%s contains image id"
 msgid "The image %s is already on rokka."
 msgstr ""
 
+#. translators: %s contains image count
 #: src/class-rokka-media-management.php:385
-#, php-format
 msgctxt "%s contains image count"
 msgid "%s image has been uploaded to rokka."
 msgid_plural "%s images have been uploaded to rokka."
 msgstr[0] ""
 msgstr[1] ""
 
+#. translators: %s contains image id
 #: src/class-rokka-media-management.php:409
-#, php-format
 msgctxt "%s contains image id"
 msgid "The image %s is not yet on rokka."
 msgstr ""
 
+#. translators: %s contains image count
 #: src/class-rokka-media-management.php:427
-#, php-format
 msgctxt "%s contains image count"
 msgid "%s image has been deleted from rokka."
 msgid_plural "%s images have been deleted from rokka."
 msgstr[0] ""
 msgstr[1] ""
-
-#: src/class-rokka-integration.php:185
-msgid ""
-"Do you really want to delete this image from rokka? Please be aware that all "
-"stored meta information (eg. subject area) will be deleted as well."
-msgstr ""
-
-#: src/class-rokka-integration.php:252 src/class-rokka-integration.php:259
-msgid "Cheatin&#8217; huh?"
-msgstr ""

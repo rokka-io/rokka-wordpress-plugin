@@ -7,7 +7,7 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 	protected $features_dir;
 	protected $sizes = [];
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->_plugin_dir = dirname( dirname( dirname( __FILE__ ) ) ); // two levels up
@@ -71,7 +71,7 @@ class WP_Crop_Bugfix_UnitTestCase extends \WP_UnitTestCase {
 		set_post_thumbnail_size( $this->sizes['post-thumbnail']['width'], $this->sizes['post-thumbnail']['width'] );
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// Remove all uploads.
 		$this->remove_added_uploads();
 		parent::tearDown();

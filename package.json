@@ -1,11 +1,16 @@
 {
   "name": "rokka-wordpress-plugin",
-  "version": "3.3.1",
+  "version": "4.0.0",
   "description": "Rokka integration plugin for WordPress",
   "scripts": {
     "dev": "parcel watch --no-hmr assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js --dist-dir assets/dist",
     "build": "parcel build assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js --dist-dir assets/dist",
-    "lint": "eslint assets/js"
+    "wp-env": "wp-env",
+    "lint": "npm run lint:js && npm run lint:php",
+    "lint:js": "eslint assets/js",
+    "lint:php": "npm run wp-env run composer run-script lint",
+    "test:unit:php": "npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/rokka-integration/phpunit.xml --verbose'",
+    "test:unit:php:ci": "npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/rokka-wordpress-plugin/phpunit.xml --verbose'"
   },
   "repository": {
     "type": "git",
@@ -23,11 +28,15 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.0-rc.0",
-    "autoprefixer": "^10.3.4",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.32.0",
-    "parcel": "^2.0.0-rc.0",
-    "sass": "^1.41.0"
+    "@babel/core": "^7.17.12",
+    "@babel/eslint-parser": "^7.17.0",
+    "@parcel/transformer-sass": "^2.5.0",
+    "@wordpress/env": "^4.6.0",
+    "eslint": "^8.15.0",
+    "parcel": "^2.5.0",
+    "sass": "^1.51.0"
+  },
+  "dependencies": {
+    "jquery-ui": "^1.13.1"
   }
 }
