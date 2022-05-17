@@ -47,7 +47,9 @@ jobs:
             #'4.7', # Introduction of REST API
             #'4.9.20', # Last 4.x version
             #'5.0', # Introduction of Gutenberg
-            '5.3', # Changes in generating srcset
+            #'5.3', # Changes in generating srcset
+            '5.7',
+            '5.8',
             '5.9.3' # Latest
         ]
         exclude: # exclude unsupported PHP/WordPress combinations
@@ -115,7 +117,7 @@ jobs:
 
       - name: "Configure environment with WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}"
         run: |
-          echo -e '{\n\t"core": "WordPress/WordPress#${{ matrix.wp-versions }}",\n\t"phpVersion": "${{ matrix.php-versions }}",\n\t"tests": {\n\t\t"phpVersion": "${{ matrix.php-versions }}"\n\t}\n}' > ./.wp-env.override.json
+          echo -e '{\n\t"core": "WordPress/WordPress#${{ matrix.wp-versions }}",\n\t"phpVersion": "${{ matrix.php-versions }}"\n}' > ./.wp-env.override.json
 
       - name: Install WordPress
         run: |
