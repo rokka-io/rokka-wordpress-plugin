@@ -47,7 +47,7 @@ jobs:
             #'4.7', # Introduction of REST API
             #'4.9.20', # Last 4.x version
             #'5.0', # Introduction of Gutenberg
-            #'5.3', # Changes in generating srcset
+            '5.3.0', # Changes in generating srcset
             '5.9.3' # Latest
         ]
         exclude: # exclude unsupported PHP/WordPress combinations
@@ -110,6 +110,8 @@ jobs:
         run: |
           npm ci
           composer install
+      - name: "Install WP specific wp-phpunit version (${{ matrix.wp-versions }})"
+        run: composer require --dev wp-phpunit/wp-phpunit:${{ matrix.wp-versions }}
 
       - name: "Configure environment with WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}"
         run: |
