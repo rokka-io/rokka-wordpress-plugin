@@ -33,72 +33,13 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: [
-            '7.1',
-            '7.2',
-            '7.3',
-            '7.4',
-            '8.0',
-            '8.1'
-        ]
         wp-versions: [
-            #'4.0', # Minimum required version
-            #'4.4', # Introduction of Responsive Images
-            #'4.7', # Introduction of REST API
-            #'4.9.20', # Last 4.x version
-            #'5.0', # Introduction of Gutenberg
-            #'5.3', # Changes in generating srcset
-            '5.7',
-            '5.8',
+            '4.7', # Introduction of REST API
+            '4.9.20', # Last 4.x version
+            '5.0', # Introduction of Gutenberg
+            '5.3', # Changes in generating srcset
             '5.9.3' # Latest
         ]
-        exclude: # exclude unsupported PHP/WordPress combinations
-          - wp-versions: 4.0
-            php-versions: 7.1
-          - wp-versions: 4.0
-            php-versions: 7.2
-          - wp-versions: 4.0
-            php-versions: 7.3
-          - wp-versions: 4.0
-            php-versions: 7.4
-          - wp-versions: 4.0
-            php-versions: 8.0
-          - wp-versions: 4.0
-            php-versions: 8.1
-          - wp-versions: 4.4
-            php-versions: 7.3
-          - wp-versions: 4.4
-            php-versions: 7.4
-          - wp-versions: 4.4
-            php-versions: 8.0
-          - wp-versions: 4.4
-            php-versions: 8.1
-          - wp-versions: 4.7
-            php-versions: 7.3
-          - wp-versions: 4.7
-            php-versions: 7.4
-          - wp-versions: 4.7
-            php-versions: 8.0
-          - wp-versions: 4.7
-            php-versions: 8.1
-          - wp-versions: 4.9.20
-            php-versions: 7.3
-          - wp-versions: 4.9.20
-            php-versions: 7.4
-          - wp-versions: 4.9.20
-            php-versions: 8.0
-          - wp-versions: 4.9.20
-            php-versions: 8.1
-          - wp-versions: 5.0
-            php-versions: 7.4
-          - wp-versions: 5.0
-            php-versions: 8.0
-          - wp-versions: 5.0
-            php-versions: 8.1
-          - wp-versions: 5.3
-            php-versions: 8.0
-          - wp-versions: 5.3
-            php-versions: 8.1
 
     steps:
       - uses: actions/checkout@v3
@@ -115,9 +56,9 @@ jobs:
       - name: "Install WP specific wp-phpunit version (${{ matrix.wp-versions }})"
         run: composer require --dev wp-phpunit/wp-phpunit:${{ matrix.wp-versions }}
 
-      - name: "Configure environment with WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}"
+      - name: "Configure environment with WP ${{ matrix.wp-versions }}"
         run: |
-          echo -e '{\n\t"core": "WordPress/WordPress#${{ matrix.wp-versions }}",\n\t"phpVersion": "${{ matrix.php-versions }}"\n}' > ./.wp-env.override.json
+          echo -e '{\n\t"core": "WordPress/WordPress#${{ matrix.wp-versions }}"\n}' > ./.wp-env.override.json
 
       - name: Install WordPress
         run: |
