@@ -37,7 +37,8 @@ jobs:
             #'4.7', # Introduction of REST API
             #'4.9.20', # Last 4.x version
             #'5.0', # Introduction of Gutenberg
-            '5.3', # Changes in generating srcset
+            #'5.3', # Changes in generating srcset
+            '5.5', # Temporary: First version where phpunit tests work with latest wp-env
             '5.9.3', # Latest 5.x
             '6.0.1' # Latest
         ]
@@ -54,8 +55,6 @@ jobs:
         run: |
           npm ci
           composer install
-      - name: "Install WP specific wp-phpunit version (${{ matrix.wp-versions }})"
-        run: composer require --dev wp-phpunit/wp-phpunit:${{ matrix.wp-versions }}
 
       - name: "Configure environment with WP ${{ matrix.wp-versions }}"
         run: |

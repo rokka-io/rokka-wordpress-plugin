@@ -12,7 +12,7 @@
 		</testsuite>
 	</testsuites>
 	<php>
-		<env name="WP_TESTS_DIR" value="./tests" />
 		<env name="WP_PHPUNIT__TESTS_CONFIG" value="/wordpress-phpunit/wp-tests-config.php" />
+		<env name="WP_TESTS_DIR" value="/wordpress-phpunit" />
 	</php>
 </phpunit>
