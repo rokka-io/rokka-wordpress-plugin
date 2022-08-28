@@ -28,15 +28,15 @@
   },
   "homepage": "https://github.com/rokka-io/rokka-wordpress-plugin#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.12",
-    "@babel/eslint-parser": "^7.17.0",
-    "@parcel/transformer-sass": "^2.5.0",
-    "@wordpress/env": "^4.6.0",
-    "eslint": "^8.15.0",
-    "parcel": "^2.5.0",
-    "sass": "^1.51.0"
+    "@babel/core": "^7.18.13",
+    "@babel/eslint-parser": "^7.18.9",
+    "@parcel/transformer-sass": "^2.7.0",
+    "@wordpress/env": "^5.2.0",
+    "eslint": "^8.23.0",
+    "parcel": "^2.7.0",
+    "sass": "^1.54.5"
   },
   "dependencies": {
-    "jquery-ui": "^1.13.1"
+    "jquery-ui": "^1.13.2"
   }
 }
