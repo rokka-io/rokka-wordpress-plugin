@@ -30,7 +30,7 @@
   },
   "require": {
     "php": ">=7.1",
-    "rokka/client": "^1.16.0"
+    "rokka/client": "^1.17"
   },
   "config": {
     "platform": {
@@ -42,9 +42,9 @@
   },
   "require-dev": {
     "wp-coding-standards/wpcs": "dev-develop",
-    "squizlabs/php_codesniffer": "^3.6.2",
+    "squizlabs/php_codesniffer": "^3.7",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-    "wp-phpunit/wp-phpunit": "^5.9",
+    "wp-phpunit/wp-phpunit": "^6.0",
     "yoast/phpunit-polyfills": "^1.0"
   },
   "minimum-stability": "dev",
