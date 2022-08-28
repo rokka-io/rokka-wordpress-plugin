@@ -34,9 +34,9 @@ jobs:
     strategy:
       matrix:
         wp-versions: [
-            '4.7', # Introduction of REST API
-            '4.9.20', # Last 4.x version
-            '5.0', # Introduction of Gutenberg
+            #'4.7', # Introduction of REST API
+            #'4.9.20', # Last 4.x version
+            #'5.0', # Introduction of Gutenberg
             '5.3', # Changes in generating srcset
             '5.9.3', # Latest 5.x
             '6.0.1' # Latest
