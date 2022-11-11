@@ -74,7 +74,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 = 5.0.0 =
 
-* **Breaking Change [CHANGE] Removed autoformat option**. The `autoformat` option has been removed. This option is now always enabled on every stack. There is no reason anymore to disable this option. Please check if your stacks are up-to-date after updating to this version.
+* **Breaking Change** [CHANGE] Removed autoformat option. The `autoformat` option has been removed. This option is now always enabled on every stack. There is no reason anymore to disable this option. Please check if your stacks are up-to-date after updating to this version.
 * [COMPATIBILITY] Tested with WordPress 6.1.
 
 = 4.0.0 =
