@@ -139,13 +139,6 @@ class Rokka_Helper {
 	private $api_key = '';
 
 	/**
-	 * Autoformat option.
-	 *
-	 * @var bool
-	 */
-	private $autoformat = false;
-
-	/**
 	 * Delete previous image enabled.
 	 *
 	 * @var bool
@@ -223,7 +216,6 @@ class Rokka_Helper {
 		} else {
 			$this->api_key = get_option( 'rokka_api_key' );
 		}
-		$this->autoformat = (bool) get_option( 'rokka_autoformat' );
 		$this->delete_previous = get_option( 'rokka_delete_previous' );
 		// Backwards compatibility to plugin v1.1.0
 		if ( 'on' === $this->delete_previous ) {
@@ -455,11 +447,10 @@ class Rokka_Helper {
 	 * @param int    $height Height of resize operation.
 	 * @param bool   $crop If crop stack operation should be added. Default false.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
-	 * @param bool   $autoformat Enable autoformat on stack. Default false.
 	 *
 	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
-	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true, $autoformat = false ) {
+	public function create_stack( $name, $width, $height, $crop = false, $overwrite = true ) {
 		$client = $this->rokka_get_client();
 		$stack = new Stack( null, $name );
 		$mode = $crop ? 'fill' : 'box';
@@ -485,7 +476,7 @@ class Rokka_Helper {
 				)
 			);
 		}
-		$stack->setStackOptions( array( 'autoformat' => $autoformat ) );
+		$stack->setStackOptions( array( 'autoformat' => true ) );
 
 		$client->saveStack( $stack, array( 'overwrite' => $overwrite ) );
 	}
@@ -495,14 +486,13 @@ class Rokka_Helper {
 	 *
 	 * @param string $name Stack name.
 	 * @param bool   $overwrite Overwrite stack if already exists. Default true.
-	 * @param bool   $autoformat Enable autoformat on stack. Default false.
 	 *
 	 * @throws \Exception Throws exception if there was something wrong with the request.
 	 */
-	public function create_noop_stack( $name, $overwrite = true, $autoformat = false ) {
+	public function create_noop_stack( $name, $overwrite = true ) {
 		$client = $this->rokka_get_client();
 		$stack = new Stack( null, $name );
-		$stack->setStackOptions( array( 'autoformat' => $autoformat ) );
+		$stack->setStackOptions( array( 'autoformat' => true ) );
 		$client->saveStack( $stack, array( 'overwrite' => $overwrite ) );
 	}
 
@@ -530,13 +520,13 @@ class Rokka_Helper {
 			// handle full size stack specially
 			if ( $stack['name'] === $this->get_prefixed_stack_name( $this->get_rokka_full_size_stack_name() ) ) {
 				if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] || self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
-					$this->create_noop_stack( $stack['name'], true, $this->get_autoformat() );
+					$this->create_noop_stack( $stack['name'], true );
 				}
 				continue;
 			}
 
 			if ( self::STACK_SYNC_OPERATION_CREATE === $stack['operation'] || self::STACK_SYNC_OPERATION_UPDATE === $stack['operation'] ) {
-				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], true, $this->get_autoformat() );
+				$this->create_stack( $stack['name'], $stack['width'], $stack['height'], $stack['crop'], true );
 			} elseif ( self::STACK_SYNC_OPERATION_DELETE === $stack['operation'] ) {
 				$this->delete_stack( $stack['name'] );
 			}
@@ -712,9 +702,9 @@ class Rokka_Helper {
 		$stack_options = $stack->stackOptions;
 		// @codingStandardsIgnoreEnd
 		if ( array_key_exists( 'autoformat', $stack_options ) ) {
-			return $stack_options['autoformat'] !== $this->get_autoformat();
+			return $stack_options['autoformat'] !== true;
 		} else {
-			return $this->get_autoformat();
+			return true;
 		}
 	}
 
@@ -1123,15 +1113,6 @@ class Rokka_Helper {
 	 */
 	public function are_settings_complete() {
 		return $this->settings_complete;
-	}
-
-	/**
-	 * Returns if autoformat option is enabled.
-	 *
-	 * @return bool
-	 */
-	public function get_autoformat() {
-		return $this->autoformat;
 	}
 
 	/**

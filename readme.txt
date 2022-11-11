@@ -3,7 +3,7 @@ Contributors: liip, tschortsch
 Donate link: https://rokka.io/
 Tags: rokka, image, service, cdn, integration
 Requires at least: 4.7
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 7.1
 Stable tag: 4.0.0
 License: GPLv2
@@ -71,6 +71,11 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 5.0.0 =
+
+* **Breaking Change [CHANGE] Removed autoformat option**. The `autoformat` option has been removed. This option is now always enabled on every stack. There is no reason anymore to disable this option. Please check if your stacks are up-to-date after updating to this version.
+* [COMPATIBILITY] Tested with WordPress 6.1.
 
 = 4.0.0 =
 

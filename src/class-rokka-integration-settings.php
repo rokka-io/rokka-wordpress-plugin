@@ -136,12 +136,6 @@ class Rokka_Integration_Settings {
 				'disabled'    => ! $this->rokka_helper->are_settings_complete(),
 			),
 			array(
-				'id'          => 'autoformat',
-				'label'       => __( 'Enable WebP format', 'rokka-integration' ),
-				'description' => __( 'If you enable this option, rokka will deliver an image in the usually smaller WebP format instead of PNG or JPG, if the client supports it', 'rokka-integration' ),
-				'type'        => 'checkbox',
-			),
-			array(
 				'id'          => 'delete_previous',
 				'label'       => __( 'Delete previous images if metadata changes', 'rokka-integration' ),
 				'description' => __( "Enable this if you don't need to keep the previous image on rokka if you change something on the metadata of an image (eg. subject area).", 'rokka-integration' ),
