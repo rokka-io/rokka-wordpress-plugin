@@ -20,6 +20,7 @@
 		<exclude name="Squiz.Commenting.InlineComment" />
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
 		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed" />
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
 	</rule>
 </ruleset>

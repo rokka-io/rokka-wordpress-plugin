@@ -784,7 +784,6 @@ class Rokka_Integration_Settings {
 		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage(), 400 );
 		}
-
 	}
 
 	/**
