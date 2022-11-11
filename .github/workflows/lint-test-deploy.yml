@@ -40,7 +40,8 @@ jobs:
             #'5.3', # Changes in generating srcset
             '5.5', # Temporary: First version where phpunit tests work with latest wp-env
             '5.9.3', # Latest 5.x
-            '6.0.1' # Latest
+            '6.0', # First 6.x
+            '6.1' # Latest
         ]
 
     steps:
