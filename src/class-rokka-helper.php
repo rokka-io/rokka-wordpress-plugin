@@ -725,12 +725,10 @@ class Rokka_Helper {
 				$width = intval( get_option( "{$_size}_size_w" ) );
 				$height = intval( get_option( "{$_size}_size_h" ) );
 				$crop = (bool) get_option( "{$_size}_crop" );
-			} else {
-				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
-					$width = $_wp_additional_image_sizes[ $_size ]['width'];
-					$height = $_wp_additional_image_sizes[ $_size ]['height'];
-					$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
-				}
+			} elseif ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+				$width = $_wp_additional_image_sizes[ $_size ]['width'];
+				$height = $_wp_additional_image_sizes[ $_size ]['height'];
+				$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
 			}
 			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (rokka maximum)
 			$width = ( $width > 0 && $width < 10000 ) ? $width : 10000;
@@ -738,7 +736,36 @@ class Rokka_Helper {
 			$sizes[ $_size ] = array( $width, $height, $crop );
 		}
 
+		// Add site_icon sizes
+		$sizes = array_merge( $sizes, $this->get_site_icon_sizes() );
+
 		return $sizes;
+	}
+
+	/**
+	 * Returns custom registered site_icon sizes.
+	 *
+	 * @return array List of site_icon sizes (format: [width, height, crop])
+	 */
+	public function get_site_icon_sizes() {
+		$site_icon_sizes = array();
+		$site_icon = new \WP_Site_Icon();
+		foreach ( $site_icon->additional_sizes() as $size_name => $size ) {
+			$height = $size['height'];
+			$width = '';
+			$crop = $size['crop'];
+			// There seems to be a typo in the 'width' key name in the WP_Site_Icon class (trailing whitespace)
+			if ( array_key_exists( 'width ', $size ) ) {
+				$width = $size['width '];
+			} elseif ( array_key_exists( 'width', $size ) ) {
+				$width = $size['width'];
+			}
+			if ( ! empty( $width ) ) {
+				$site_icon_sizes[ $size_name ] = array( $width, $height, $crop );
+			}
+		}
+
+		return $site_icon_sizes;
 	}
 
 	/**

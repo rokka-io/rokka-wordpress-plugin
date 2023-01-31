@@ -361,11 +361,11 @@ class Rokka_Media_Management {
 			if ( ! $this->rokka_helper->is_allowed_mime_type( $post_id ) ) {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The mime type of attachment %s is not supported on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
-				$image_count--;
+				--$image_count;
 			} elseif ( $this->rokka_helper->is_on_rokka( $post_id ) ) {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The image %s is already on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
-				$image_count--;
+				--$image_count;
 			} else {
 				try {
 					$upload_success = $this->rokka_helper->upload_image_to_rokka( $post_id );
@@ -407,7 +407,7 @@ class Rokka_Media_Management {
 			if ( ! $this->rokka_helper->is_on_rokka( $post_id ) ) {
 				/* translators: %s contains image id */
 				$this->rokka_helper->store_message_in_notices_option( sprintf( _x( 'The image %s is not yet on rokka.', '%s contains image id', 'rokka-integration' ), $post_id ), 'error' );
-				$image_count--;
+				--$image_count;
 			} else {
 				try {
 					$delete_success = $this->rokka_helper->delete_image_from_rokka( $post_id );

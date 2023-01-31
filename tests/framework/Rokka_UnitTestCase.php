@@ -17,11 +17,12 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	protected $stack_prefix = 'wp-';
 	protected $rokka_hash = 'my_random_rokka_hash_123';
 	protected $sizes = [];
+	protected $site_icon_sizes = [333, 1024];
 
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->_plugin_dir = dirname( dirname( dirname( __FILE__ ) ) ); // two levels up
+		$this->_plugin_dir = dirname( __DIR__, 2 ); // two levels up
 		$this->features_dir = $this->_plugin_dir . '/tests/features/';
 		$this->sizes = [
 			'thumbnail' => [
@@ -169,6 +170,12 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'huger-crop', $this->sizes['huger']['width'], $this->sizes['huger']['height'], true );
 		add_image_size( 'zero-height-crop', $this->sizes['zero-height-crop']['width'], $this->sizes['zero-height-crop']['height'], true );
 		add_image_size( 'zero-width-crop', $this->sizes['zero-width-crop']['width'], $this->sizes['zero-width-crop']['height'], true );
+
+		add_filter( 'site_icon_image_sizes', array( $this, 'get_additional_site_icon_sizes'), 10, 1 );
+	}
+
+	public function get_additional_site_icon_sizes( $site_icons ) {
+		return array_merge( $site_icons, $this->site_icon_sizes );
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {
