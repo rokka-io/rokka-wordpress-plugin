@@ -35,6 +35,10 @@ class Rokka_Helper_Test extends Rokka_UnitTestCase {
 			'zero-height-crop',
 			'zero-width-crop',
 			'site_icon-333',
+			'site_icon-270',
+			'site_icon-192',
+			'site_icon-180',
+			'site_icon-32',
 		);
 		$this->assertEquals( $expected_sizes, array_keys( $this->rokka_helper->get_available_image_sizes() ) );
 		// site_icon-1024 should not be included since it is bigger than the maximum icon_size of 512 defined in WP_Icon_Size class

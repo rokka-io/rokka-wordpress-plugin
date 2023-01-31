@@ -750,15 +750,20 @@ class Rokka_Helper {
 	 * @return array List of site_icon sizes (format: [width, height, crop])
 	 */
 	public function get_site_icon_sizes() {
-		$site_icon_sizes_widths = apply_filters( 'site_icon_image_sizes', array() );
 		$site_icon_sizes = array();
 		$site_icon = new \WP_Site_Icon();
-		foreach ( $site_icon_sizes_widths as $size ) {
-			if ( $size < $site_icon->min_size ) {
-				$width = $size;
-				$height = $size;
-				$crop = true;
-				$site_icon_sizes[ 'site_icon-' . $size ] = array( $width, $height, $crop );
+		foreach ( $site_icon->additional_sizes() as $size_name => $size ) {
+			$height = $size['height'];
+			$width = '';
+			$crop = $size['crop'];
+			// There seems to be a typo in the 'width' key name in the WP_Site_Icon class (trailing whitespace)
+			if ( array_key_exists( 'width ', $size ) ) {
+				$width = $size['width '];
+			} elseif ( array_key_exists( 'width', $size ) ) {
+				$width = $size['width'];
+			}
+			if ( ! empty( $width ) ) {
+				$site_icon_sizes[ $size_name ] = array( $width, $height, $crop );
 			}
 		}
 

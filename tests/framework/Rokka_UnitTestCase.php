@@ -171,11 +171,11 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'zero-height-crop', $this->sizes['zero-height-crop']['width'], $this->sizes['zero-height-crop']['height'], true );
 		add_image_size( 'zero-width-crop', $this->sizes['zero-width-crop']['width'], $this->sizes['zero-width-crop']['height'], true );
 
-		add_filter( 'site_icon_image_sizes', array( $this, 'get_additional_size_icon_sizes') );
+		add_filter( 'site_icon_image_sizes', array( $this, 'get_additional_site_icon_sizes'), 10, 1 );
 	}
 
-	public function get_additional_size_icon_sizes() {
-		return $this->site_icon_sizes;
+	public function get_additional_site_icon_sizes( $site_icons ) {
+		return array_merge( $site_icons, $this->site_icon_sizes );
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {

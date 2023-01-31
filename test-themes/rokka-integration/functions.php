@@ -73,9 +73,9 @@ function rokka_define_image_sizes() {
 	add_image_size( 'ratio-2-to-1-750w', 750, 375, true );
 	add_image_size( 'ratio-2-to-1-500w', 500, 250, true );
 
-	add_filter( 'site_icon_image_sizes', 'rokka_additional_size_icon_sizes' );
+	add_filter( 'site_icon_image_sizes', 'rokka_additional_size_icon_sizes', 10 , 1 );
 }
 
-function rokka_additional_size_icon_sizes() {
-	return array( 1024, 333 );
+function rokka_additional_size_icon_sizes( $site_icons ) {
+	return array_merge( $site_icons, array( 1024, 333 ) );
 }
