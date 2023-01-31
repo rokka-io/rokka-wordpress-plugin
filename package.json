@@ -1,6 +1,6 @@
 {
   "name": "rokka-wordpress-plugin",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Rokka integration plugin for WordPress",
   "scripts": {
     "dev": "parcel watch --no-hmr assets/js/admin.js assets/js/rokka-subject-area.js assets/js/settings.js --dist-dir assets/dist",
