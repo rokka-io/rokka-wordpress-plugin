@@ -24,7 +24,7 @@ if ( ! defined( 'ROKKA_PLUGIN_FILE' ) ) {
 
 // Include the main Rokka_Integration class.
 if ( ! class_exists( \Rokka_Integration\Rokka_Integration::class ) ) {
-	include_once dirname( __FILE__ ) . '/src/class-rokka-integration.php';
+	include_once __DIR__ . '/src/class-rokka-integration.php';
 }
 
 // Initialize plugin

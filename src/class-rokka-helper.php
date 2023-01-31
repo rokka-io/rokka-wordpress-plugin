@@ -725,12 +725,10 @@ class Rokka_Helper {
 				$width = intval( get_option( "{$_size}_size_w" ) );
 				$height = intval( get_option( "{$_size}_size_h" ) );
 				$crop = (bool) get_option( "{$_size}_crop" );
-			} else {
-				if ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
-					$width = $_wp_additional_image_sizes[ $_size ]['width'];
-					$height = $_wp_additional_image_sizes[ $_size ]['height'];
-					$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
-				}
+			} elseif ( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+				$width = $_wp_additional_image_sizes[ $_size ]['width'];
+				$height = $_wp_additional_image_sizes[ $_size ]['height'];
+				$crop = $_wp_additional_image_sizes[ $_size ]['crop'];
 			}
 			// if width or height is 0 or bigger than 10000 (no limit) set to 10000 (rokka maximum)
 			$width = ( $width > 0 && $width < 10000 ) ? $width : 10000;
