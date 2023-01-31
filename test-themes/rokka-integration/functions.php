@@ -72,4 +72,10 @@ function rokka_define_image_sizes() {
 	add_image_size( 'ratio-2-to-1-1000w', 1000, 500, true );
 	add_image_size( 'ratio-2-to-1-750w', 750, 375, true );
 	add_image_size( 'ratio-2-to-1-500w', 500, 250, true );
+
+	add_filter( 'site_icon_image_sizes', 'rokka_additional_size_icon_sizes' );
+}
+
+function rokka_additional_size_icon_sizes() {
+	return array( 1024, 333 );
 }

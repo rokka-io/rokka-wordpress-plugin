@@ -5,7 +5,7 @@ Tags: rokka, image, service, cdn, integration
 Requires at least: 4.7
 Tested up to: 6.1
 Requires PHP: 7.1
-Stable tag: 5.0.0
+Stable tag: 5.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,10 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 4. Rokka mass uploader
 
 == Changelog ==
+
+= 5.1.0 =
+
+* [FIX] Create stacks for custom `site_icon` sizes. If the theme registers custom `site_icon` sizes via the `site_icon_image_sizes` filter, the stacks for those sizes haven't been created in rokka which resulted in not rendering the favicons correctly in some cases.
 
 = 5.0.0 =
 

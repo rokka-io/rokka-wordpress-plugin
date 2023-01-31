@@ -738,7 +738,31 @@ class Rokka_Helper {
 			$sizes[ $_size ] = array( $width, $height, $crop );
 		}
 
+		// Add site_icon sizes
+		$sizes = array_merge( $sizes, $this->get_site_icon_sizes() );
+
 		return $sizes;
+	}
+
+	/**
+	 * Returns custom registered site_icon sizes.
+	 *
+	 * @return array List of site_icon sizes (format: [width, height, crop])
+	 */
+	public function get_site_icon_sizes() {
+		$site_icon_sizes_widths = apply_filters( 'site_icon_image_sizes', array() );
+		$site_icon_sizes = array();
+		$site_icon = new \WP_Site_Icon();
+		foreach ( $site_icon_sizes_widths as $size ) {
+			if ( $size < $site_icon->min_size ) {
+				$width = $size;
+				$height = $size;
+				$crop = true;
+				$site_icon_sizes[ 'site_icon-' . $size ] = array( $width, $height, $crop );
+			}
+		}
+
+		return $site_icon_sizes;
 	}
 
 	/**

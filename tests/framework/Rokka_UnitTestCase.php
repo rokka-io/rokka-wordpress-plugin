@@ -17,6 +17,7 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 	protected $stack_prefix = 'wp-';
 	protected $rokka_hash = 'my_random_rokka_hash_123';
 	protected $sizes = [];
+	protected $site_icon_sizes = [333, 1024];
 
 	public function setUp(): void {
 		parent::setUp();
@@ -169,6 +170,12 @@ class Rokka_UnitTestCase extends \WP_UnitTestCase {
 		add_image_size( 'huger-crop', $this->sizes['huger']['width'], $this->sizes['huger']['height'], true );
 		add_image_size( 'zero-height-crop', $this->sizes['zero-height-crop']['width'], $this->sizes['zero-height-crop']['height'], true );
 		add_image_size( 'zero-width-crop', $this->sizes['zero-width-crop']['width'], $this->sizes['zero-width-crop']['height'], true );
+
+		add_filter( 'site_icon_image_sizes', array( $this, 'get_additional_size_icon_sizes') );
+	}
+
+	public function get_additional_size_icon_sizes() {
+		return $this->site_icon_sizes;
 	}
 
 	protected function add_rokka_hash( $attachment_id ) {
