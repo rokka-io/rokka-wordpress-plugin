@@ -74,7 +74,7 @@ Please create a new GitHub issue and let us know: [https://github.com/rokka-io/r
 
 = 5.1.0 =
 
-* [FIX] Create stacks for custom `site_icon` sizes. If the theme registers custom `site_icon` sizes via the `site_icon_image_sizes` filter, the stacks for those sizes haven't been created in rokka which resulted in not rendering the favicons correctly in some cases.
+* [FIX] Create stacks for custom `site_icon` sizes. If the theme registers custom `site_icon` sizes via the `site_icon_image_sizes` filter, the stacks for those sizes haven't been created in rokka which resulted in not rendering the favicons correctly in some cases. Please check if your stacks are up-to-date after updating to this version.
 
 = 5.0.0 =
 
